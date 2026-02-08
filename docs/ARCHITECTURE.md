@@ -70,9 +70,9 @@ Three specialized validators run sequentially:
 
 ## Validation Semantics
 
-1. **Schema validation** runs first
-   - If required fields are missing, still continue (partial validation)
-   - Type mismatches are recorded as ERRORs
+1. **Schema validation** runs first and is blocking
+  - If required fields are missing, stop early
+  - Type mismatches are recorded as ERRORs
 2. **Quality validation** skips missing columns
 3. **Distribution validation** is always non-blocking (WARNings only)
 4. **Exit code** is non-zero if any ERRORs exist (for CI/CD)
@@ -83,7 +83,7 @@ Three specialized validators run sequentially:
 # customer_contract.yaml
 contract:
   name: customers
-  version: 1.0.0
+  version: 2.0.0
 fields:
   - name: email
     type: string
@@ -99,7 +99,7 @@ fields:
 3. SchemaValidator → checks email column exists, is string type
 4. QualityValidator → checks regex matches all non-null emails
 5. ValidationReport → aggregates results
-6. report.save_json() → writes ./reports/20240115_103045.json
+6. report.save_json() → writes ./reports/20260208_103045.json
 ```
 
 ## Validation Sequence Diagram
