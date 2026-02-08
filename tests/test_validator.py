@@ -19,18 +19,21 @@ FIXTURES_DIR = Path(__file__).parent / "fixtures"
 @pytest.fixture
 def customer_contract():
     """Load customer contract fixture."""
+    # Baseline contract used across schema, quality, and distribution tests
     return Contract.from_yaml(str(FIXTURES_DIR / "customer_contract.yaml"))
 
 
 @pytest.fixture
 def valid_df():
     """Load valid customer data."""
+    # Fully valid dataset used to confirm success paths
     return pd.read_csv(FIXTURES_DIR / "valid_customers.csv")
 
 
 @pytest.fixture
 def invalid_df():
     """Load invalid customer data."""
+    # Dataset with intentional violations for negative tests
     return pd.read_csv(FIXTURES_DIR / "invalid_customers.csv")
 
 
@@ -76,6 +79,7 @@ class TestQualityValidator:
 
     def test_null_constraint(self):
         """Test not_null constraint."""
+        # Build a minimal contract-like object with only the required rule
         contract = Contract(
             name="test",
             version="1.0",
@@ -85,6 +89,7 @@ class TestQualityValidator:
         df = pd.DataFrame({
             "required_field": [1, 2, None],
         })
+        # Use lightweight field/rules objects to avoid full YAML parsing
         contract.fields = [
             type('Field', (), {
                 'name': 'required_field',
@@ -108,6 +113,7 @@ class TestQualityValidator:
 
     def test_enum_constraint(self):
         """Test enum constraint."""
+        # Build a minimal contract-like object with an enum rule
         contract = Contract(
             name="test",
             version="1.0",
@@ -117,6 +123,7 @@ class TestQualityValidator:
         df = pd.DataFrame({
             "status": ["active", "inactive", "unknown"],
         })
+        # Use lightweight field/rules objects to avoid full YAML parsing
         contract.fields = [
             type('Field', (), {
                 'name': 'status',

@@ -33,7 +33,7 @@ class SchemaValidator:
                     f"ERROR: Required field '{field.name}' not found in dataset"
                 )
 
-        # Check for missing columns (not in contract)
+        # Track contract-defined fields for extra-column warnings
         contract_fields = {f.name for f in self.contract.fields}
         for col in self.df.columns:
             if col not in contract_fields:
@@ -41,7 +41,7 @@ class SchemaValidator:
                     f"WARN: Column '{col}' not in contract schema"
                 )
 
-        # Check type mismatches
+        # Check type mismatches between pandas dtypes and contract types
         for field in self.contract.fields:
             if field.name in self.df.columns:
                 actual_type = str(self.df[field.name].dtype)

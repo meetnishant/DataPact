@@ -121,6 +121,7 @@ class Contract:
         dataset_data = data.get("dataset", {})
         fields_data = data.get("fields", [])
 
+        # Build field objects with parsed rules and distribution metadata
         fields = [
             Field(
                 name=f["name"],

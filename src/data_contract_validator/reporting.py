@@ -77,7 +77,7 @@ class ValidationReport:
             "errors": [asdict(e) for e in self.errors],
         }
         
-        # Add version information
+        # Add version information when breaking changes exist
         breaking_changes = get_breaking_changes(self.contract_version)
         if breaking_changes:
             result["version_info"] = {

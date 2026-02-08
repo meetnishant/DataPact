@@ -18,9 +18,11 @@ FIXTURES_DIR = Path(__file__).parent / "fixtures"
 
 def _run_validators(contract_path, data_path, results, errors, idx):
     try:
+        # Load contract and data inside each thread to avoid shared state
         contract = Contract.from_yaml(str(contract_path))
         df = pd.read_csv(str(data_path))
 
+        # Run all validators to exercise thread safety
         sv = SchemaValidator(contract, df)
         sv_ok, sv_msgs = sv.validate()
 
@@ -40,6 +42,7 @@ def test_concurrent_validators_no_exceptions():
     contract_path = FIXTURES_DIR / "customer_contract.yaml"
     data_path = FIXTURES_DIR / "valid_customers.csv"
 
+    # Use a moderate thread count to simulate concurrent usage
     n_threads = 20
     threads = []
     results = [None] * n_threads

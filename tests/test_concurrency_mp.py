@@ -21,6 +21,7 @@ def _mp_run_validators(contract_path, data_path, results, errors, idx):
         )
         import pandas as pd
 
+        # Load contract and data inside each process to avoid shared state
         contract = Contract.from_yaml(str(contract_path))
         df = pd.read_csv(str(data_path))
 
@@ -37,6 +38,7 @@ def test_multiprocess_validators_no_exceptions():
     contract_path = FIXTURES_DIR / "customer_contract.yaml"
     data_path = FIXTURES_DIR / "valid_customers.csv"
 
+    # Use a moderate process count to simulate multi-worker validation
     n_procs = 8
     ctx = get_context("spawn")
     manager = Manager()

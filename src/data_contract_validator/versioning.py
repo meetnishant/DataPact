@@ -88,7 +88,7 @@ class VersionMigration:
         if from_version == to_version:
             return contract_dict
 
-        # Get migration path
+        # Get migration path (ordered list of version steps)
         path = VersionMigration._get_migration_path(from_version, to_version)
         if not path:
             raise VersionError(
@@ -117,6 +117,7 @@ class VersionMigration:
         except ValueError:
             return []
 
+        # Downgrades are not supported
         if from_idx > to_idx:
             return []  # No downgrade migrations
 

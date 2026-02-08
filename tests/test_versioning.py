@@ -23,12 +23,14 @@ class TestVersionValidation:
 
     def test_valid_version(self):
         """Test valid version is recognized."""
+        # All registered versions should be accepted
         assert validate_version("1.0.0")
         assert validate_version("1.1.0")
         assert validate_version("2.0.0")
 
     def test_invalid_version(self):
         """Test invalid version is rejected."""
+        # Unknown or malformed versions are rejected
         assert not validate_version("0.1.0")
         assert not validate_version("3.0.0")
         assert not validate_version("1.2.3")
@@ -42,6 +44,7 @@ class TestVersionValidation:
 
     def test_breaking_changes(self):
         """Test getting breaking changes for a version."""
+        # Ensure breaking change metadata is present for newer versions
         changes_110 = get_breaking_changes("1.1.0")
         assert len(changes_110) > 0
         assert any("max_z_score" in str(c) for c in changes_110)
@@ -56,6 +59,7 @@ class TestToolCompatibility:
 
     def test_compatible_versions(self):
         """Test compatible tool and contract versions."""
+        # Tool 0.2.0 supports all registered contract versions
         is_compat, msg = check_tool_compatibility("0.2.0", "1.0.0")
         assert is_compat
         assert msg == ""
@@ -66,12 +70,14 @@ class TestToolCompatibility:
 
     def test_incompatible_versions(self):
         """Test incompatible tool and contract versions."""
+        # Older tool versions should reject newer contracts
         is_compat, msg = check_tool_compatibility("0.1.0", "2.0.0")
         assert not is_compat
         assert "not support" in msg.lower()
 
     def test_unknown_contract_version(self):
         """Test unknown contract version."""
+        # Unknown contract versions must be rejected explicitly
         is_compat, msg = check_tool_compatibility("0.2.0", "99.0.0")
         assert not is_compat
         assert "unknown" in msg.lower()
@@ -91,6 +97,7 @@ class TestVersionMigration:
 
     def test_migrate_1_0_to_1_1(self):
         """Test migration from 1.0.0 to 1.1.0."""
+        # Migration should add default max_z_score
         contract_dict = {
             "contract": {"name": "test", "version": "1.0.0"},
             "fields": [
@@ -113,6 +120,7 @@ class TestVersionMigration:
 
     def test_migrate_1_1_to_2_0(self):
         """Test migration from 1.1.0 to 2.0.0."""
+        # Migration should rename and convert null percentage to ratio
         contract_dict = {
             "contract": {"name": "test", "version": "1.1.0"},
             "fields": [
@@ -136,6 +144,7 @@ class TestVersionMigration:
 
     def test_multi_step_migration(self):
         """Test migration across multiple versions."""
+        # Multi-step migration should apply all intermediate changes
         contract_dict = {
             "contract": {"name": "test", "version": "1.0.0"},
             "fields": [
@@ -155,6 +164,7 @@ class TestVersionMigration:
 
     def test_unsupported_downgrade(self):
         """Test that downgrade migrations fail."""
+        # Downgrades must raise to avoid data loss
         contract_dict = {
             "contract": {"name": "test", "version": "2.0.0"},
             "fields": [],
@@ -169,6 +179,7 @@ class TestContractVersionLoading:
 
     def test_load_v1_contract(self):
         """Test loading a v1.0.0 contract."""
+        # Loader should auto-migrate to latest version
         contract = Contract.from_yaml(
             str(FIXTURES_DIR / "customer_contract_v1.yaml")
         )
@@ -184,6 +195,7 @@ class TestContractVersionLoading:
 
     def test_load_contract_without_version(self):
         """Test that loading contract without version fails."""
+        # Missing version should raise a validation error
         import tempfile
         import yaml
 
@@ -201,6 +213,7 @@ class TestContractVersionLoading:
 
     def test_load_contract_with_unknown_version(self):
         """Test that loading contract with unknown version fails."""
+        # Unknown versions should raise with a clear error
         import tempfile
         import yaml
 

@@ -45,6 +45,7 @@ class DataSource:
         Load data into a pandas DataFrame based on detected or specified format.
         Caches the DataFrame after first load.
         """
+        # Return cached DataFrame to avoid re-reading the file
         if self.df is not None:
             return self.df
 

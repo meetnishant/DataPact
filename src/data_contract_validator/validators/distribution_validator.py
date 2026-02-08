@@ -51,6 +51,7 @@ class DistributionValidator:
         if not dist:
             return
 
+        # Convert to numeric, skip non-numeric columns
         try:
             numeric_col = pd.to_numeric(column)
         except (ValueError, TypeError):

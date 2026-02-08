@@ -81,7 +81,7 @@ def validate_command(args) -> int:
         return 1
 
     try:
-        # Load contract from YAML file
+        # Load contract from YAML file (includes version checks/migration)
         contract = Contract.from_yaml(args.contract)
 
         # Check contract version compatibility with tool version
