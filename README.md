@@ -1,7 +1,7 @@
 # Banking & Finance Test Cases
 
 ## Overview
-The test suite includes comprehensive scenarios for commercial banking and institutional finance data products, focusing on deposits and lending. Each scenario is designed to validate the data contract framework's ability to catch schema, quality, and boundary issues in real-world financial datasets.
+The test suite covers multi-table data products for commercial banking and institutional finance, with deposits and lending modeled as accounts/loans plus transactions/payments. It also reflects consumer-specific contract needs (strict vs aggregate) to validate schema and quality expectations across different consumption patterns.
 
 ## Test Categories
 
@@ -12,14 +12,14 @@ The test suite includes comprehensive scenarios for commercial banking and insti
 ## Example Scenarios
 
 ### Deposits
-- **Positive**: Valid customer/account IDs, non-negative balances, valid date strings (YYYY-MM-DD), and amounts within allowed range.
-- **Negative**: Missing account_id, negative balance, invalid date (e.g., 2026-01-32), negative amount, or null in required fields.
-- **Boundary**: balance = 0, balance = max allowed, amount = 0, amount = max allowed, date at start/end of year.
+- **Accounts (strict)**: Unique, non-null customer_id and account_id; valid product/status enums; balances within allowed range.
+- **Accounts (aggregate)**: customer_id may be 1% null with 99% uniqueness, while other fields remain strict.
+- **Transactions**: Valid txn_type/channel enums, valid dates, and amounts within limits (including withdrawals/fees).
 
 ### Lending
-- **Positive**: Valid customer/loan IDs, non-negative balances, valid origination_date, interest_rate within [0, 0.25].
-- **Negative**: Missing loan_id, negative balance, invalid origination_date, interest_rate < 0 or > 0.25, or null in required fields.
-- **Boundary**: balance = 0, balance = max allowed, interest_rate = 0, interest_rate = 0.25, origination_date at start/end of year.
+- **Loans (strict)**: Non-null loan_id and customer_id, valid product/status enums, balances within limits, rates in [0, 0.25].
+- **Loans (aggregate)**: customer_id may be 1% null with 99% uniqueness, other fields remain strict.
+- **Payments**: Valid payment_status enums, non-negative amounts, and valid dates.
 
 ## Usage
 Test cases are tagged using `@pytest.mark.PositiveCases`, `@pytest.mark.NegativeCases`, and `@pytest.mark.BoundaryCases` for easy filtering and reporting. See `tests/test_banking_finance.py` for implementation details and `tests/fixtures/` for sample data and contracts.
@@ -214,7 +214,7 @@ mypy src/
 ```
 src/data_contract_validator/
 ├── __init__.py           # Package exports
-├── contracts.py          # Contract parsing (YAML → Pydantic models)
+├── contracts.py          # Contract parsing (YAML → dataclass models)
 ├── datasource.py         # Data loading and schema inference
 ├── cli.py                # CLI entry point
 ├── reporting.py          # Report generation and serialization

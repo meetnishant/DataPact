@@ -1,21 +1,19 @@
 contract:
-  name: deposits_accounts_strict
+  name: deposits_accounts_aggregate
   version: 2.0.0
 dataset:
   name: deposits_accounts
 fields:
   - name: customer_id
     type: string
-    required: true
+    required: false
     rules:
-      not_null: true
-      unique: true
+      max_null_ratio: 0.01
   - name: account_id
     type: string
     required: true
     rules:
       not_null: true
-      unique: true
   - name: product_type
     type: string
     required: true

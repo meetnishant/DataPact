@@ -8,18 +8,18 @@ Version: 0.2.0
 Status: ✅ READY FOR PRODUCTION
 Created: February 8, 2026
 
-📁 Total Files:    65
+📁 Total Files:    73
 💻 Code Files:     10 (Python modules)
 📚 Docs Files:     17 (markdown + guides)
 ⚙️  Config Files:   4 (toml, yaml, gitignore)
-🧪 Test Files:     5 test modules + 9 fixtures
+🧪 Test Files:     5 test modules + 17 fixtures
 
 📊 Code Statistics:
    Lines of Code:           ~900+
    Type Hint Coverage:      100%
    Docstring Coverage:      Comprehensive
    External API Calls:      0 (local only)
-    Test Cases:              37 (10 core + 17 versioning + 8 banking/finance + 2 concurrency)
+    Test Cases:              45 (10 core + 17 versioning + 16 banking/finance + 2 concurrency)
    Code Coverage:           66%+
 
 🔧 Supported Python:  3.9, 3.10, 3.11, 3.12
@@ -255,8 +255,16 @@ Test Data:
 ├─ invalid_customers.csv     (intentional violations)
 ├─ deposits_contract.yaml    (deposits contract)
 ├─ lending_contract.yaml     (lending contract)
-├─ deposits_data.csv         (deposits scenarios)
-└─ lending_data.csv          (lending scenarios)
+├─ deposits_data.csv         (deposits accounts)
+├─ lending_data.csv          (lending loans)
+├─ deposits_accounts_agg_contract.yaml (aggregate deposits contract)
+├─ lending_loans_agg_contract.yaml     (aggregate lending contract)
+├─ deposits_transactions_contract.yaml (deposits transactions contract)
+├─ lending_payments_contract.yaml      (lending payments contract)
+├─ deposits_transactions.csv  (deposits transactions)
+├─ lending_payments.csv       (lending payments)
+├─ deposits_accounts_agg.csv  (aggregate deposits)
+└─ lending_loans_agg.csv      (aggregate lending)
 
 Coverage:
 ├─ All validators            ✅

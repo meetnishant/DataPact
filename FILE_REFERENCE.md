@@ -181,8 +181,8 @@ This guide maps each file to its purpose and shows how they fit together.
 - **When to modify**: Adding new contract versions or migration logic
 
 ### `tests/test_banking_finance.py`
-- **Purpose**: Banking/finance validation scenarios with positive/negative/boundary cases
-- **Test classes**: `TestCommercialDeposits`, `TestCommercialLending`, `TestComplexConsumption`
+- **Purpose**: Multi-table banking/finance validation scenarios with consumer-specific contracts
+- **Test classes**: `TestDepositsAccountsStrict`, `TestDepositsAccountsAggregate`, `TestDepositsTransactions`, `TestLendingLoansStrict`, `TestLendingLoansAggregate`, `TestLendingPayments`, `TestComplexConsumption`
 - **When to modify**: Adding banking/finance rules, fixtures, or scenario coverage
 
 ### `tests/test_concurrency.py`
@@ -223,12 +223,44 @@ This guide maps each file to its purpose and shows how they fit together.
 - **When to modify**: Adjusting lending validation rules or schema
 
 ### `tests/fixtures/deposits_data.csv`
-- **Purpose**: Deposits test data (positive/negative/boundary cases)
-- **When to modify**: Expanding deposits test coverage
+- **Purpose**: Deposits accounts data (positive/negative/boundary cases)
+- **When to modify**: Expanding deposits accounts coverage
 
 ### `tests/fixtures/lending_data.csv`
-- **Purpose**: Lending test data (positive/negative/boundary cases)
-- **When to modify**: Expanding lending test coverage
+- **Purpose**: Lending loans data (positive/negative/boundary cases)
+- **When to modify**: Expanding lending loans coverage
+
+### `tests/fixtures/deposits_accounts_agg_contract.yaml`
+- **Purpose**: Aggregate consumer contract for deposits accounts
+- **When to modify**: Adjusting aggregate consumer requirements
+
+### `tests/fixtures/lending_loans_agg_contract.yaml`
+- **Purpose**: Aggregate consumer contract for lending loans
+- **When to modify**: Adjusting aggregate consumer requirements
+
+### `tests/fixtures/deposits_transactions_contract.yaml`
+- **Purpose**: Deposits transactions contract
+- **When to modify**: Adjusting transaction validation rules
+
+### `tests/fixtures/lending_payments_contract.yaml`
+- **Purpose**: Lending payments contract
+- **When to modify**: Adjusting payments validation rules
+
+### `tests/fixtures/deposits_transactions.csv`
+- **Purpose**: Deposits transactions data (positive/negative/boundary cases)
+- **When to modify**: Expanding transaction coverage
+
+### `tests/fixtures/lending_payments.csv`
+- **Purpose**: Lending payments data (positive/negative/boundary cases)
+- **When to modify**: Expanding payments coverage
+
+### `tests/fixtures/deposits_accounts_agg.csv`
+- **Purpose**: Aggregate deposits accounts data with relaxed customer_id constraints
+- **When to modify**: Adjusting aggregate dataset mix
+
+### `tests/fixtures/lending_loans_agg.csv`
+- **Purpose**: Aggregate lending loans data with relaxed customer_id constraints
+- **When to modify**: Adjusting aggregate dataset mix
 
 ## File Dependency Graph
 
@@ -256,12 +288,20 @@ Tests:
     ├→ fixtures/customer_contract_v1.yaml (v1.0.0)
     └→ fixtures/customer_contract_v2.yaml (v2.0.0)
 
-  test_banking_finance.py (banking/finance tests: 8)
+  test_banking_finance.py (banking/finance tests: 16)
     ↓ uses
     ├→ fixtures/deposits_contract.yaml
     ├→ fixtures/lending_contract.yaml
     ├→ fixtures/deposits_data.csv
-    └→ fixtures/lending_data.csv
+    ├→ fixtures/lending_data.csv
+    ├→ fixtures/deposits_accounts_agg_contract.yaml
+    ├→ fixtures/lending_loans_agg_contract.yaml
+    ├→ fixtures/deposits_transactions_contract.yaml
+    ├→ fixtures/lending_payments_contract.yaml
+    ├→ fixtures/deposits_transactions.csv
+    ├→ fixtures/lending_payments.csv
+    ├→ fixtures/deposits_accounts_agg.csv
+    └→ fixtures/lending_loans_agg.csv
 
   test_concurrency.py (threaded concurrency)
   test_concurrency_mp.py (multiprocessing concurrency)

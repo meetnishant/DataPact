@@ -43,7 +43,15 @@ data-contract-validator/
 │       ├── deposits_contract.yaml   # Deposits contract
 │       ├── lending_contract.yaml    # Lending contract
 │       ├── deposits_data.csv        # Deposits data
-│       └── lending_data.csv         # Lending data
+│       ├── lending_data.csv         # Lending data
+│       ├── deposits_accounts_agg_contract.yaml # Aggregate deposits contract
+│       ├── lending_loans_agg_contract.yaml    # Aggregate lending contract
+│       ├── deposits_transactions_contract.yaml # Deposits transactions contract
+│       ├── lending_payments_contract.yaml      # Lending payments contract
+│       ├── deposits_transactions.csv           # Deposits transactions data
+│       ├── lending_payments.csv                # Lending payments data
+│       ├── deposits_accounts_agg.csv           # Aggregate deposits data
+│       └── lending_loans_agg.csv               # Aggregate lending data
 └── docs/
     ├── ARCHITECTURE.md              # Design decisions & data flow
     ├── VERSIONING.md                # Versioning guide

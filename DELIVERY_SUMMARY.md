@@ -6,7 +6,7 @@ A **production-ready Python data validation framework** called **data-contract-v
 
 ### Key Deliverables
 
-✅ **Complete Project Structure** (65 files total)
+✅ **Complete Project Structure** (73 files total)
 - 10 Python source modules (~900 lines of well-typed code)
 - Modular validator pipeline (schema → quality → distribution)
 - Comprehensive test suite with fixtures
@@ -136,7 +136,15 @@ tests/
     ├── deposits_contract.yaml
     ├── lending_contract.yaml
     ├── deposits_data.csv
-    └── lending_data.csv
+    ├── lending_data.csv
+    ├── deposits_accounts_agg_contract.yaml
+    ├── lending_loans_agg_contract.yaml
+    ├── deposits_transactions_contract.yaml
+    ├── lending_payments_contract.yaml
+    ├── deposits_transactions.csv
+    ├── lending_payments.csv
+    ├── deposits_accounts_agg.csv
+    └── lending_loans_agg.csv
 ```
 
 ### Documentation

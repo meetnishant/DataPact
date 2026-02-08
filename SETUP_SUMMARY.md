@@ -36,7 +36,15 @@ DataContracts/
 │       ├── deposits_contract.yaml
 │       ├── lending_contract.yaml
 │       ├── deposits_data.csv
-│       └── lending_data.csv
+│       ├── lending_data.csv
+│       ├── deposits_accounts_agg_contract.yaml
+│       ├── lending_loans_agg_contract.yaml
+│       ├── deposits_transactions_contract.yaml
+│       ├── lending_payments_contract.yaml
+│       ├── deposits_transactions.csv
+│       ├── lending_payments.csv
+│       ├── deposits_accounts_agg.csv
+│       └── lending_loans_agg.csv
 ├── docs/
 │   ├── ARCHITECTURE.md             ← Design decisions & data flow
 │   ├── VERSIONING.md               ← Versioning guide
@@ -63,7 +71,7 @@ DataContracts/
 
 ### Testing & Quality
 ✅ **Test Suite** - Pytest with versioning, banking/finance, and concurrency coverage  
-✅ **Test Fixtures** - Core, versioning, and banking/finance contracts + data  
+✅ **Test Fixtures** - Core, versioning, and multi-table banking/finance contracts + data  
 ✅ **GitHub Actions** - Automated testing on push/PR (Python 3.9-3.12)  
 ✅ **Code Quality Config** - Ruff, Black, MyPy configurations in pyproject.toml  
 

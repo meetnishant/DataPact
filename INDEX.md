@@ -124,8 +124,8 @@ Full tree: [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)
 
 - **10** Python source files (~900+ lines including versioning)
 - **17** Documentation files
-- **9** Test fixture files
-- **37** Test cases (10 core + 17 versioning + 8 banking/finance + 2 concurrency)
+- **17** Test fixture files
+- **45** Test cases (10 core + 17 versioning + 16 banking/finance + 2 concurrency)
 - **1** GitHub Actions workflow
 - **100%** Type hints in core modules
 - **66%+** Code coverage achieved

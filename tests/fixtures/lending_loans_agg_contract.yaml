@@ -1,27 +1,25 @@
 contract:
-  name: deposits_accounts_strict
+  name: lending_loans_aggregate
   version: 2.0.0
 dataset:
-  name: deposits_accounts
+  name: lending_loans
 fields:
   - name: customer_id
     type: string
-    required: true
+    required: false
     rules:
-      not_null: true
-      unique: true
-  - name: account_id
+      max_null_ratio: 0.01
+  - name: loan_id
     type: string
     required: true
     rules:
       not_null: true
-      unique: true
   - name: product_type
     type: string
     required: true
     rules:
-      enum: [checking, savings, money_market]
-  - name: open_date
+      enum: [term_loan, revolver, mortgage]
+  - name: origination_date
     type: string
     required: true
     rules:
@@ -31,11 +29,17 @@ fields:
     type: string
     required: true
     rules:
-      enum: [active, dormant, closed]
+      enum: [active, matured, delinquent]
   - name: balance
     type: float
     required: true
     rules:
       min: 0
-      max: 10000000.0
+      max: 100000000.0
       not_null: true
+  - name: interest_rate
+    type: float
+    required: true
+    rules:
+      min: 0
+      max: 0.25

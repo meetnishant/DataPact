@@ -1,10 +1,10 @@
 contract:
-  name: deposits_accounts_strict
+  name: deposits_transactions
   version: 2.0.0
 dataset:
-  name: deposits_accounts
+  name: deposits_transactions
 fields:
-  - name: customer_id
+  - name: transaction_id
     type: string
     required: true
     rules:
@@ -15,27 +15,30 @@ fields:
     required: true
     rules:
       not_null: true
-      unique: true
-  - name: product_type
+  - name: customer_id
     type: string
     required: true
     rules:
-      enum: [checking, savings, money_market]
-  - name: open_date
+      not_null: true
+  - name: txn_date
     type: string
     required: true
     rules:
       regex: '^\d{4}-\d{2}-\d{2}$'
       not_null: true
-  - name: status
-    type: string
-    required: true
-    rules:
-      enum: [active, dormant, closed]
-  - name: balance
+  - name: amount
     type: float
     required: true
     rules:
-      min: 0
-      max: 10000000.0
-      not_null: true
+      min: -100000.0
+      max: 100000.0
+  - name: txn_type
+    type: string
+    required: true
+    rules:
+      enum: [deposit, withdrawal, fee, interest]
+  - name: channel
+    type: string
+    required: true
+    rules:
+      enum: [branch, ach, wire, online]
