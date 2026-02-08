@@ -1,0 +1,34 @@
+contract:
+  name: customer_data
+  version: 2.0.0
+dataset:
+  name: customers
+fields:
+  - name: customer_id
+    type: integer
+    required: true
+    rules:
+      unique: true
+  - name: email
+    type: string
+    required: true
+    rules:
+      regex: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+      unique: true
+  - name: age
+    type: integer
+    rules:
+      min: 0
+      max: 150
+  - name: country
+    type: string
+    rules:
+      enum: [US, UK, CA, AU, DE, FR]
+  - name: signup_date
+    type: string
+  - name: score
+    type: float
+    distribution:
+      mean: 50.5
+      std: 1.5
+      max_drift_pct: 10.0

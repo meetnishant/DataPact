@@ -1,0 +1,4 @@
+customer_id,email,age,country,signup_date,score
+1,alice@example.com,28,US,2023-01-15,48.5
+2,invalid_email,35,UK,2023-02-20,52.3
+3,charlie@example.com,,CA,2023-03-10,49.8

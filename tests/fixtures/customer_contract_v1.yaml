@@ -1,0 +1,21 @@
+contract:
+  name: legacy_customer_data
+  version: 1.0.0
+dataset:
+  name: customers
+fields:
+  - name: customer_id
+    type: integer
+    required: true
+    rules:
+      unique: true
+  - name: email
+    type: string
+    required: true
+    rules:
+      regex: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+  - name: age
+    type: integer
+    rules:
+      min: 0
+      max: 150

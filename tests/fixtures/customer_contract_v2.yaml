@@ -1,0 +1,30 @@
+contract:
+  name: modern_customer_data
+  version: 2.0.0
+dataset:
+  name: customers
+fields:
+  - name: customer_id
+    type: integer
+    required: true
+    rules:
+      unique: true
+  - name: email
+    type: string
+    required: true
+    rules:
+      regex: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+      unique: true
+  - name: age
+    type: integer
+    rules:
+      min: 0
+      max: 150
+      max_null_ratio: 0.05
+  - name: score
+    type: float
+    distribution:
+      mean: 50.0
+      std: 15.0
+      max_drift_pct: 10.0
+      max_z_score: 3.0

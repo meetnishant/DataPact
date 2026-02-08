@@ -1,0 +1,73 @@
+
+	1	Create a new GitHub-ready repository named data-contract-validator with a clean Python project layout, packaging, and tests.
+	2	Goal of the toolBuild a framework that validates datasets against a “data contract” (YAML) containing:
+	◦	schema expectations (columns, types, required/optional)
+	◦	quality rules (nulls, uniqueness, ranges, regex, allowed values)
+	◦	basic distribution rules (mean/std drift thresholds for numeric columns)
+	◦	contract versioning + compatibility checks
+	3	Primary user experience
+	◦	Provide a CLI command:dcv validate --contract <contract.yaml> --data <file.csv|parquet|json> --format <auto>
+	◦	Output:
+	▪	console summary (PASS/FAIL + key errors)
+	▪	machine-readable JSON report saved to ./reports/<timestamp>.json
+	▪	non-zero exit code on FAIL (so it works in CI/CD)
+	4	Contract file format
+	◦	Implement a YAML contract schema (v1) like:
+	▪	contract.name, contract.version, dataset.name
+	▪	fields[] with name, type, required, and rules
+	▪	rules can include: not_null, unique, min, max, regex, enum, max_null_ratio
+	▪	distribution rules: mean, std, max_drift_pct (or max_z_score)
+	◦	Add JSON Schema validation (or pydantic validation) so invalid contract YAML fails early with good errors.
+	5	Supported data inputs
+	◦	CSV (pandas)
+	◦	Parquet (pandas/pyarrow)
+	◦	JSON lines (pandas)
+	◦	Auto-detect format if not provided.
+	6	Core modules to implement
+	◦	contracts/Parse and validate contract YAML, map to typed Python models, handle versions.
+	◦	datasource/Load dataset to a pandas DataFrame + infer schema summary.
+	◦	validators/
+	▪	schema validator (missing/extra columns, type mismatches)
+	▪	quality validator (null, unique, range, regex, enum, null ratio)
+	▪	distribution validator (mean/std drift checks)
+	◦	reporting/Unified report model with:
+	▪	summary (pass/fail, counts)
+	▪	errors (list with code, field, message, sample values)
+	▪	warnings
+	▪	metadata (contract version, dataset, timestamp, tool version)
+	◦	cli/Argument parsing, wiring modules together, exit codes.
+	7	Validation semantics
+	◦	Schema validation runs first. If schema fails badly (missing required fields), still run remaining checks where possible and record partial results.
+	◦	Output severity levels: ERROR (fails build) and WARN (does not fail, but visible).
+	◦	Configurable thresholds in contract (ex: max_null_ratio).
+	8	Test suite requirements
+	◦	Use pytest.
+	◦	Include sample contracts + sample datasets under tests/fixtures/.
+	◦	Minimum test scenarios:
+	▪	valid dataset passes
+	▪	missing required column fails
+	▪	type mismatch fails
+	▪	null constraint fails
+	▪	range constraint fails
+	▪	regex constraint fails
+	▪	enum constraint fails
+	▪	uniqueness constraint fails
+	▪	distribution drift produces warning or fail (depending on contract setting)
+	9	Quality requirements
+	◦	Type hints everywhere.
+	◦	Clear error messages.
+	◦	Lintable formatting (add ruff config or equivalent).
+	◦	Add README.md with:
+	▪	what the tool does
+	▪	contract YAML example
+	▪	CLI usage examples
+	▪	how to run tests
+	10	Deliverables
+	•	Full repo code with modules above
+	•	Working CLI
+	•	Example contract + dataset
+	•	Tests passing locally
+	11	Nice-to-have (only if time)
+	•	GitHub Actions workflow for running tests on PRs
+	•	dcv init command to generate a starter contract from a dataset (infer columns/types)
+
