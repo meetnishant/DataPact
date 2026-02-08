@@ -59,4 +59,3 @@ disallow_untyped_defs = false
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-v --cov=src/data_contract_validator --cov-report=term-missing"

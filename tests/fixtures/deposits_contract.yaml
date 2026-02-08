@@ -1,0 +1,37 @@
+contract:
+  name: commercial_deposits
+  version: 2.0.0
+dataset:
+  name: deposits_ledger
+fields:
+  - name: customer_id
+    type: string
+    required: true
+    rules:
+      not_null: true
+      unique: false
+  - name: account_id
+    type: string
+    required: true
+    rules:
+      not_null: true
+  - name: balance
+    type: float
+    required: true
+    rules:
+      min: 0
+      max: 10000000.0
+      not_null: true
+  - name: date
+    type: string
+    required: true
+    rules:
+      regex: '^\\d{4}-\\d{2}-\\d{2}$'
+      not_null: true
+  - name: amount
+    type: float
+    required: false
+    rules:
+      min: 0
+      max: 1000000.0
+      max_null_ratio: 1.0

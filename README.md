@@ -1,3 +1,28 @@
+# Banking & Finance Test Cases
+
+## Overview
+The test suite includes comprehensive scenarios for commercial banking and institutional finance data products, focusing on deposits and lending. Each scenario is designed to validate the data contract framework's ability to catch schema, quality, and boundary issues in real-world financial datasets.
+
+## Test Categories
+
+- **PositiveCases**: Valid data rows that should pass all schema and quality checks. These represent typical, correct records for deposits and lending products.
+- **NegativeCases**: Rows intentionally containing errors (e.g., missing required fields, invalid dates, negative balances, out-of-range values, or type mismatches). These ensure the validator catches real-world data quality issues.
+- **BoundaryCases**: Edge-case rows that test the limits of contract rules (e.g., zero balances, maximum allowed values, dates at the edge of valid ranges). These confirm the validator's correct handling of contract boundaries.
+
+## Example Scenarios
+
+### Deposits
+- **Positive**: Valid customer/account IDs, non-negative balances, valid date strings (YYYY-MM-DD), and amounts within allowed range.
+- **Negative**: Missing account_id, negative balance, invalid date (e.g., 2026-01-32), negative amount, or null in required fields.
+- **Boundary**: balance = 0, balance = max allowed, amount = 0, amount = max allowed, date at start/end of year.
+
+### Lending
+- **Positive**: Valid customer/loan IDs, non-negative balances, valid origination_date, interest_rate within [0, 0.25].
+- **Negative**: Missing loan_id, negative balance, invalid origination_date, interest_rate < 0 or > 0.25, or null in required fields.
+- **Boundary**: balance = 0, balance = max allowed, interest_rate = 0, interest_rate = 0.25, origination_date at start/end of year.
+
+## Usage
+Test cases are tagged using `@pytest.mark.PositiveCases`, `@pytest.mark.NegativeCases`, and `@pytest.mark.BoundaryCases` for easy filtering and reporting. See `tests/test_banking_finance.py` for implementation details and `tests/fixtures/` for sample data and contracts.
 # Data Contract Validator
 
 Validate datasets against YAML-based data contracts to ensure data quality, schema compliance, and distribution health.
