@@ -1,4 +1,7 @@
-"""Data Contract Validator - Framework for validating datasets against contracts."""
+"""
+Data Contract Validator - Framework for validating datasets against contracts.
+Exposes core classes for contract, reporting, and data loading.
+"""
 
 __version__ = "0.1.0"
 __author__ = "Your Name"

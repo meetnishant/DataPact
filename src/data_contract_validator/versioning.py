@@ -1,4 +1,7 @@
-"""Contract versioning and compatibility management."""
+"""
+Contract versioning and compatibility management.
+Handles version registry, migration, compatibility checks, and breaking changes.
+"""
 
 from typing import Dict, List, Set, Tuple
 from dataclasses import dataclass
@@ -6,7 +9,9 @@ from dataclasses import dataclass
 
 @dataclass
 class VersionInfo:
-    """Information about a contract version."""
+    """
+    Information about a contract version (metadata, deprecation, breaking changes).
+    """
     version: str
     released: str  # ISO date
     is_deprecated: bool = False
@@ -62,20 +67,21 @@ class VersionError(Exception):
 
 
 class VersionMigration:
-    """Handles contract schema migration between versions."""
+    """
+    Handles contract schema migration between versions.
+    Provides migration logic for each version step.
+    """
 
     @staticmethod
     def migrate(contract_dict: Dict, from_version: str, to_version: str) -> Dict:
-        """Migrate contract from one version to another.
-        
+        """
+        Migrate contract from one version to another.
         Args:
             contract_dict: Contract data as dictionary
             from_version: Current contract version
             to_version: Target contract version
-            
         Returns:
             Migrated contract dictionary
-            
         Raises:
             VersionError: If migration is not supported
         """
@@ -100,8 +106,8 @@ class VersionMigration:
     def _get_migration_path(
         from_version: str, to_version: str
     ) -> List[Tuple[str, str]]:
-        """Get the migration path between two versions.
-        
+        """
+        Get the migration path between two versions.
         Returns list of (from, to) version tuples.
         """
         versions = list(VERSION_REGISTRY.keys())
@@ -118,7 +124,10 @@ class VersionMigration:
 
     @staticmethod
     def _migrate_step(contract_dict: Dict, from_ver: str, to_ver: str) -> Dict:
-        """Apply migration for a single version step."""
+        """
+        Apply migration for a single version step.
+        Modifies contract dict in-place for each version upgrade.
+        """
         contract = contract_dict.copy()
 
         if from_ver == "1.0.0" and to_ver == "1.1.0":
@@ -149,26 +158,34 @@ class VersionMigration:
 
 
 def validate_version(version: str) -> bool:
-    """Check if version is registered."""
+    """
+    Check if version is registered in the version registry.
+    """
     return version in VERSION_REGISTRY
 
 
 def is_version_deprecated(version: str) -> bool:
-    """Check if version is deprecated."""
+    """
+    Check if version is deprecated in the version registry.
+    """
     if version not in VERSION_REGISTRY:
         return False
     return VERSION_REGISTRY[version].is_deprecated
 
 
 def get_deprecation_message(version: str) -> str:
-    """Get deprecation message for a version."""
+    """
+    Get deprecation message for a version from the registry.
+    """
     if version not in VERSION_REGISTRY:
         return ""
     return VERSION_REGISTRY[version].deprecation_message
 
 
 def get_breaking_changes(version: str) -> List[str]:
-    """Get breaking changes introduced in this version."""
+    """
+    Get breaking changes introduced in this version from the registry.
+    """
     if version not in VERSION_REGISTRY:
         return []
     return VERSION_REGISTRY[version].breaking_changes
@@ -177,10 +194,9 @@ def get_breaking_changes(version: str) -> List[str]:
 def check_tool_compatibility(
     tool_version: str, contract_version: str
 ) -> Tuple[bool, str]:
-    """Check if tool can handle contract version.
-    
-    Returns:
-        (is_compatible, message)
+    """
+    Check if tool can handle contract version.
+    Returns (is_compatible, message).
     """
     if contract_version not in VERSION_REGISTRY:
         return False, f"Unknown contract version: {contract_version}"
@@ -199,10 +215,14 @@ def check_tool_compatibility(
 
 
 def get_all_versions() -> List[str]:
-    """Get all registered contract versions."""
+    """
+    Get all registered contract versions.
+    """
     return sorted(VERSION_REGISTRY.keys())
 
 
 def get_latest_version() -> str:
-    """Get the latest contract version."""
+    """
+    Get the latest contract version from the registry.
+    """
     return LATEST_VERSION

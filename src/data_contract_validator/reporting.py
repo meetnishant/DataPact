@@ -1,4 +1,7 @@
-"""Validation reporting - summary, errors, warnings, and JSON export."""
+"""
+Validation reporting - summary, errors, warnings, and JSON export.
+Defines ErrorRecord and ValidationReport for aggregating and outputting validation results.
+"""
 
 from typing import List, Dict, Any, Optional
 from dataclasses import dataclass, asdict
@@ -14,7 +17,13 @@ from data_contract_validator.versioning import (
 
 @dataclass
 class ErrorRecord:
-    """Individual validation error."""
+    """
+    Individual validation error or warning.
+    code: error type (e.g., SCHEMA, QUALITY, DISTRIBUTION)
+    field: field name (if applicable)
+    message: error/warning message
+    severity: "ERROR" or "WARN"
+    """
     code: str
     field: str
     message: str
@@ -23,7 +32,10 @@ class ErrorRecord:
 
 @dataclass
 class ValidationReport:
-    """Complete validation report."""
+    """
+    Complete validation report for a validation run.
+    Includes summary, errors, warnings, and compatibility info.
+    """
     passed: bool
     contract_name: str
     contract_version: str
@@ -36,12 +48,17 @@ class ValidationReport:
     compatibility_warnings: Optional[List[str]] = None
 
     def __post_init__(self):
-        """Initialize compatibility warnings if not provided."""
+        """
+        Initialize compatibility warnings if not provided.
+        """
         if self.compatibility_warnings is None:
             self.compatibility_warnings = []
 
     def to_dict(self) -> Dict[str, Any]:
-        """Convert to dictionary for JSON serialization."""
+        """
+        Convert report to dictionary for JSON serialization.
+        Includes contract, dataset, metadata, summary, errors, and version info.
+        """
         result = {
             "passed": self.passed,
             "contract": {
@@ -75,7 +92,10 @@ class ValidationReport:
         return result
 
     def save_json(self, output_dir: str = "./reports") -> str:
-        """Save report to JSON file. Returns filepath."""
+        """
+        Save report to JSON file in the specified output directory.
+        Returns the file path of the saved report.
+        """
         output_path = Path(output_dir)
         output_path.mkdir(parents=True, exist_ok=True)
 
@@ -88,7 +108,9 @@ class ValidationReport:
         return str(filepath)
 
     def print_summary(self) -> None:
-        """Print human-readable summary to console."""
+        """
+        Print human-readable summary of the validation report to the console.
+        """
         status = "PASS" if self.passed else "FAIL"
         print(f"\n{'='*60}")
         print(f"Data Contract Validation Report")

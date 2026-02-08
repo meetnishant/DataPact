@@ -1,4 +1,7 @@
-"""Contract parsing and validation module."""
+"""
+Contract parsing and validation module.
+Defines dataclasses for contract, field, rules, and distribution, and provides YAML parsing and migration logic.
+"""
 
 from typing import Any, Dict, List, Optional
 from dataclasses import dataclass
@@ -16,7 +19,10 @@ from data_contract_validator.versioning import (
 
 @dataclass
 class FieldRule:
-    """Represents validation rules for a field."""
+    """
+    Represents validation rules for a field (quality constraints).
+    Example: not_null, unique, min/max, regex, enum, max_null_ratio.
+    """
     not_null: bool = False
     unique: bool = False
     min: Optional[float] = None
@@ -28,7 +34,10 @@ class FieldRule:
 
 @dataclass
 class DistributionRule:
-    """Distribution-level validation rules."""
+    """
+    Distribution-level validation rules for drift/outlier detection.
+    Example: mean, std, max_drift_pct, max_z_score.
+    """
     mean: Optional[float] = None
     std: Optional[float] = None
     max_drift_pct: Optional[float] = None
@@ -37,7 +46,10 @@ class DistributionRule:
 
 @dataclass
 class Field:
-    """Represents a field in the contract schema."""
+    """
+    Represents a field in the contract schema.
+    Includes name, type, required, rules, and distribution.
+    """
     name: str
     type: str
     required: bool = False
@@ -47,13 +59,17 @@ class Field:
 
 @dataclass
 class Dataset:
-    """Dataset metadata in the contract."""
+    """
+    Dataset metadata in the contract (e.g., source system name).
+    """
     name: str
 
 
 @dataclass
 class Contract:
-    """Root contract object."""
+    """
+    Root contract object. Contains contract metadata, dataset, and fields.
+    """
     name: str
     version: str
     dataset: Dataset
@@ -61,14 +77,20 @@ class Contract:
 
     @classmethod
     def from_yaml(cls, yaml_path: str) -> "Contract":
-        """Load and parse contract from YAML file."""
+        """
+        Load and parse contract from YAML file.
+        Handles version validation and migration if needed.
+        """
         with open(yaml_path, "r") as f:
             data = yaml.safe_load(f)
         return cls._from_dict(data)
 
     @classmethod
     def _from_dict(cls, data: Dict[str, Any]) -> "Contract":
-        """Construct Contract from dictionary with validation."""
+        """
+        Construct Contract from dictionary with validation and migration.
+        Handles version checks, deprecation, and field parsing.
+        """
         contract_data = data.get("contract", {})
         version = contract_data.get("version")
 
@@ -119,7 +141,9 @@ class Contract:
 
     @staticmethod
     def _parse_rules(rules_dict: Dict[str, Any]) -> Optional[FieldRule]:
-        """Parse field validation rules."""
+        """
+        Parse field validation rules from dict to FieldRule dataclass.
+        """
         if not rules_dict:
             return None
         return FieldRule(
@@ -134,7 +158,9 @@ class Contract:
 
     @staticmethod
     def _parse_distribution(dist_dict: Dict[str, Any]) -> Optional[DistributionRule]:
-        """Parse distribution rules."""
+        """
+        Parse distribution rules from dict to DistributionRule dataclass.
+        """
         if not dist_dict:
             return None
         return DistributionRule(

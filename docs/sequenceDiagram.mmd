@@ -1,0 +1,40 @@
+sequenceDiagram
+    autonumber
+    actor User as User/CLI
+    participant CLI as CLI Interface
+    participant Parser as Contract Parser
+    participant Loader as Data Loader
+    participant Schema as Schema Validator
+    participant Quality as Quality Validator
+    participant Distribution as Distribution Validator
+    participant Reporter as Report Generator
+    participant Output as JSON/Console
+
+    User->>+CLI: dcv validate --contract.yaml --data.csv
+    CLI->>+Parser: Parse contract YAML
+    Parser-->>-CLI: Contract object
+    
+    CLI->>+Loader: Load data file
+    Loader-->>-CLI: DataFrame
+    
+    rect rgb(200, 220, 255)
+    Note over Schema,Distribution: VALIDATION PIPELINE
+    CLI->>+Schema: Validate schema
+    Schema-->>-CLI: Errors/OK
+    
+    CLI->>+Quality: Validate quality rules
+    Quality-->>-CLI: Errors & warnings
+    
+    CLI->>+Distribution: Check distributions
+    Distribution-->>-CLI: Warnings only
+    end
+    
+    CLI->>+Reporter: Aggregate results
+    Reporter-->>-CLI: ValidationReport
+    
+    CLI->>+Output: Generate output
+    Output->>Output: Save JSON report
+    Output->>Output: Print summary
+    Output-->>-CLI: Done
+    
+    CLI->>User: Exit 0 or 1

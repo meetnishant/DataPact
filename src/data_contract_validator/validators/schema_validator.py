@@ -1,4 +1,7 @@
-"""Schema validation - columns, types, required fields."""
+"""
+Schema validation - columns, types, required fields.
+Checks that dataset matches contract schema (required fields, types, extra columns).
+"""
 
 from typing import List, Tuple
 import pandas as pd
@@ -6,7 +9,10 @@ from data_contract_validator.contracts import Contract
 
 
 class SchemaValidator:
-    """Validate dataset schema against contract."""
+    """
+    Validate dataset schema against contract (required fields, types, extra columns).
+    Produces errors for missing/invalid fields and warnings for extra columns.
+    """
 
     def __init__(self, contract: Contract, df: pd.DataFrame):
         self.contract = contract
@@ -14,7 +20,10 @@ class SchemaValidator:
         self.errors: List[str] = []
 
     def validate(self) -> Tuple[bool, List[str]]:
-        """Validate schema. Returns (is_valid, error_messages)."""
+        """
+        Validate schema: required fields, extra columns, type mismatches.
+        Returns (is_valid, error_messages).
+        """
         self.errors = []
         
         # Check for missing required fields
@@ -46,7 +55,9 @@ class SchemaValidator:
 
     @staticmethod
     def _type_matches(actual: str, expected: str) -> bool:
-        """Check if actual pandas dtype matches contract type."""
+        """
+        Check if actual pandas dtype matches contract type (integer, float, string, boolean).
+        """
         type_map = {
             "integer": ["int", "int32", "int64"],
             "float": ["float", "float32", "float64"],

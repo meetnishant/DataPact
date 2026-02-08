@@ -1,4 +1,7 @@
-"""Distribution validation - drift detection for numeric columns."""
+"""
+Distribution validation - drift detection for numeric columns.
+Checks for mean/std drift and outliers using contract distribution rules.
+"""
 
 from typing import List, Tuple, Optional
 import pandas as pd
@@ -7,7 +10,10 @@ from data_contract_validator.contracts import Contract, Field
 
 
 class DistributionValidator:
-    """Validate data distributions against drift thresholds."""
+    """
+    Validate data distributions against drift thresholds and outlier rules.
+    Produces warnings for drift or outlier violations (never errors).
+    """
 
     def __init__(self, contract: Contract, df: pd.DataFrame):
         self.contract = contract
@@ -15,7 +21,10 @@ class DistributionValidator:
         self.warnings: List[str] = []
 
     def validate(self) -> Tuple[bool, List[str]]:
-        """Validate distributions. Returns (is_valid, warning_messages)."""
+        """
+        Validate distributions for all fields with distribution rules.
+        Returns (is_valid, warning_messages).
+        """
         self.warnings = []
 
         for field in self.contract.fields:
@@ -34,7 +43,10 @@ class DistributionValidator:
         return len(self.warnings) == 0, self.warnings
 
     def _check_distribution(self, field: Field, column: pd.Series) -> None:
-        """Check drift for a numeric column."""
+        """
+        Check drift and outlier rules for a numeric column.
+        Appends warnings to self.warnings if thresholds are exceeded.
+        """
         dist = field.distribution
         if not dist:
             return

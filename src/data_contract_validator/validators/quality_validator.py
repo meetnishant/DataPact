@@ -1,4 +1,7 @@
-"""Quality validation - nulls, uniqueness, ranges, regex, enums."""
+"""
+Quality validation - nulls, uniqueness, ranges, regex, enums.
+Checks field-level quality rules and produces errors for violations.
+"""
 
 from typing import List, Tuple, Optional
 import re
@@ -7,7 +10,10 @@ from data_contract_validator.contracts import Contract, Field, FieldRule
 
 
 class QualityValidator:
-    """Validate data quality against field rules."""
+    """
+    Validate data quality against field rules (not_null, unique, min/max, regex, enum, max_null_ratio).
+    Produces errors for violations of quality rules.
+    """
 
     def __init__(self, contract: Contract, df: pd.DataFrame):
         self.contract = contract
@@ -15,7 +21,10 @@ class QualityValidator:
         self.errors: List[str] = []
 
     def validate(self) -> Tuple[bool, List[str]]:
-        """Validate data quality. Returns (is_valid, error_messages)."""
+        """
+        Validate data quality for all fields with rules.
+        Returns (is_valid, error_messages).
+        """
         self.errors = []
 
         for field in self.contract.fields:
@@ -29,7 +38,10 @@ class QualityValidator:
         return len(self.errors) == 0, self.errors
 
     def _validate_field_rules(self, field: Field, column: pd.Series) -> None:
-        """Apply all rules for a field."""
+        """
+        Apply all quality rules for a field to the given column.
+        Appends errors to self.errors for any violations found.
+        """
         rules = field.rules
         if not rules:
             return

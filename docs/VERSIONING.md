@@ -1,5 +1,9 @@
 # Contract Versioning & Compatibility
 
+## Maintainers & Contributions
+
+This project is maintained by the open-source community. Contributions are welcome via pull requests and issues. Please follow the code style and add tests for new features.
+
 ## Overview
 
 The data-contract-validator now includes comprehensive contract versioning support with:
