@@ -25,11 +25,13 @@ def lending_contract():
 # Example: Multi-source data (deposits + lending join)
 @pytest.fixture
 def deposits_df():
-    return pd.read_csv(FIXTURES_DIR / "deposits_data.csv")
+    # Force 'date' column to string to match contract expectations
+    return pd.read_csv(FIXTURES_DIR / "deposits_data.csv", dtype={"date": str})
 
 @pytest.fixture
 def lending_df():
-    return pd.read_csv(FIXTURES_DIR / "lending_data.csv")
+    # Force 'origination_date' column to string to match contract expectations
+    return pd.read_csv(FIXTURES_DIR / "lending_data.csv", dtype={"origination_date": str})
 
 import pytest
 

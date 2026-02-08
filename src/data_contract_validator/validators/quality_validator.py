@@ -93,9 +93,13 @@ class QualityValidator:
 
         # regex constraint
         if rules.regex:
-            pattern = re.compile(rules.regex)
-            non_null = column.dropna().astype(str)
-            violations = (~non_null.str.match(pattern)).sum()
+            # Use fullmatch for full-string regex validation
+            pattern = rules.regex
+            non_null = column.dropna().astype(str).str.strip()
+            # Debug: print actual values being checked for regex
+            if field.name in ("date", "origination_date"):
+                print(f"[DEBUG] Regex check for field '{field.name}':", list(non_null))
+            violations = (~non_null.str.fullmatch(pattern)).sum()
             if violations > 0:
                 self.errors.append(
                     f"ERROR: Field '{field.name}' has {violations} values not matching regex '{rules.regex}'"
