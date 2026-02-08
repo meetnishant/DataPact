@@ -25,7 +25,9 @@ Welcome to the **data-contract-validator** repository! This file helps you navig
 
 ### For Development
 - [CONTRIBUTING.md](CONTRIBUTING.md) - Developer setup and workflow
-- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) - Design decisions and data flow- [docs/VERSIONING.md](docs/VERSIONING.md) - Contract versioning and migration guide- [FILE_REFERENCE.md](FILE_REFERENCE.md) - Detailed file-by-file guide
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) - Design decisions and data flow
+- [docs/VERSIONING.md](docs/VERSIONING.md) - Contract versioning and migration guide
+- [FILE_REFERENCE.md](FILE_REFERENCE.md) - Detailed file-by-file guide
 - [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md) - Visual directory tree
 
 ### For AI Agents & Code Assistants
@@ -49,6 +51,9 @@ src/data_contract_validator/          Core application
 tests/                                 Test suite & fixtures
 ├── test_validator.py                  Unit tests
 ├── test_versioning.py                 Version feature tests
+├── test_banking_finance.py            Banking/finance scenarios
+├── test_concurrency.py                Concurrency validation
+├── test_concurrency_mp.py             Multiprocessing concurrency
 └── fixtures/                          Example data & contracts
 
 .github/                               GitHub-specific files
@@ -117,10 +122,10 @@ Full tree: [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)
 
 ## ✨ Project Statistics
 
-- **11** Python source files (~900+ lines including versioning)
-- **11** Documentation files
-- **6** Test fixture files
-- **27** Test cases (10 original + 17 versioning tests)
+- **10** Python source files (~900+ lines including versioning)
+- **17** Documentation files
+- **9** Test fixture files
+- **37** Test cases (10 core + 17 versioning + 8 banking/finance + 2 concurrency)
 - **1** GitHub Actions workflow
 - **100%** Type hints in core modules
 - **66%+** Code coverage achieved
@@ -157,5 +162,5 @@ Full tree: [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)
 ---
 
 **Last Updated**: February 8, 2026  
-**Project Version**: 0.1.0  
+**Project Version**: 0.2.0  
 **Status**: ✅ Ready for development

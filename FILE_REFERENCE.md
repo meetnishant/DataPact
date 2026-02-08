@@ -138,6 +138,34 @@ This guide maps each file to its purpose and shows how they fit together.
 - **Purpose**: This file - provide overview of what was created
 - **When to modify**: After major restructuring
 
+### `DASHBOARD.md`
+- **Purpose**: Project overview dashboard with stats and quick references
+- **When to modify**: Updating counts, versions, or quick links
+
+### `DELIVERY_SUMMARY.md`
+- **Purpose**: Delivery summary for stakeholders
+- **When to modify**: Updating scope, counts, or release status
+
+### `PROJECT_STRUCTURE.md`
+- **Purpose**: Visual project tree
+- **When to modify**: Adding or removing files/folders
+
+### `INDEX.md`
+- **Purpose**: Navigation guide for all docs
+- **When to modify**: Adding new docs or cross-references
+
+### `COMPLETION_CHECKLIST.md`
+- **Purpose**: Feature and QA checklist
+- **When to modify**: Updating scope or release status
+
+### `SEQUENCE_DIAGRAM_GUIDE.md`
+- **Purpose**: Guide for Mermaid sequence diagrams
+- **When to modify**: Diagram location or viewing changes
+
+### `VERSIONING_IMPLEMENTATION.md`
+- **Purpose**: Versioning implementation notes and test summary
+- **When to modify**: Versioning changes or test count updates
+
 ## Test Files
 
 ### `tests/test_validator.py`
@@ -151,6 +179,19 @@ This guide maps each file to its purpose and shows how they fit together.
 - **Test classes**: `TestVersionValidation`, `TestToolCompatibility`, `TestVersionMigration`, `TestContractVersionLoading`, `TestVersionInfo`
 - **Total tests**: 17 test cases covering all versioning scenarios
 - **When to modify**: Adding new contract versions or migration logic
+
+### `tests/test_banking_finance.py`
+- **Purpose**: Banking/finance validation scenarios with positive/negative/boundary cases
+- **Test classes**: `TestCommercialDeposits`, `TestCommercialLending`, `TestComplexConsumption`
+- **When to modify**: Adding banking/finance rules, fixtures, or scenario coverage
+
+### `tests/test_concurrency.py`
+- **Purpose**: Concurrency validation using threads
+- **When to modify**: Changing concurrency behavior or validation safety checks
+
+### `tests/test_concurrency_mp.py`
+- **Purpose**: Concurrency validation using multiprocessing
+- **When to modify**: Changing multiprocessing behavior or validation safety checks
 
 ### `tests/fixtures/customer_contract.yaml`
 - **Purpose**: Example contract with all rule types (v2.0.0)
@@ -172,6 +213,22 @@ This guide maps each file to its purpose and shows how they fit together.
 ### `tests/fixtures/invalid_customers.csv`
 - **Purpose**: Sample data with intentional violations (missing fields, invalid email, etc.)
 - **When to modify**: Adding test cases for new rules
+
+### `tests/fixtures/deposits_contract.yaml`
+- **Purpose**: Banking deposits contract with schema and quality rules
+- **When to modify**: Adjusting deposits validation rules or schema
+
+### `tests/fixtures/lending_contract.yaml`
+- **Purpose**: Banking lending contract with schema and quality rules
+- **When to modify**: Adjusting lending validation rules or schema
+
+### `tests/fixtures/deposits_data.csv`
+- **Purpose**: Deposits test data (positive/negative/boundary cases)
+- **When to modify**: Expanding deposits test coverage
+
+### `tests/fixtures/lending_data.csv`
+- **Purpose**: Lending test data (positive/negative/boundary cases)
+- **When to modify**: Expanding lending test coverage
 
 ## File Dependency Graph
 
@@ -198,6 +255,16 @@ Tests:
     ↓ uses
     ├→ fixtures/customer_contract_v1.yaml (v1.0.0)
     └→ fixtures/customer_contract_v2.yaml (v2.0.0)
+
+  test_banking_finance.py (banking/finance tests: 8)
+    ↓ uses
+    ├→ fixtures/deposits_contract.yaml
+    ├→ fixtures/lending_contract.yaml
+    ├→ fixtures/deposits_data.csv
+    └→ fixtures/lending_data.csv
+
+  test_concurrency.py (threaded concurrency)
+  test_concurrency_mp.py (multiprocessing concurrency)
 ```
 
 ## Adding a New Feature

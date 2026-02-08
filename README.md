@@ -23,6 +23,7 @@ The test suite includes comprehensive scenarios for commercial banking and insti
 
 ## Usage
 Test cases are tagged using `@pytest.mark.PositiveCases`, `@pytest.mark.NegativeCases`, and `@pytest.mark.BoundaryCases` for easy filtering and reporting. See `tests/test_banking_finance.py` for implementation details and `tests/fixtures/` for sample data and contracts.
+
 # Data Contract Validator
 
 Validate datasets against YAML-based data contracts to ensure data quality, schema compliance, and distribution health.
@@ -52,7 +53,7 @@ Create `customer_contract.yaml`:
 ```yaml
 contract:
   name: customer_data
-  version: 1.0.0
+  version: 2.0.0
 dataset:
   name: customers
 fields:
@@ -158,14 +159,14 @@ JSON reports are saved to `./reports/<timestamp>.json`:
   "passed": false,
   "contract": {
     "name": "customer_data",
-    "version": "1.0.0"
+    "version": "2.0.0"
   },
   "dataset": {
     "name": "customers"
   },
   "metadata": {
-    "timestamp": "2024-01-15T10:30:45.123456",
-    "tool_version": "0.1.0"
+    "timestamp": "2026-02-08T10:30:45.123456",
+    "tool_version": "0.2.0"
   },
   "summary": {
     "error_count": 2,
@@ -224,21 +225,13 @@ src/data_contract_validator/
     ├── quality_validator.py     # Null/unique/range/regex/enum checks
     └── distribution_validator.py # Mean/std drift detection
 tests/
-├── test_validator.py     # Test suite
+├── test_validator.py     # Core validator tests
 ├── test_versioning.py    # Version feature tests
+├── test_banking_finance.py # Banking/finance scenarios
+├── test_concurrency.py   # Concurrency validation
+├── test_concurrency_mp.py # Multiprocessing concurrency
 └── fixtures/             # Sample contracts and data
 ```
-
-## Contract Versioning
-
-The validator supports multiple contract versions with automatic migration and compatibility checking:
-
-- **Current Version**: 2.0.0
-- **Supported Versions**: 1.0.0, 1.1.0, 2.0.0
-- **Auto-Migration**: Old contracts automatically upgrade to the latest version
-- **Breaking Changes**: Tracked and reported in validation output
-
-See [docs/VERSIONING.md](docs/VERSIONING.md) for detailed version history, migration guide, and breaking changes.
 
 ## Contract Versioning
 

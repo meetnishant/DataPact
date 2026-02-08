@@ -22,13 +22,24 @@ DataContracts/
 │       ├── quality_validator.py
 │       └── distribution_validator.py
 ├── tests/
-│   ├── test_validator.py           ← Pytest test suite
+│   ├── test_validator.py           ← Core validator tests
+│   ├── test_versioning.py          ← Versioning tests
+│   ├── test_banking_finance.py     ← Banking/finance scenarios
+│   ├── test_concurrency.py         ← Concurrency validation
+│   ├── test_concurrency_mp.py      ← Multiprocessing concurrency
 │   └── fixtures/
 │       ├── customer_contract.yaml
+│       ├── customer_contract_v1.yaml
+│       ├── customer_contract_v2.yaml
 │       ├── valid_customers.csv
-│       └── invalid_customers.csv
+│       ├── invalid_customers.csv
+│       ├── deposits_contract.yaml
+│       ├── lending_contract.yaml
+│       ├── deposits_data.csv
+│       └── lending_data.csv
 ├── docs/
 │   ├── ARCHITECTURE.md             ← Design decisions & data flow
+│   ├── VERSIONING.md               ← Versioning guide
 │   └── AI_INSTRUCTIONS_GUIDE.md    ← Template for AI instructions
 ├── .gitignore
 ├── README.md                        ← User guide
@@ -51,8 +62,8 @@ DataContracts/
 ✅ **CLI** - Full command-line interface with `validate` and `init` commands  
 
 ### Testing & Quality
-✅ **Test Suite** - Pytest with fixtures for all validator types  
-✅ **Test Fixtures** - Example contract + valid/invalid data  
+✅ **Test Suite** - Pytest with versioning, banking/finance, and concurrency coverage  
+✅ **Test Fixtures** - Core, versioning, and banking/finance contracts + data  
 ✅ **GitHub Actions** - Automated testing on push/PR (Python 3.9-3.12)  
 ✅ **Code Quality Config** - Ruff, Black, MyPy configurations in pyproject.toml  
 
