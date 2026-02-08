@@ -39,6 +39,7 @@ dev = [
 
 [project.scripts]
 dcv = "data_contract_validator.cli:main"
+dcv-coverage = "data_contract_validator.coverage_check:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

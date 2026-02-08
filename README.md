@@ -191,6 +191,9 @@ pytest
 
 # With coverage
 pytest --cov=src/data_contract_validator
+
+# Coverage check with total percent
+dcv-coverage --min 80
 ```
 
 ## Development

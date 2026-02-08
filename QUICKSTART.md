@@ -52,6 +52,9 @@ python3 -m pip install --user pytest pytest-cov
 # Run tests
 export PYTHONPATH=./src
 pytest tests/test_validator.py -v
+
+# Check total coverage percentage
+dcv-coverage --min 80
 ```
 
 ## Code Quality
