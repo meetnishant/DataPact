@@ -368,6 +368,6 @@ mypy src/
 
 ---
 
-**Repository**: `/Users/meetnishant/Documents/DataContracts`  
+**Repository**: `/path/to/DataPact`  
 **Status**: ✅ Production Ready  
 **Last Updated**: February 8, 2026

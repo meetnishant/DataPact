@@ -226,6 +226,6 @@ The instructions are designed to make AI-assisted development efficient without 
 **Status**: ✅ PRODUCTION READY  
 **Version**: 0.2.0  
 **Created**: February 8, 2026  
-**Repository**: `/Users/meetnishant/Documents/DataContracts`
+**Repository**: `/path/to/DataPact`
 
 All requirements have been met and exceeded with comprehensive documentation, tests, and AI-ready instructions.

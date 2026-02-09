@@ -91,7 +91,7 @@ DataContracts/
 
 ```bash
 # Set Python path
-export PYTHONPATH=/Users/meetnishant/Documents/DataContracts/src
+export PYTHONPATH="$(pwd)/src"
 
 # Validate data against contract
 python3 src/datapact/cli.py validate \

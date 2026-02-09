@@ -4,7 +4,7 @@
 
 ### 1. Clone or Download the Repository
 ```bash
-cd /Users/meetnishant/Documents/DataContracts
+cd /path/to/DataPact
 ```
 
 ### 2. Install Dependencies
@@ -26,7 +26,7 @@ PYTHONPATH=./src python3 -c "from datapact import Contract; print('✓ Ready')"
 
 Set up PYTHONPATH for convenience:
 ```bash
-export PYTHONPATH=/Users/meetnishant/Documents/DataContracts/src
+export PYTHONPATH="$(pwd)/src"
 ```
 
 ### Validate Data
@@ -85,7 +85,7 @@ cat reports/20260208_044449.json | python3 -m json.tool
 - Install pyyaml: `python3 -m pip install --user pyyaml`
 
 **PYTHONPATH not set**
-- Set it: `export PYTHONPATH=/Users/meetnishant/Documents/DataContracts/src`
+- Set it: `export PYTHONPATH="$(pwd)/src"`
 
 **Permission errors on install**
 - Use `--user` flag: `python3 -m pip install --user <package>`
