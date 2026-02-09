@@ -33,6 +33,7 @@ DataContracts/
 │   ├── test_chunked_validation.py  ← Chunked validation and sampling
 │   ├── test_custom_rules.py        ← Custom rule plugin tests
 │   ├── test_profiling.py           ← Profiling tests
+│   ├── test_reporting.py           ← Report sink tests
 │   ├── plugins/
 │   │   └── sample_plugin.py         ← Custom rule plugin example
 │   └── fixtures/
@@ -59,6 +60,7 @@ DataContracts/
 │   └── AI_INSTRUCTIONS_GUIDE.md    ← Template for AI instructions
 ├── .gitignore
 ├── README.md                        ← User guide
+├── FEATURES.md                      ← Functional feature list
 ├── QUICKSTART.md                    ← Setup & quick usage
 ├── CONTRIBUTING.md                  ← Developer guide
 ├── PROJECT_STRUCTURE.md             ← Visual structure
@@ -75,6 +77,7 @@ DataContracts/
 ✅ **Quality Validator** - Nulls, uniqueness, ranges, regex, enums  
 ✅ **Distribution Validator** - Mean/std drift detection  
 ✅ **Reporting** - JSON + console output with proper severity levels  
+✅ **Report Sinks** - File, stdout, and webhook outputs  
 ✅ **Profiling** - Auto-generate rule baselines from data  
 ✅ **Rule Severity** - WARN/ERROR per rule with CLI overrides  
 ✅ **Schema Drift** - Control extra columns via WARN/ERROR policy  

@@ -17,6 +17,7 @@ Validate datasets against YAML-based data contracts to ensure data quality, sche
 - **Multiple Formats**: Support CSV, Parquet, and JSON Lines
 - **CI/CD Ready**: Exit codes for automation pipelines
 - **Detailed Reporting**: JSON reports with machine-readable errors
+- **Report Sinks**: Send reports to files, stdout, or webhooks
 
 See [FEATURES.md](FEATURES.md) for a functional feature list with compact examples.
 
@@ -98,6 +99,10 @@ datapact validate --contract <path/to/contract.yaml> --data <path/to/data> [--fo
 - `--data`: Path to data file (required)
 - `--format`: Data format. Default: auto-detect from file extension
 - `--output-dir`: Directory for JSON report. Default: ./reports
+- `--report-sink`: Report sink (file, stdout, webhook). Repeatable
+- `--report-webhook-url`: Webhook URL for report sink `webhook`
+- `--report-webhook-header`: Webhook header (Key: Value). Repeatable
+- `--report-webhook-timeout`: Webhook timeout in seconds
 - `--severity-override`: Override rule severity (format: field.rule=warn)
 - `--chunksize`: Stream validation in chunks (CSV/JSONL)
 - `--sample-rows`: Sample N rows for validation

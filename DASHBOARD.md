@@ -10,22 +10,22 @@ Created: February 8, 2026
 
 📁 Total Files:    80
 💻 Code Files:     13 (Python modules)
-📚 Docs Files:     17 (markdown + guides)
+📚 Docs Files:     18 (markdown + guides)
 ⚙️  Config Files:   4 (toml, yaml, gitignore)
-🧪 Test Files:     8 test modules + 17 fixtures
+🧪 Test Files:     9 test modules + 17 fixtures
 
 📊 Code Statistics:
    Lines of Code:           ~900+
    Type Hint Coverage:      100%
    Docstring Coverage:      Comprehensive
    External API Calls:      0 (local only)
-    Test Cases:              61 (21 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling)
+    Test Cases:              64 (21 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling + 3 reporting)
    Code Coverage:           66%+
 
 🔧 Supported Python:  3.9, 3.10, 3.11, 3.12
 📦 Dependencies:      pandas, pyyaml, pyarrow
 ✅ CI/CD:            GitHub Actions configured
-✨ Features:         Schema drift + Quality + SLA + Custom rules + Distribution validation + Chunked validation + Profiling + Rule Severity + Versioning with auto-migration
+✨ Features:         Schema drift + Quality + SLA + Custom rules + Distribution validation + Chunked validation + Profiling + Rule Severity + Versioning with auto-migration + Report sinks
 ```
 
 ## Documentation Structure
@@ -42,8 +42,9 @@ Created: February 8, 2026
 ### 📋 Complete Document List
 
 ```
-Core Documentation (13 files):
+Core Documentation (14 files):
 ├─ README.md                   User guide & feature overview
+├─ FEATURES.md                 Functional feature list with examples
 ├─ QUICKSTART.md              Setup & quick start (5 min)
 ├─ CONTRIBUTING.md             Developer guide
 ├─ docs/ARCHITECTURE.md        Design decisions & data flow
@@ -124,7 +125,7 @@ Configuration (4 files):
         └────────────┬───────────────┘
                      ↓
         ┌────────────────────────────┐
-        │ Output: JSON + Console     │
+        │ Output: JSON + Console + Sinks │
         │ Exit Code: 0 or 1          │
         └────────────────────────────┘
 ```
@@ -142,7 +143,7 @@ sequenceDiagram
     participant Quality as Quality Validator
     participant Distribution as Distribution Validator
     participant Reporter as Report Generator
-    participant Output as JSON/Console
+    participant Output as JSON/Console/Sinks
 
     User->>+CLI: datapact validate --contract.yaml --data.csv
     CLI->>+Parser: Parse contract YAML
@@ -168,6 +169,7 @@ sequenceDiagram
     
     CLI->>+Output: Generate output
     Output->>Output: Save JSON report
+    Output->>Output: Send to report sinks
     Output->>Output: Print summary
     Output-->>-CLI: Done
     

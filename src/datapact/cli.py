@@ -26,7 +26,15 @@ from datapact.validators import (
 )
 from datapact.validators.quality_validator import ChunkedQualityValidator
 from datapact.validators.distribution_validator import DistributionAccumulator
-from datapact.reporting import ValidationReport, ErrorRecord  # Reporting utilities
+from datapact.reporting import (
+    ValidationReport,
+    ErrorRecord,
+    FileReportSink,
+    StdoutReportSink,
+    WebhookReportSink,
+    ReportContext,
+    write_report_sinks,
+)
 from datapact.versioning import check_tool_compatibility  # Version compatibility check
 from datapact.profiling import profile_dataframe  # Profiling utilities
 
@@ -68,6 +76,28 @@ def main() -> int:
         "--output-dir",
         default="./reports",
         help="Directory for JSON report output",
+    )
+    parser.add_argument(
+        "--report-sink",
+        action="append",
+        default=None,
+        help="Report sink (file, stdout, webhook). Repeatable.",
+    )
+    parser.add_argument(
+        "--report-webhook-url",
+        help="Webhook URL for report sink 'webhook'",
+    )
+    parser.add_argument(
+        "--report-webhook-header",
+        action="append",
+        default=[],
+        help="Webhook header (format: Key: Value). Repeatable.",
+    )
+    parser.add_argument(
+        "--report-webhook-timeout",
+        type=int,
+        default=5,
+        help="Webhook timeout in seconds (default: 5)",
     )
     parser.add_argument(
         "--chunksize",
@@ -310,10 +340,18 @@ def validate_command(args) -> int:
             compatibility_warnings=compatibility_warnings,
         )
 
-        # Print summary to console and save JSON report
+        # Print summary to console and write report sinks
         report.print_summary()
-        json_path = report.save_json(args.output_dir)
-        print(f"JSON report saved to: {json_path}")
+        webhook_headers = _parse_webhook_headers(args.report_webhook_header)
+        sinks = _build_report_sinks(args, webhook_headers)
+        context = ReportContext(
+            output_dir=args.output_dir,
+            webhook_url=args.report_webhook_url,
+            webhook_headers=webhook_headers,
+            webhook_timeout=args.report_webhook_timeout,
+        )
+        for message in write_report_sinks(report, sinks, context):
+            print(message)
 
         # Exit code: 0 if passed, 1 if any errors
         return 0 if passed else 1
@@ -433,6 +471,42 @@ def _parse_severity_overrides(overrides) -> dict:
         field_name, rule_name = left.split(".", 1)
         parsed[f"{field_name}.{rule_name}".lower()] = severity
     return parsed
+
+
+def _parse_webhook_headers(headers: List[str]) -> dict:
+    parsed: dict = {}
+    for header in headers:
+        if ":" not in header:
+            raise ValueError("Invalid webhook header. Use 'Key: Value'.")
+        key, value = header.split(":", 1)
+        parsed[key.strip()] = value.strip()
+    return parsed
+
+
+def _build_report_sinks(args, webhook_headers: dict) -> List:
+    sinks = []
+    sink_names = args.report_sink or ["file"]
+    for raw in sink_names:
+        name = raw.strip().lower()
+        if name == "file":
+            sinks.append(FileReportSink(args.output_dir))
+        elif name == "stdout":
+            sinks.append(StdoutReportSink())
+        elif name == "webhook":
+            if not args.report_webhook_url:
+                raise ValueError("--report-webhook-url is required for webhook sink")
+            sinks.append(
+                WebhookReportSink(
+                    args.report_webhook_url,
+                    headers=webhook_headers,
+                    timeout=args.report_webhook_timeout,
+                )
+            )
+        else:
+            raise ValueError(
+                "Invalid report sink. Use file, stdout, or webhook."
+            )
+    return sinks
 
 
 def _use_streaming(args) -> bool:

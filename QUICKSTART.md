@@ -94,6 +94,24 @@ python3 src/datapact/cli.py validate \
   --plugin mypkg.rules
 ```
 
+### Report Sinks
+```bash
+python3 src/datapact/cli.py validate \
+  --contract my_contract.yaml \
+  --data my_data.csv \
+  --report-sink file \
+  --report-sink stdout
+```
+
+```bash
+python3 src/datapact/cli.py validate \
+  --contract my_contract.yaml \
+  --data my_data.csv \
+  --report-sink webhook \
+  --report-webhook-url https://example.com/hook \
+  --report-webhook-header "Authorization: Bearer token"
+```
+
 Custom rules run on full data; in streaming mode they run only when sampling is enabled.
 
 ## Running Tests

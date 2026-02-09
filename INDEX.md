@@ -133,13 +133,14 @@ Full tree: [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)
 - **SLA Checks** - Enforce row count and freshness constraints
 - **Chunked Validation** - Stream large files with optional sampling
 - **Custom Rule Plugins** - Extend validation with plugin modules
+- **Report Sinks** - Write reports to files, stdout, or webhooks
 
 ## ✨ Project Statistics
 
 - **13** Python source files (~1050+ lines including plugins)
-- **17** Documentation files
+- **18** Documentation files
 - **17** Test fixture files
-- **61** Test cases (21 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling)
+- **64** Test cases (21 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling + 3 reporting)
 - **1** GitHub Actions workflow
 - **100%** Type hints in core modules
 - **66%+** Code coverage achieved

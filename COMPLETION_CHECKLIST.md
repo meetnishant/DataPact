@@ -11,6 +11,7 @@ Project: DataPact
 - ✅ Distribution validation (mean/std drift detection)
 - ✅ SLA validation (row count thresholds)
 - ✅ Report generation (JSON + console output)
+- ✅ Report sinks (file, stdout, webhook)
 - ✅ CLI interface (validate, init, profile commands)
 - ✅ Profiling (auto-generate rule baselines from data)
 - ✅ Rule severity support (WARN/ERROR per rule + CLI overrides)
@@ -75,6 +76,7 @@ Project: DataPact
 - ✅ Multiple data format support
 - ✅ Error severity levels (ERROR vs WARN)
 - ✅ JSON report export
+- ✅ Report sinks (file, stdout, webhook)
 - ✅ Contract inference from data (init command)
 - ✅ Contract profiling with rules (profile command)
 - ✅ Rule severity metadata in contracts
@@ -116,14 +118,14 @@ Project: DataPact
 ```
 Total files created: 80
 ├── Python modules: 13 (including custom rules)
-├── Test files: 8 (validator, versioning, banking/finance, concurrency, profiling, chunked, custom)
+├── Test files: 9 (validator, versioning, banking/finance, concurrency, profiling, chunked, custom, reporting)
 ├── Test fixtures: 17 (including multi-table banking/finance data + contracts)
-├── Documentation: 17
+├── Documentation: 18
 ├── Config files: 4
 └── Project metadata: various
 
 Lines of code: ~900+
-Test cases: 61 (21 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling)
+Test cases: 64 (21 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling + 3 reporting)
 Documentation coverage: Comprehensive
 Test coverage: Extensive (66%+)
 CI/CD: GitHub Actions configured

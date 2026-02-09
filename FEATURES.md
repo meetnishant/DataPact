@@ -215,6 +215,20 @@ Reports are stored under the configured output directory.
 datapact validate --contract c.yaml --data d.csv --output-dir ./reports
 ```
 
+### Report sinks
+Send reports to files, stdout, or webhooks.
+
+```bash
+datapact validate --contract c.yaml --data d.csv --report-sink file --report-sink stdout
+```
+
+```bash
+datapact validate --contract c.yaml --data d.csv \
+  --report-sink webhook \
+  --report-webhook-url https://example.com/hook \
+  --report-webhook-header "Authorization: Bearer token"
+```
+
 ## Supported Data Formats
 
 ### CSV, Parquet, and JSON Lines

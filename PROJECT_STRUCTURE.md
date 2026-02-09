@@ -41,6 +41,7 @@ DataPact/
 │   ├── test_chunked_validation.py   # Chunked validation and sampling
 │   ├── test_custom_rules.py         # Custom rule plugin tests
 │   ├── test_profiling.py            # Profiling tests
+│   ├── test_reporting.py            # Report sink tests
 │   ├── plugins/
 │   │   └── sample_plugin.py          # Custom rule plugin example
 │   └── fixtures/

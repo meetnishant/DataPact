@@ -9,7 +9,7 @@ sequenceDiagram
     participant SLA as SLA Validator
     participant Distribution as Distribution Validator
     participant Reporter as Report Generator
-    participant Output as JSON/Console
+    participant Output as JSON/Console/Sinks
 
     User->>+CLI: datapact validate --contract.yaml --data.csv
     CLI->>+Parser: Parse contract YAML
@@ -38,6 +38,7 @@ sequenceDiagram
     
     CLI->>+Output: Generate output
     Output->>Output: Save JSON report
+    Output->>Output: Send to report sinks
     Output->>Output: Print summary
     Output-->>-CLI: Done
     

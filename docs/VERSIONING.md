@@ -22,6 +22,7 @@ Related features:
 - **SLA Checks**: Row count and freshness constraints are supported.
 - **Chunked Validation**: Stream CSV/JSONL files with optional sampling.
 - **Custom Rule Plugins**: Extend validation via plugin modules.
+- **Report Sinks**: Write reports to files, stdout, or webhooks.
 
 ## Supported Versions
 

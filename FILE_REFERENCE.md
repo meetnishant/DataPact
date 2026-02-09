@@ -47,6 +47,7 @@ This guide maps each file to its purpose and shows how they fit together.
   - `to_dict()` - Convert to JSON-serializable format with version info
   - `save_json()` - Write report to `./reports/<timestamp>.json`
   - `print_summary()` - Print human-readable console output
+- **Report sinks**: `FileReportSink`, `StdoutReportSink`, `WebhookReportSink`
 - **When to modify**: Changing report format or adding new metadata
 
 ### `src/datapact/versioning.py`
@@ -223,6 +224,10 @@ This guide maps each file to its purpose and shows how they fit together.
 ### `tests/test_concurrency_mp.py`
 - **Purpose**: Concurrency validation using multiprocessing
 - **When to modify**: Changing multiprocessing behavior or validation safety checks
+
+### `tests/test_reporting.py`
+- **Purpose**: Report sink tests (file, stdout, webhook)
+- **When to modify**: Adding new report sinks or output behaviors
 
 ### `tests/test_chunked_validation.py`
 - **Purpose**: Chunked validation and sampling tests

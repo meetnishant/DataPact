@@ -9,7 +9,7 @@ This project is maintained by the open-source community. Contributions are welco
 The DataPact follows a modular pipeline:
 
 ```
-Contract YAML → Contract Parser → Validators → Report → JSON/Console
+Contract YAML → Contract Parser → Validators → Report → JSON/Console/Sinks
 Data File → DataSource Loader ↓
 ```
 
@@ -68,6 +68,7 @@ Three specialized validators run sequentially:
 ### 5. **reporting.py** - Report Generation
 - Aggregates errors/warnings from all validators
 - Produces machine-readable JSON and human-readable console output
+- Supports report sinks for file, stdout, and webhooks
 - Tracks metadata: timestamp, contract version, tool version, breaking changes
 - **Output**: `./reports/<timestamp>.json`
 
@@ -134,7 +135,7 @@ sequenceDiagram
     participant Quality as Quality Validator
     participant Distribution as Distribution Validator
     participant Reporter as Report Generator
-    participant Output as JSON/Console
+    participant Output as JSON/Console/Sinks
 
     User->>+CLI: datapact validate --contract.yaml --data.csv
     CLI->>+Parser: Parse contract YAML
@@ -160,6 +161,7 @@ sequenceDiagram
     
     CLI->>+Output: Generate output
     Output->>Output: Save JSON report
+    Output->>Output: Send to report sinks
     Output->>Output: Print summary
     Output-->>-CLI: Done
     

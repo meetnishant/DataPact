@@ -9,6 +9,8 @@ from dataclasses import dataclass, asdict
 from datetime import datetime
 import json
 from pathlib import Path
+import urllib.request
+import urllib.error
 from datapact.versioning import (
     get_breaking_changes,
 )
@@ -127,3 +129,96 @@ class ValidationReport:
             for err in self.errors:
                 print(f"  [{err.severity}] {err.field}: {err.message}")
         print(f"{'='*60}\n")
+
+
+@dataclass
+class ReportContext:
+    """
+    Context for report sinks (output paths, webhook config, etc.).
+    """
+    output_dir: str = "./reports"
+    webhook_url: Optional[str] = None
+    webhook_headers: Optional[Dict[str, str]] = None
+    webhook_timeout: int = 5
+
+
+class ReportSink:
+    """
+    Base class for report sinks.
+    """
+    name = "base"
+
+    def write(self, report: ValidationReport, context: ReportContext) -> Optional[str]:
+        raise NotImplementedError("ReportSink.write must be implemented")
+
+
+class FileReportSink(ReportSink):
+    """
+    Write report JSON to a local file.
+    """
+    name = "file"
+
+    def __init__(self, output_dir: str):
+        self.output_dir = output_dir
+
+    def write(self, report: ValidationReport, context: ReportContext) -> Optional[str]:
+        path = report.save_json(self.output_dir)
+        return f"JSON report saved to: {path}"
+
+
+class StdoutReportSink(ReportSink):
+    """
+    Print report JSON to stdout.
+    """
+    name = "stdout"
+
+    def write(self, report: ValidationReport, context: ReportContext) -> Optional[str]:
+        print(json.dumps(report.to_dict(), indent=2))
+        return "Report JSON printed to stdout"
+
+
+class WebhookReportSink(ReportSink):
+    """
+    Send report JSON to a webhook endpoint.
+    """
+    name = "webhook"
+
+    def __init__(self, url: str, headers: Optional[Dict[str, str]] = None, timeout: int = 5):
+        self.url = url
+        self.headers = headers or {}
+        self.timeout = timeout
+
+    def write(self, report: ValidationReport, context: ReportContext) -> Optional[str]:
+        payload = json.dumps(report.to_dict()).encode("utf-8")
+        headers = {"Content-Type": "application/json", **self.headers}
+        request = urllib.request.Request(
+            self.url,
+            data=payload,
+            headers=headers,
+            method="POST",
+        )
+        with urllib.request.urlopen(request, timeout=self.timeout) as response:
+            status = response.getcode()
+        return f"Webhook report sent (status {status})"
+
+
+def write_report_sinks(
+    report: ValidationReport,
+    sinks: List[ReportSink],
+    context: Optional[ReportContext] = None,
+) -> List[str]:
+    """
+    Write the report to configured sinks and return user-facing messages.
+    """
+    messages: List[str] = []
+    context = context or ReportContext()
+
+    for sink in sinks:
+        try:
+            result = sink.write(report, context)
+            if result:
+                messages.append(result)
+        except Exception as exc:
+            messages.append(f"WARN: Report sink '{sink.name}' failed: {exc}")
+
+    return messages

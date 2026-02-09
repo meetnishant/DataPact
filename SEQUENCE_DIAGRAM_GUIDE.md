@@ -40,7 +40,7 @@ User/CLI Request
     ↓
 5. Report Generator (aggregates results)
     ↓
-6. Output Generator (JSON + console)
+6. Output Generator (JSON + console + report sinks)
     ↓
 Exit Code (0 or 1)
 ```
@@ -58,6 +58,7 @@ Exit Code (0 or 1)
 ✅ **Profiling command** documented outside the validate flow  
 ✅ **Chunked validation** supported via CLI options for large files  
 ✅ **Custom rule plugins** supported via CLI module loading  
+✅ **Report sinks** supported for file, stdout, or webhook output  
 ✅ **Report generation** and output demonstrated  
 ✅ **Exit code** shown at the end  
 

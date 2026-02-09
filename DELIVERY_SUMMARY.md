@@ -17,6 +17,7 @@ A **production-ready Python data validation framework** called **DataPact** that
 - Multi-format data loading (CSV, Parquet, JSON)
 - Four-stage validation pipeline with proper error semantics
 - JSON report generation with console output
+- Report sinks for file, stdout, and webhooks
 - CLI interface with `validate`, `init`, and `profile` commands
 - Profiling to auto-generate rule baselines from data
 - Rule severity support with WARN/ERROR metadata and CLI overrides
@@ -104,9 +105,9 @@ This enables AI agents (Copilot, Claude, etc.) to be immediately productive with
 | Metric | Value |
 |--------|-------|
 | Python Files | 13 |
-| Documentation Files | 17 |
+| Documentation Files | 18 |
 | Total Lines of Code | ~900 |
-| Test Coverage | Comprehensive (61 tests) |
+| Test Coverage | Comprehensive (64 tests) |
 | Type Hints | 100% |
 | External APIs | 0 |
 | Configuration Files | 4 |
@@ -143,6 +144,7 @@ tests/
 ├── test_chunked_validation.py Chunked validation tests
 ├── test_custom_rules.py      Custom rule plugin tests
 ├── test_profiling.py         Profiling tests
+├── test_reporting.py         Report sink tests
 └── fixtures/
     ├── customer_contract.yaml
     ├── customer_contract_v1.yaml
@@ -165,8 +167,9 @@ tests/
 
 ### Documentation
 ```
-Root level (12 markdown files):
+Root level (13 markdown files):
 ├── README.md                 User guide
+├── FEATURES.md               Functional feature list
 ├── QUICKSTART.md             Setup guide
 ├── CONTRIBUTING.md           Developer guide
 ├── FILE_REFERENCE.md         File-by-file guide

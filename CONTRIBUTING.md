@@ -51,6 +51,7 @@
 - SLA checks are configured in `sla.min_rows` and `sla.max_rows`.
 - Chunked validation is available via `--chunksize` with optional sampling.
 - Custom rule plugins are configured via `rules.custom` and `custom_rules`.
+- Report sinks are configured via `--report-sink` and webhook options.
 
 ## Adding Support for New Contract Versions
 

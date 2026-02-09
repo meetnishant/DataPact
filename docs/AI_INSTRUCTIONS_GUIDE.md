@@ -30,3 +30,4 @@ Organize instructions as:
 - Document **SLA checks** (`sla.min_rows`, `sla.max_rows`, and freshness rules).
 - Document **chunked validation** options (`--chunksize`, `--sample-rows`, `--sample-frac`).
 - Document **custom rule plugins** (`--plugin`, `rules.custom`, `custom_rules`).
+- Document **report sinks** (`--report-sink`, `--report-webhook-url`, `--report-webhook-header`).
