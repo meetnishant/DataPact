@@ -18,6 +18,11 @@ This guide maps each file to its purpose and shows how they fit together.
   - `Contract._parse_distribution()` - Extract distribution rules
 - **When to modify**: Adding new rule types or contract metadata
 
+### `src/datapact/policies.py`
+- **Purpose**: Policy pack registry and merge logic
+- **Exports**: `POLICY_PACKS`, `apply_policy_packs()`
+- **When to modify**: Adding new policy packs or merge behavior
+
 ### `src/datapact/datasource.py`
 - **Purpose**: Load datasets in multiple formats
 - **Classes**: `DataSource`
@@ -228,6 +233,10 @@ This guide maps each file to its purpose and shows how they fit together.
 ### `tests/test_reporting.py`
 - **Purpose**: Report sink tests (file, stdout, webhook)
 - **When to modify**: Adding new report sinks or output behaviors
+
+### `tests/test_policy_packs.py`
+- **Purpose**: Policy pack parsing and merge tests
+- **When to modify**: Adding new policy packs or override behavior
 
 ### `tests/test_chunked_validation.py`
 - **Purpose**: Chunked validation and sampling tests

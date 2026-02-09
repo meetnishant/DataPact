@@ -52,6 +52,7 @@
 - Chunked validation is available via `--chunksize` with optional sampling.
 - Custom rule plugins are configured via `rules.custom` and `custom_rules`.
 - Report sinks are configured via `--report-sink` and webhook options.
+- Policy packs are configured via `policies` entries in contracts.
 
 ## Adding Support for New Contract Versions
 

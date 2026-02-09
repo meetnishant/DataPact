@@ -13,6 +13,7 @@ sequenceDiagram
 
     User->>+CLI: datapact validate --contract.yaml --data.csv
     CLI->>+Parser: Parse contract YAML
+    Parser->>Parser: Apply policy packs
     Parser-->>-CLI: Contract object
     
     CLI->>+Loader: Load data file

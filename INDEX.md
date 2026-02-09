@@ -134,13 +134,14 @@ Full tree: [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)
 - **Chunked Validation** - Stream large files with optional sampling
 - **Custom Rule Plugins** - Extend validation with plugin modules
 - **Report Sinks** - Write reports to files, stdout, or webhooks
+- **Policy Packs** - Reuse standard rule bundles across contracts
 
 ## ✨ Project Statistics
 
-- **13** Python source files (~1050+ lines including plugins)
+- **14** Python source files (~1050+ lines including plugins)
 - **18** Documentation files
-- **17** Test fixture files
-- **64** Test cases (21 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling + 3 reporting)
+- **18** Test fixture files
+- **66** Test cases (21 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling + 3 reporting + 2 policy packs)
 - **1** GitHub Actions workflow
 - **100%** Type hints in core modules
 - **66%+** Code coverage achieved

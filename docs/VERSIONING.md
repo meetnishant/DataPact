@@ -23,6 +23,7 @@ Related features:
 - **Chunked Validation**: Stream CSV/JSONL files with optional sampling.
 - **Custom Rule Plugins**: Extend validation via plugin modules.
 - **Report Sinks**: Write reports to files, stdout, or webhooks.
+- **Policy Packs**: Reuse standard rule bundles across contracts.
 
 ## Supported Versions
 

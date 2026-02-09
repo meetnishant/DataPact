@@ -17,6 +17,7 @@ Project: DataPact
 - ✅ Rule severity support (WARN/ERROR per rule + CLI overrides)
 - ✅ Chunked validation and sampling for large datasets
 - ✅ Custom rule plugins for extensible validation
+- ✅ Policy packs for reusable rule bundles
 
 ## Code Quality
 - ✅ Type hints throughout
@@ -85,6 +86,7 @@ Project: DataPact
 - ✅ Schema drift severity for extra columns
 - ✅ Chunked validation options (chunksize, sample_rows, sample_frac)
 - ✅ Custom rule definitions (rules.custom, custom_rules)
+- ✅ Policy pack definitions (policies, overrides)
 - ✅ Banking/finance test data contracts and fixtures
 
 ## Non-Blocking vs Blocking
@@ -116,13 +118,13 @@ Project: DataPact
 ## What's Included in the Delivery
 
 ```
-Total files created: 80
+Total files created: 83
 ├── Python modules: 13 (including custom rules)
-├── Test files: 9 (validator, versioning, banking/finance, concurrency, profiling, chunked, custom, reporting)
-├── Test fixtures: 17 (including multi-table banking/finance data + contracts)
+├── Test files: 10 (validator, versioning, banking/finance, concurrency, profiling, chunked, custom, reporting, policy packs)
+├── Test fixtures: 18 (including multi-table banking/finance data + contracts)
 ├── Documentation: 18
-├── Config files: 4
-└── Project metadata: various
+
+Test cases: 66 (21 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling + 3 reporting + 2 policy packs)
 
 Lines of code: ~900+
 Test cases: 64 (21 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling + 3 reporting)

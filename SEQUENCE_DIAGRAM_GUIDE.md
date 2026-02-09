@@ -59,6 +59,7 @@ Exit Code (0 or 1)
 ✅ **Chunked validation** supported via CLI options for large files  
 ✅ **Custom rule plugins** supported via CLI module loading  
 ✅ **Report sinks** supported for file, stdout, or webhook output  
+✅ **Policy packs** applied during contract parsing  
 ✅ **Report generation** and output demonstrated  
 ✅ **Exit code** shown at the end  
 

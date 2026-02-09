@@ -206,6 +206,23 @@ contract:
   version: 2.0.0
 ```
 
+## Policy Packs
+
+### Apply reusable rule bundles
+Use named policy packs to add standard rules across contracts.
+
+```yaml
+policies:
+  - name: pii_basic
+    overrides:
+      fields:
+        phone:
+          rules:
+            regex:
+              value: '^\\+1[0-9]{10}$'
+              severity: WARN
+```
+
 ## Reporting
 
 ### JSON reports for CI/CD

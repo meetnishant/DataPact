@@ -94,6 +94,19 @@ python3 src/datapact/cli.py validate \
   --plugin mypkg.rules
 ```
 
+### Policy Packs
+```yaml
+policies:
+  - name: pii_basic
+    overrides:
+      fields:
+        phone:
+          rules:
+            regex:
+              value: '^\\+1[0-9]{10}$'
+              severity: WARN
+```
+
 ### Report Sinks
 ```bash
 python3 src/datapact/cli.py validate \

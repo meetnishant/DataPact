@@ -13,6 +13,7 @@ Validate datasets against YAML-based data contracts to ensure data quality, sche
 - **SLA Checks**: Enforce row count and freshness constraints
 - **Big Data Support**: Chunked validation with optional sampling
 - **Custom Rule Plugins**: Load rule logic from plugin modules
+- **Policy Packs**: Apply reusable rule bundles by name
 - **Contract Versioning**: Track contract evolution with automatic migration
 - **Multiple Formats**: Support CSV, Parquet, and JSON Lines
 - **CI/CD Ready**: Exit codes for automation pipelines
@@ -185,6 +186,20 @@ rules:
 schema:
   extra_columns:
     severity: WARN
+```
+
+### Policy Packs
+
+```yaml
+policies:
+  - name: pii_basic
+    overrides:
+      fields:
+        phone:
+          rules:
+            regex:
+              value: '^\\+1[0-9]{10}$'
+              severity: WARN
 ```
 
 ### SLA Checks

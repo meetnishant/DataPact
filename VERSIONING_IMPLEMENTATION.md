@@ -48,7 +48,7 @@ Supports:
 
 **Test Results:**
 ```
-✅ 64 total tests collected (21 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling + 3 reporting)
+✅ 66 total tests collected (21 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling + 3 reporting + 2 policy packs)
 ✅ 66%+ code coverage
 ✅ All validators working correctly with versioning
 ```
@@ -148,7 +148,7 @@ Test Suite Results:
 ✅ TestContractVersionLoading: 4 passed
 ✅ TestVersionInfo: 1 passed
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Total: 64 tests collected
+Total: 66 tests collected
 Coverage: 66%+ (including all versioning code paths)
 ```
 
@@ -173,3 +173,4 @@ The contract versioning system is fully functional, tested, and integrated. Old 
 - **SLA Checks**: Row count thresholds and freshness rules are supported.
 - **Chunked Validation**: CSV/JSONL files can be validated in chunks with sampling.
 - **Report Sinks**: Reports can be written to files, stdout, or webhooks.
+- **Policy Packs**: Reuse standard rule bundles across contracts.

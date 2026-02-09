@@ -19,6 +19,7 @@ Data File → DataSource Loader ↓
 - Parses YAML contract files into typed Python models
 - Defines `Contract`, `Field`, `FieldRule`, `DistributionRule` dataclasses
 - Handles contract versioning metadata
+- Applies policy packs before field rule parsing
 - Integrates with versioning module for auto-migration
 - **Responsibility**: Contract validation, deserialization, and version management
 
@@ -139,6 +140,7 @@ sequenceDiagram
 
     User->>+CLI: datapact validate --contract.yaml --data.csv
     CLI->>+Parser: Parse contract YAML
+    Parser->>Parser: Apply policy packs
     Parser-->>-CLI: Contract object
     
     CLI->>+Loader: Load data file

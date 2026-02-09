@@ -30,3 +30,4 @@ This document summarizes the direct dependencies declared in `pyproject.toml`.
 - Chunked validation and sampling use pandas chunked readers (no new dependencies).
 - Custom rule plugins are loaded via Python import modules (no new dependencies).
 - Report sinks use the Python standard library for JSON and HTTP (no new dependencies).
+- Policy packs use in-repo configuration (no new dependencies).

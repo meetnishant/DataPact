@@ -7,6 +7,7 @@ YAML parsing and migration logic.
 from typing import Any, Dict, List, Optional
 from dataclasses import dataclass, field
 import yaml
+from datapact.policies import apply_policy_packs
 from datapact.versioning import (
     validate_version,
     is_version_deprecated,
@@ -151,6 +152,8 @@ class Contract:
                 contract_data = data.get("contract", {})
             except VersionError as e:
                 raise ValueError(f"Failed to migrate contract: {e}")
+
+        data = apply_policy_packs(data)
 
         dataset_data = data.get("dataset", {})
         schema_policy = cls._parse_schema_policy(data.get("schema", {}))

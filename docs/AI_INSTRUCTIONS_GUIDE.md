@@ -31,3 +31,4 @@ Organize instructions as:
 - Document **chunked validation** options (`--chunksize`, `--sample-rows`, `--sample-frac`).
 - Document **custom rule plugins** (`--plugin`, `rules.custom`, `custom_rules`).
 - Document **report sinks** (`--report-sink`, `--report-webhook-url`, `--report-webhook-header`).
+- Document **policy packs** (`policies`, `overrides`).

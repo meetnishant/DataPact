@@ -1,0 +1,21 @@
+contract:
+  name: policy_pack_demo
+  version: 2.0.0
+dataset:
+  name: demo
+policies:
+  - name: pii_basic
+    overrides:
+      fields:
+        phone:
+          rules:
+            regex:
+              value: '^\+1[0-9]{10}$'
+              severity: WARN
+fields:
+  - name: email
+    type: string
+    rules:
+      unique: true
+  - name: phone
+    type: string

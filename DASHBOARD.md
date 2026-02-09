@@ -8,24 +8,24 @@ Version: 0.2.0
 Status: ✅ READY FOR PRODUCTION
 Created: February 8, 2026
 
-📁 Total Files:    80
-💻 Code Files:     13 (Python modules)
+📁 Total Files:    83
+💻 Code Files:     14 (Python modules)
 📚 Docs Files:     18 (markdown + guides)
 ⚙️  Config Files:   4 (toml, yaml, gitignore)
-🧪 Test Files:     9 test modules + 17 fixtures
+🧪 Test Files:     10 test modules + 18 fixtures
 
 📊 Code Statistics:
    Lines of Code:           ~900+
    Type Hint Coverage:      100%
    Docstring Coverage:      Comprehensive
    External API Calls:      0 (local only)
-    Test Cases:              64 (21 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling + 3 reporting)
+    Test Cases:              66 (21 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling + 3 reporting + 2 policy packs)
    Code Coverage:           66%+
 
 🔧 Supported Python:  3.9, 3.10, 3.11, 3.12
 📦 Dependencies:      pandas, pyyaml, pyarrow
 ✅ CI/CD:            GitHub Actions configured
-✨ Features:         Schema drift + Quality + SLA + Custom rules + Distribution validation + Chunked validation + Profiling + Rule Severity + Versioning with auto-migration + Report sinks
+✨ Features:         Schema drift + Quality + SLA + Custom rules + Distribution validation + Chunked validation + Profiling + Rule Severity + Versioning with auto-migration + Report sinks + Policy packs
 ```
 
 ## Documentation Structure
@@ -147,6 +147,7 @@ sequenceDiagram
 
     User->>+CLI: datapact validate --contract.yaml --data.csv
     CLI->>+Parser: Parse contract YAML
+    Parser->>Parser: Apply policy packs
     Parser-->>-CLI: Contract object
     
     CLI->>+Loader: Load data file
@@ -187,6 +188,7 @@ src/datapact/
 │   ├─ FieldRule
 │   ├─ DistributionRule
 │   └─ Dataset
+├── policies.py              Policy pack registry
 ├── datasource.py            Data loading & inference
 │   └─ DataSource
 ├── cli.py                   CLI interface
@@ -220,6 +222,7 @@ src/datapact/
 | Chunked Validation | ✅ | datasource.py |
 | Profiling | ✅ | profiling.py |
 | Rule Severity | ✅ | contracts.py |
+| Policy Packs | ✅ | policies.py |
 | Custom Rule Plugins | ✅ | validators/custom_rule_validator.py |
 | JSON Report Output | ✅ | reporting.py |
 | Console Output | ✅ | reporting.py |

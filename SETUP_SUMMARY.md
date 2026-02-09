@@ -15,6 +15,7 @@ DataContracts/
 │   ├── __init__.py
 │   ├── contracts.py                ← YAML parsing & contract models
 │   ├── datasource.py               ← Data loading (CSV/Parquet/JSON)
+│   ├── policies.py                 ← Policy pack registry
 │   ├── profiling.py                ← Contract profiling helpers
 │   ├── cli.py                      ← CLI entry point
 │   ├── reporting.py                ← Report generation
@@ -34,6 +35,7 @@ DataContracts/
 │   ├── test_custom_rules.py        ← Custom rule plugin tests
 │   ├── test_profiling.py           ← Profiling tests
 │   ├── test_reporting.py           ← Report sink tests
+│   ├── test_policy_packs.py        ← Policy pack tests
 │   ├── plugins/
 │   │   └── sample_plugin.py         ← Custom rule plugin example
 │   └── fixtures/
@@ -53,9 +55,11 @@ DataContracts/
 │       ├── deposits_transactions.csv
 │       ├── lending_payments.csv
 │       ├── deposits_accounts_agg.csv
-│       └── lending_loans_agg.csv
+│       ├── lending_loans_agg.csv
+│       └── policy_pack_contract.yaml
 ├── docs/
 │   ├── ARCHITECTURE.md             ← Design decisions & data flow
+│   ├── sequenceDiagram.mmd         ← Mermaid sequence diagram
 │   ├── VERSIONING.md               ← Versioning guide
 │   └── AI_INSTRUCTIONS_GUIDE.md    ← Template for AI instructions
 ├── .gitignore
@@ -84,6 +88,7 @@ DataContracts/
 ✅ **SLA Checks** - Enforce row count thresholds and freshness rules  
 ✅ **Chunked Validation** - Stream CSV/JSONL with optional sampling  
 ✅ **Custom Rule Plugins** - Load validation logic from plugin modules  
+✅ **Policy Packs** - Apply reusable rule bundles by name  
 ✅ **CLI** - Full command-line interface with `validate`, `init`, and `profile` commands  
 
 ### Testing & Quality

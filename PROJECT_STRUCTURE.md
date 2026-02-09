@@ -22,6 +22,7 @@ DataPact/
 │       ├── __init__.py              # Package entry point
 │       ├── contracts.py             # YAML contract parsing
 │       ├── datasource.py            # Data loading (CSV/Parquet/JSON)
+│       ├── policies.py              # Policy pack registry
 │       ├── profiling.py             # Contract profiling helpers
 │       ├── cli.py                   # CLI: validate, init, profile commands
 │       ├── reporting.py             # Report generation
@@ -42,6 +43,7 @@ DataPact/
 │   ├── test_custom_rules.py         # Custom rule plugin tests
 │   ├── test_profiling.py            # Profiling tests
 │   ├── test_reporting.py            # Report sink tests
+│   ├── test_policy_packs.py         # Policy pack tests
 │   ├── plugins/
 │   │   └── sample_plugin.py          # Custom rule plugin example
 │   └── fixtures/
@@ -61,8 +63,10 @@ DataPact/
 │       ├── deposits_transactions.csv           # Deposits transactions data
 │       ├── lending_payments.csv                # Lending payments data
 │       ├── deposits_accounts_agg.csv           # Aggregate deposits data
-│       └── lending_loans_agg.csv               # Aggregate lending data
+│       ├── lending_loans_agg.csv               # Aggregate lending data
+│       └── policy_pack_contract.yaml           # Policy pack contract
 └── docs/
     ├── ARCHITECTURE.md              # Design decisions & data flow
+    ├── sequenceDiagram.mmd          # Mermaid sequence diagram
     ├── VERSIONING.md                # Versioning guide
     └── AI_INSTRUCTIONS_GUIDE.md     # Guide for writing AI instructions
