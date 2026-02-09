@@ -18,14 +18,10 @@ def test_iter_chunks_csv():
     assert [len(chunk) for chunk in chunks] == [2, 2, 1]
 
 
-def test_iter_chunks_jsonl(tmp_path):
-    df = pd.read_csv(FIXTURES_DIR / "valid_customers.csv")
-    jsonl_path = tmp_path / "customers.jsonl"
-    df.to_json(jsonl_path, orient="records", lines=True)
-
-    ds = DataSource(str(jsonl_path), format="jsonl")
+def test_iter_chunks_jsonl():
+    ds = DataSource(str(FIXTURES_DIR / "valid_customers.jsonl"), format="jsonl")
     chunks = list(ds.iter_chunks(chunksize=2))
-    assert sum(len(chunk) for chunk in chunks) == len(df)
+    assert sum(len(chunk) for chunk in chunks) == 5
 
 
 def test_chunked_unique_across_chunks():

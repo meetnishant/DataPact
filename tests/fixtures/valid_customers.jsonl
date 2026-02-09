@@ -1,0 +1,5 @@
+{"customer_id": 1, "email": "alice@example.com", "age": 28, "country": "US", "signup_date": "2023-01-15", "score": 48.5}
+{"customer_id": 2, "email": "bob@example.com", "age": 35, "country": "UK", "signup_date": "2023-02-20", "score": 52.3}
+{"customer_id": 3, "email": "charlie@example.com", "age": 42, "country": "CA", "signup_date": "2023-03-10", "score": 49.8}
+{"customer_id": 4, "email": "diana@example.com", "age": 29, "country": "AU", "signup_date": "2023-04-05", "score": 51.2}
+{"customer_id": 5, "email": "eve@example.com", "age": 38, "country": "DE", "signup_date": "2023-05-12", "score": 50.5}

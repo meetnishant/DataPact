@@ -38,6 +38,16 @@ def invalid_df():
     return pd.read_csv(FIXTURES_DIR / "invalid_customers.csv")
 
 
+@pytest.fixture
+def freshness_contract():
+    return Contract.from_yaml(str(FIXTURES_DIR / "freshness_contract.yaml"))
+
+
+@pytest.fixture
+def freshness_df():
+    return pd.read_csv(FIXTURES_DIR / "freshness_events.csv")
+
+
 class TestSchemaValidator:
     """Tests for schema validation."""
 
@@ -213,23 +223,8 @@ class TestQualityValidator:
         assert passed
         assert any(err.startswith("WARN") for err in errors)
 
-    def test_freshness_max_age_hours(self):
-        contract_data = {
-            "contract": {"name": "test", "version": "2.0.0"},
-            "dataset": {"name": "test"},
-            "fields": [
-                {
-                    "name": "event_time",
-                    "type": "string",
-                    "required": True,
-                    "rules": {"freshness_max_age_hours": 0.01},
-                }
-            ],
-        }
-        contract = Contract._from_dict(contract_data)
-        df = pd.DataFrame({"event_time": ["2000-01-01T00:00:00Z"]})
-
-        validator = QualityValidator(contract, df)
+    def test_freshness_max_age_hours(self, freshness_contract, freshness_df):
+        validator = QualityValidator(freshness_contract, freshness_df)
         passed, errors = validator.validate()
         assert not passed
         assert any("freshness" in err.lower() for err in errors)

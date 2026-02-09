@@ -1,0 +1,11 @@
+contract:
+  name: freshness_contract
+  version: 2.0.0
+dataset:
+  name: freshness_events
+fields:
+  - name: event_time
+    type: string
+    required: true
+    rules:
+      freshness_max_age_hours: 0.01
