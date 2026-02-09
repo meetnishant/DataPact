@@ -1,5 +1,7 @@
 # Guide to Writing AI-Friendly Instructions
 
+Use this guide to craft AI instructions for DataPact and similar projects.
+
 Use this template for your `.github/copilot-instructions.md` and other AI instruction files.
 
 ## Core Principles

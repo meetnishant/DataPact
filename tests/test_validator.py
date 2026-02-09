@@ -1,12 +1,12 @@
-"""Test suite for data contract validator."""
+"""Test suite for DataPact."""
 
 import pytest
 from pathlib import Path
 import pandas as pd
 
-from data_contract_validator.contracts import Contract
-from data_contract_validator.datasource import DataSource
-from data_contract_validator.validators import (
+from datapact.contracts import Contract
+from datapact.datasource import DataSource
+from datapact.validators import (
     SchemaValidator,
     QualityValidator,
     DistributionValidator,

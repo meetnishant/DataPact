@@ -1,13 +1,13 @@
 """
 Contract parsing and validation module.
-Defines dataclasses for contract, field, rules, and distribution, and provides YAML parsing and migration logic.
+Defines dataclasses for contract, field, rules, and distribution, and provides
+YAML parsing and migration logic.
 """
 
 from typing import Any, Dict, List, Optional
 from dataclasses import dataclass
 import yaml
-import json
-from data_contract_validator.versioning import (
+from datapact.versioning import (
     validate_version,
     is_version_deprecated,
     get_deprecation_message,
@@ -107,13 +107,19 @@ class Contract:
         # Check for deprecation
         if is_version_deprecated(version):
             deprecation_msg = get_deprecation_message(version)
-            print(f"WARNING: Contract version {version} is deprecated. {deprecation_msg}")
+            print(
+                f"WARNING: Contract version {version} is deprecated."
+                f" {deprecation_msg}"
+            )
 
         # Auto-migrate to latest if needed
         if version != LATEST_VERSION:
             try:
                 data = VersionMigration.migrate(data, version, LATEST_VERSION)
-                print(f"INFO: Auto-migrated contract from v{version} to v{LATEST_VERSION}")
+                print(
+                    f"INFO: Auto-migrated contract from v{version} "
+                    f"to v{LATEST_VERSION}"
+                )
                 contract_data = data.get("contract", {})
             except VersionError as e:
                 raise ValueError(f"Failed to migrate contract: {e}")

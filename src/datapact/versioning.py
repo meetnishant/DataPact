@@ -3,7 +3,7 @@ Contract versioning and compatibility management.
 Handles version registry, migration, compatibility checks, and breaking changes.
 """
 
-from typing import Dict, List, Set, Tuple
+from typing import Dict, List, Tuple
 from dataclasses import dataclass
 
 
@@ -54,7 +54,8 @@ VERSION_REGISTRY = {
 # Current/latest version
 LATEST_VERSION = "2.0.0"
 
-# Define backward compatibility: key = tool version, value = contract versions it supports
+# Define backward compatibility: key = tool version,
+# value = contract versions it supports
 TOOL_COMPATIBILITY = {
     "0.1.0": ["1.0.0", "1.1.0"],  # Initial release supports v1.0 and v1.1
     "0.2.0": ["1.0.0", "1.1.0", "2.0.0"],  # Adds v2.0 support

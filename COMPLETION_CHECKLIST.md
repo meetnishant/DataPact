@@ -1,5 +1,7 @@
 # ✅ Project Completion Checklist
 
+Project: DataPact
+
 ## Core Implementation
 - ✅ Contract parsing (YAML → Python models)
 - ✅ Data loading (CSV, Parquet, JSON with auto-detection)

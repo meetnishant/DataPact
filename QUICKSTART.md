@@ -19,7 +19,7 @@ python3 -m pip install --user black ruff mypy
 
 ### 3. Verify Installation
 ```bash
-PYTHONPATH=./src python3 -c "from data_contract_validator import Contract; print('✓ Ready')"
+PYTHONPATH=./src python3 -c "from datapact import Contract; print('✓ Ready')"
 ```
 
 ## Running the CLI
@@ -31,14 +31,14 @@ export PYTHONPATH=/Users/meetnishant/Documents/DataContracts/src
 
 ### Validate Data
 ```bash
-python3 src/data_contract_validator/cli.py validate \
+python3 src/datapact/cli.py validate \
   --contract tests/fixtures/customer_contract.yaml \
   --data tests/fixtures/valid_customers.csv
 ```
 
 ### Infer Contract from Data
 ```bash
-python3 src/data_contract_validator/cli.py init \
+python3 src/datapact/cli.py init \
   --contract my_contract.yaml \
   --data my_data.csv
 ```
@@ -54,7 +54,7 @@ export PYTHONPATH=./src
 pytest tests/test_validator.py -v
 
 # Check total coverage percentage
-dcv-coverage --min 80
+datapact-coverage --min 80
 ```
 
 ## Code Quality

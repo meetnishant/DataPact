@@ -6,7 +6,7 @@ This project is maintained by the open-source community. Contributions are welco
 
 ## High-Level Design
 
-The Data Contract Validator follows a modular pipeline:
+The DataPact follows a modular pipeline:
 
 ```
 Contract YAML → Contract Parser → Validators → Report → JSON/Console
@@ -117,7 +117,7 @@ sequenceDiagram
     participant Reporter as Report Generator
     participant Output as JSON/Console
 
-    User->>+CLI: dcv validate --contract.yaml --data.csv
+    User->>+CLI: datapact validate --contract.yaml --data.csv
     CLI->>+Parser: Parse contract YAML
     Parser-->>-CLI: Contract object
     

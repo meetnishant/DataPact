@@ -3,7 +3,7 @@ requires = ["setuptools>=45", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "data-contract-validator"
+name = "datapact"
 version = "0.1.0"
 description = "Validate datasets against YAML data contracts"
 readme = "README.md"
@@ -38,8 +38,8 @@ dev = [
 ]
 
 [project.scripts]
-dcv = "data_contract_validator.cli:main"
-dcv-coverage = "data_contract_validator.coverage_check:main"
+datapact = "datapact.cli:main"
+datapact-coverage = "datapact.coverage_check:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

@@ -2,7 +2,7 @@
 
 ## What Was Created
 
-A **production-ready Python data validation framework** called **data-contract-validator** that enables teams to validate datasets against YAML-defined data contracts in CI/CD pipelines.
+A **production-ready Python data validation framework** called **DataPact** that enables teams to validate datasets against YAML-defined data contracts in CI/CD pipelines.
 
 ### Key Deliverables
 
@@ -69,7 +69,7 @@ YAML Contract                Data File
 export PYTHONPATH=./src
 
 # Validate data
-python3 src/data_contract_validator/cli.py validate \
+python3 src/datapact/cli.py validate \
   --contract tests/fixtures/customer_contract.yaml \
   --data tests/fixtures/valid_customers.csv
 
@@ -107,7 +107,7 @@ This enables AI agents (Copilot, Claude, etc.) to be immediately productive with
 
 ### Source Code
 ```
-src/data_contract_validator/
+src/datapact/
 ├── contracts.py              YAML parsing
 ├── datasource.py             Data loading
 ├── cli.py                    CLI interface

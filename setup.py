@@ -1,11 +1,11 @@
 #!/usr/bin/env python
-"""Setup file for data-contract-validator."""
+"""Setup file for DataPact."""
 
 from setuptools import setup, find_packages
 
 # Minimal setup.py for legacy tooling; pyproject.toml is authoritative.
 setup(
-    name="data-contract-validator",
+    name="datapact",
     package_dir={"": "src"},
     packages=find_packages(where="src"),
 )

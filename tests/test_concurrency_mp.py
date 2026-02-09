@@ -1,4 +1,7 @@
-"""Multiprocessing concurrency test: spawn multiple processes each running validators against the same DataFrame."""
+"""
+Multiprocessing concurrency test: spawn multiple processes each running
+validators against the same DataFrame.
+"""
 from pathlib import Path
 from multiprocessing import get_context, Manager
 
@@ -9,14 +12,14 @@ FIXTURES_DIR = Path(__file__).parent / "fixtures"
 def _mp_run_validators(contract_path, data_path, results, errors, idx):
     try:
         # Import inside process to avoid pickling complex modules
-        from data_contract_validator.contracts import Contract
-        from data_contract_validator.validators.schema_validator import (
+        from datapact.contracts import Contract
+        from datapact.validators.schema_validator import (
             SchemaValidator,
         )
-        from data_contract_validator.validators.quality_validator import (
+        from datapact.validators.quality_validator import (
             QualityValidator,
         )
-        from data_contract_validator.validators.distribution_validator import (
+        from datapact.validators.distribution_validator import (
             DistributionValidator,
         )
         import pandas as pd
@@ -47,7 +50,10 @@ def test_multiprocess_validators_no_exceptions():
 
     procs = []
     for i in range(n_procs):
-        p = ctx.Process(target=_mp_run_validators, args=(contract_path, data_path, results, errors, i))
+        p = ctx.Process(
+            target=_mp_run_validators,
+            args=(contract_path, data_path, results, errors, i),
+        )
         procs.append(p)
         p.start()
 

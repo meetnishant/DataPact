@@ -1,14 +1,15 @@
-"""Concurrency test: run multiple validator instances concurrently against the same DataFrame."""
+"""
+Concurrency test: run multiple validator instances concurrently against the
+same DataFrame.
+"""
 from pathlib import Path
 import threading
 
 import pandas as pd
-import pytest
-
-from data_contract_validator.contracts import Contract
-from data_contract_validator.validators.schema_validator import SchemaValidator
-from data_contract_validator.validators.quality_validator import QualityValidator
-from data_contract_validator.validators.distribution_validator import (
+from datapact.contracts import Contract
+from datapact.validators.schema_validator import SchemaValidator
+from datapact.validators.quality_validator import QualityValidator
+from datapact.validators.distribution_validator import (
     DistributionValidator,
 )
 

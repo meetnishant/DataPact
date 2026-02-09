@@ -4,12 +4,12 @@ This guide maps each file to its purpose and shows how they fit together.
 
 ## Core Application Files
 
-### `src/data_contract_validator/__init__.py`
+### `src/datapact/__init__.py`
 - **Purpose**: Package entry point, exports main classes
 - **Exports**: `Contract`, `ValidationReport`, `DataSource`
 - **When to modify**: Adding new top-level exports
 
-### `src/data_contract_validator/contracts.py`
+### `src/datapact/contracts.py`
 - **Purpose**: Parse YAML contracts, model validation rules
 - **Classes**: `Contract`, `Field`, `FieldRule`, `DistributionRule`, `Dataset`
 - **Key methods**: 
@@ -18,7 +18,7 @@ This guide maps each file to its purpose and shows how they fit together.
   - `Contract._parse_distribution()` - Extract distribution rules
 - **When to modify**: Adding new rule types or contract metadata
 
-### `src/data_contract_validator/datasource.py`
+### `src/datapact/datasource.py`
 - **Purpose**: Load datasets in multiple formats
 - **Classes**: `DataSource`
 - **Key methods**:
@@ -27,13 +27,13 @@ This guide maps each file to its purpose and shows how they fit together.
   - `_detect_format()` - Auto-detect file format
 - **When to modify**: Adding support for new data formats (e.g., Excel)
 
-### `src/data_contract_validator/cli.py`
+### `src/datapact/cli.py`
 - **Purpose**: Command-line interface and orchestration
 - **Functions**: `main()`, `validate_command()`, `init_command()`
 - **Commands**: `validate`, `init`
 - **When to modify**: Adding new CLI commands or options
 
-### `src/data_contract_validator/reporting.py`
+### `src/datapact/reporting.py`
 - **Purpose**: Generate validation reports
 - **Classes**: `ErrorRecord`, `ValidationReport`
 - **Key methods**:
@@ -42,7 +42,7 @@ This guide maps each file to its purpose and shows how they fit together.
   - `print_summary()` - Print human-readable console output
 - **When to modify**: Changing report format or adding new metadata
 
-### `src/data_contract_validator/versioning.py`
+### `src/datapact/versioning.py`
 - **Purpose**: Contract version management, migration, and compatibility checking
 - **Classes**: `VersionInfo`, `VersionMigration`
 - **Functions**: `validate_version()`, `check_tool_compatibility()`, `get_breaking_changes()`, `get_deprecation_message()`
@@ -51,21 +51,21 @@ This guide maps each file to its purpose and shows how they fit together.
 
 ### Validators (Sequential Pipeline)
 
-#### `src/data_contract_validator/validators/schema_validator.py`
+#### `src/datapact/validators/schema_validator.py`
 - **Purpose**: Check structure (columns, types, required fields)
 - **Classes**: `SchemaValidator`
 - **Runs**: First (blocks if critical issues)
 - **Output**: ERROR severity violations
 - **When to modify**: Adding new schema checks (e.g., column ordering)
 
-#### `src/data_contract_validator/validators/quality_validator.py`
+#### `src/datapact/validators/quality_validator.py`
 - **Purpose**: Validate data content (nulls, ranges, patterns, etc.)
 - **Classes**: `QualityValidator`
 - **Runs**: Second (non-blocking)
 - **Output**: ERROR or WARN severity violations
 - **When to modify**: Adding new validation rules (min, max, regex, enum, etc.)
 
-#### `src/data_contract_validator/validators/distribution_validator.py`
+#### `src/datapact/validators/distribution_validator.py`
 - **Purpose**: Monitor numeric distributions (mean, std drift)
 - **Classes**: `DistributionValidator`
 - **Runs**: Third (always non-blocking)
@@ -80,7 +80,7 @@ This guide maps each file to its purpose and shows how they fit together.
   - `[build-system]` - Setuptools config
   - `[project]` - Package metadata
   - `[project.optional-dependencies]` - Dev tools (pytest, black, mypy, ruff)
-  - `[project.scripts]` - CLI entry point `dcv`
+  - `[project.scripts]` - CLI entry point `datapact`
   - `[tool.ruff]`, `[tool.mypy]`, `[tool.pytest.ini_options]` - Tool configs
 - **When to modify**: Updating dependencies, adding new tool config
 

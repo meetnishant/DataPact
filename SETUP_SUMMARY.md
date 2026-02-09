@@ -2,7 +2,7 @@
 
 ## ✅ Complete Project Structure Created
 
-Your **data-contract-validator** repository is now ready with all essential components for a production-grade Python data validation framework.
+Your **DataPact** repository is now ready with all essential components for a production-grade Python data validation framework.
 
 ### Directory Structure
 
@@ -11,7 +11,7 @@ DataContracts/
 ├── .github/
 │   ├── copilot-instructions.md    ← AI instructions for Copilot/Claude
 │   └── workflows/tests.yml         ← GitHub Actions CI/CD pipeline
-├── src/data_contract_validator/
+├── src/datapact/
 │   ├── __init__.py
 │   ├── contracts.py                ← YAML parsing & contract models
 │   ├── datasource.py               ← Data loading (CSV/Parquet/JSON)
@@ -94,12 +94,12 @@ DataContracts/
 export PYTHONPATH=/Users/meetnishant/Documents/DataContracts/src
 
 # Validate data against contract
-python3 src/data_contract_validator/cli.py validate \
+python3 src/datapact/cli.py validate \
   --contract tests/fixtures/customer_contract.yaml \
   --data tests/fixtures/valid_customers.csv
 
 # Infer contract from data
-python3 src/data_contract_validator/cli.py init \
+python3 src/datapact/cli.py init \
   --contract new_contract.yaml \
   --data data.csv
 ```

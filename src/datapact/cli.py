@@ -12,15 +12,15 @@ from datetime import datetime  # For timestamping reports
 
 
 # Project imports
-from data_contract_validator.contracts import Contract  # Contract model and parsing
-from data_contract_validator.datasource import DataSource  # Data loading and schema inference
-from data_contract_validator.validators import (
+from datapact.contracts import Contract  # Contract model and parsing
+from datapact.datasource import DataSource  # Data loading and schema inference
+from datapact.validators import (
     SchemaValidator,  # Validates schema (columns, types, required)
     QualityValidator,  # Validates quality rules (nulls, unique, etc.)
     DistributionValidator,  # Validates distribution/drift rules
 )
-from data_contract_validator.reporting import ValidationReport, ErrorRecord  # Reporting utilities
-from data_contract_validator.versioning import check_tool_compatibility  # Version compatibility check
+from datapact.reporting import ValidationReport, ErrorRecord  # Reporting utilities
+from datapact.versioning import check_tool_compatibility  # Version compatibility check
 
 
 
@@ -197,8 +197,8 @@ def init_command(args) -> int:
             # Each field with inferred type, not required by default, empty rules
             print(f"  - name: {col_name}")
             print(f"    type: {col_type}")
-            print(f"    required: false")
-            print(f"    rules: {{}}")
+            print("    required: false")
+            print("    rules: {}")
 
         return 0
 

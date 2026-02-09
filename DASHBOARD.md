@@ -3,7 +3,7 @@
 ## Quick Stats
 
 ```
-Project: data-contract-validator
+Project: DataPact
 Version: 0.2.0
 Status: ✅ READY FOR PRODUCTION
 Created: February 8, 2026
@@ -73,7 +73,7 @@ Configuration (4 files):
 ```
 ┌─────────────────────────────────────────────────────────┐
 │                   User / CI Pipeline                     │
-│                  (CLI: dcv validate)                     │
+│                  (CLI: datapact validate)                     │
 └────────────────────┬────────────────────────────────────┘
                      │
         ┌────────────┴────────────┐
@@ -136,7 +136,7 @@ sequenceDiagram
     participant Reporter as Report Generator
     participant Output as JSON/Console
 
-    User->>+CLI: dcv validate --contract.yaml --data.csv
+    User->>+CLI: datapact validate --contract.yaml --data.csv
     CLI->>+Parser: Parse contract YAML
     Parser-->>-CLI: Contract object
     
@@ -169,7 +169,7 @@ sequenceDiagram
 ## Code Organization
 
 ```
-src/data_contract_validator/
+src/datapact/
 ├── __init__.py              Package entry point
 ├── contracts.py             Contract parsing & models
 │   ├─ Contract
@@ -227,7 +227,7 @@ src/data_contract_validator/
    └─ Type check: mypy src/
 
 3. VALIDATION
-   ├─ python3 src/data_contract_validator/cli.py validate \
+   ├─ python3 src/datapact/cli.py validate \
    │  --contract tests/fixtures/customer_contract.yaml \
    │  --data tests/fixtures/valid_customers.csv
    └─ Check reports/
@@ -340,12 +340,12 @@ WARN (informational)
 ```bash
 # Validate data
 export PYTHONPATH=./src
-python3 src/data_contract_validator/cli.py validate \
+python3 src/datapact/cli.py validate \
   --contract contract.yaml \
   --data data.csv
 
 # Infer contract from data
-python3 src/data_contract_validator/cli.py init \
+python3 src/datapact/cli.py init \
   --contract new_contract.yaml \
   --data data.csv
 

@@ -10,7 +10,7 @@ sequenceDiagram
     participant Reporter as Report Generator
     participant Output as JSON/Console
 
-    User->>+CLI: dcv validate --contract.yaml --data.csv
+    User->>+CLI: datapact validate --contract.yaml --data.csv
     CLI->>+Parser: Parse contract YAML
     Parser-->>-CLI: Contract object
     

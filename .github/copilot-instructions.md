@@ -1,10 +1,10 @@
-# AI Coding Instructions for data-contract-validator
+# AI Coding Instructions for DataPact
 
 ## Project Overview
 
-**data-contract-validator** is a Python framework that validates datasets (CSV, Parquet, JSON) against YAML-defined "data contracts" containing schema, quality, and distribution rules. It produces JSON reports and non-zero exit codes for CI/CD integration.
+**DataPact** is a Python framework that validates datasets (CSV, Parquet, JSON) against YAML-defined "data contracts" containing schema, quality, and distribution rules. It produces JSON reports and non-zero exit codes for CI/CD integration.
 
-**Key Goal**: Enable data quality checks in pipelines via a CLI tool (`dcv validate`).
+**Key Goal**: Enable data quality checks in pipelines via a CLI tool (`datapact validate`).
 
 ## Architecture at a Glance
 
@@ -24,14 +24,14 @@ The validation pipeline is **modular and sequential**:
 
 | File | Purpose | Example |
 |------|---------|---------|
-| `src/data_contract_validator/contracts.py` | Parse YAML contracts into dataclass models | `Contract.from_yaml("contract.yaml")` returns Contract with fields, rules |
-| `src/data_contract_validator/datasource.py` | Load data + infer schema | `DataSource("data.csv").load()` returns DataFrame |
-| `src/data_contract_validator/validators/schema_validator.py` | Column/type/required checks | Fails if required field missing or type mismatch |
-| `src/data_contract_validator/validators/quality_validator.py` | Null, unique, range, regex, enum checks | `rules.not_null=True` → error if nulls found |
-| `src/data_contract_validator/validators/distribution_validator.py` | Mean/std drift, outliers | Warnings only (never blocks) |
-| `src/data_contract_validator/versioning.py` | Contract version management, migration, compatibility | Supports v1.0.0, v1.1.0, v2.0.0; auto-migrates old contracts |
-| `src/data_contract_validator/reporting.py` | ErrorRecord model + JSON/console output | Saves to `./reports/<timestamp>.json`; includes version info |
-| `src/data_contract_validator/cli.py` | Entry point (`dcv` command) | `dcv validate --contract c.yaml --data d.csv` with version checks |
+| `src/datapact/contracts.py` | Parse YAML contracts into dataclass models | `Contract.from_yaml("contract.yaml")` returns Contract with fields, rules |
+| `src/datapact/datasource.py` | Load data + infer schema | `DataSource("data.csv").load()` returns DataFrame |
+| `src/datapact/validators/schema_validator.py` | Column/type/required checks | Fails if required field missing or type mismatch |
+| `src/datapact/validators/quality_validator.py` | Null, unique, range, regex, enum checks | `rules.not_null=True` → error if nulls found |
+| `src/datapact/validators/distribution_validator.py` | Mean/std drift, outliers | Warnings only (never blocks) |
+| `src/datapact/versioning.py` | Contract version management, migration, compatibility | Supports v1.0.0, v1.1.0, v2.0.0; auto-migrates old contracts |
+| `src/datapact/reporting.py` | ErrorRecord model + JSON/console output | Saves to `./reports/<timestamp>.json`; includes version info |
+| `src/datapact/cli.py` | Entry point (`datapact` command) | `datapact validate --contract c.yaml --data d.csv` with version checks |
 
 ## Contract YAML Format
 
@@ -74,7 +74,7 @@ Distribution rules: `mean`, `std`, `max_drift_pct`, `max_z_score`.
 
 ### Run validation
 ```bash
-dcv validate --contract tests/fixtures/customer_contract.yaml --data tests/fixtures/valid_customers.csv
+datapact validate --contract tests/fixtures/customer_contract.yaml --data tests/fixtures/valid_customers.csv
 ```
 - Prints summary to console
 - Saves JSON to `./reports/<timestamp>.json`
@@ -82,7 +82,7 @@ dcv validate --contract tests/fixtures/customer_contract.yaml --data tests/fixtu
 
 ### Infer contract from data
 ```bash
-dcv init --contract new_contract.yaml --data data.csv
+datapact init --contract new_contract.yaml --data data.csv
 ```
 Outputs YAML template with columns and inferred types (useful starting point).
 

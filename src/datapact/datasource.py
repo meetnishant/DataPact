@@ -3,7 +3,7 @@ Data source loading and schema inference.
 Handles loading CSV, Parquet, JSONL files and inferring schema for contract generation.
 """
 
-from typing import Optional, Dict, Any
+from typing import Optional, Dict
 from pathlib import Path
 import pandas as pd
 

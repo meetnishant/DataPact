@@ -1,4 +1,4 @@
-data-contract-validator/
+DataPact/
 ├── .github/
 │   ├── copilot-instructions.md      # AI coding instructions
 │   └── workflows/
@@ -17,7 +17,7 @@ data-contract-validator/
 ├── VERSIONING_IMPLEMENTATION.md     # Versioning implementation notes
 ├── pyproject.toml                   # Project metadata & dependencies
 ├── src/
-│   └── data_contract_validator/
+│   └── datapact/
 │       ├── __init__.py              # Package entry point
 │       ├── contracts.py             # YAML contract parsing
 │       ├── datasource.py            # Data loading (CSV/Parquet/JSON)

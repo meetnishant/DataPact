@@ -8,7 +8,7 @@ MYPY = $(PYTHON) -m mypy
 
 # Run full test suite in parallel with coverage
 test:
-	$(PYTEST) -n auto --cov=src/data_contract_validator --cov-report=term-missing -v
+	$(PYTEST) -n auto --cov=src/datapact --cov-report=term-missing -v
 
 # Quick test run (no coverage)
 test-quick:
@@ -32,7 +32,7 @@ test-concurrency:
 
 # Generate coverage report (uses pytest-cov)
 coverage:
-	$(PYTEST) -n auto --cov=src/data_contract_validator --cov-report=html
+	$(PYTEST) -n auto --cov=src/datapact --cov-report=html
 
 # Format, lint, and type check
 format:

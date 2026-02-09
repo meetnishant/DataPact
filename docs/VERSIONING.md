@@ -6,7 +6,7 @@ This project is maintained by the open-source community. Contributions are welco
 
 ## Overview
 
-The data-contract-validator now includes comprehensive contract versioning support with:
+The DataPact now includes comprehensive contract versioning support with:
 
 - **Version validation** - Ensure contracts use supported versions
 - **Automatic migration** - Auto-upgrade contracts to latest schema
@@ -66,7 +66,7 @@ fields:
 When you load an older contract, it's automatically migrated to the latest version:
 
 ```bash
-dcv validate --contract old_contract.yaml --data data.csv
+datapact validate --contract old_contract.yaml --data data.csv
 # INFO: Auto-migrated contract from v1.0.0 to v2.0.0
 ```
 
@@ -154,7 +154,7 @@ Supported upgrade paths:
 ### Check if version is valid
 
 ```python
-from data_contract_validator.versioning import validate_version
+from datapact.versioning import validate_version
 
 if validate_version("2.0.0"):
     print("Version is supported")
@@ -163,7 +163,7 @@ if validate_version("2.0.0"):
 ### Get breaking changes
 
 ```python
-from data_contract_validator.versioning import get_breaking_changes
+from datapact.versioning import get_breaking_changes
 
 changes = get_breaking_changes("2.0.0")
 for change in changes:
@@ -173,7 +173,7 @@ for change in changes:
 ### Manual migration
 
 ```python
-from data_contract_validator.versioning import VersionMigration
+from datapact.versioning import VersionMigration
 
 contract_dict = {...}  # Your contract data
 migrated = VersionMigration.migrate(contract_dict, "1.0.0", "2.0.0")
@@ -182,7 +182,7 @@ migrated = VersionMigration.migrate(contract_dict, "1.0.0", "2.0.0")
 ### Check compatibility
 
 ```python
-from data_contract_validator.versioning import check_tool_compatibility
+from datapact.versioning import check_tool_compatibility
 
 is_compatible, msg = check_tool_compatibility("0.2.0", "2.0.0")
 if not is_compatible:

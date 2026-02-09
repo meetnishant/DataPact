@@ -1,5 +1,7 @@
 # Sequence Diagram Documentation - Added
 
+This guide covers the DataPact validation sequence diagrams.
+
 ## ✅ What Was Added
 
 Two comprehensive Mermaid sequence diagrams have been added to the documentation showing the complete validation flow.

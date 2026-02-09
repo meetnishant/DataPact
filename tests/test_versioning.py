@@ -3,7 +3,7 @@
 import pytest
 from pathlib import Path
 
-from data_contract_validator.versioning import (
+from datapact.versioning import (
     validate_version,
     is_version_deprecated,
     VersionMigration,
@@ -12,7 +12,7 @@ from data_contract_validator.versioning import (
     get_latest_version,
     VersionError,
 )
-from data_contract_validator.contracts import Contract
+from datapact.contracts import Contract
 
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"

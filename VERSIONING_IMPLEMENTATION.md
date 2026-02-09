@@ -6,7 +6,7 @@ Contract versioning has been successfully implemented with full backward compati
 
 ## What Was Implemented
 
-### 1. **Version Management Module** (`src/data_contract_validator/versioning.py`)
+### 1. **Version Management Module** (`src/datapact/versioning.py`)
 - Version registry with 3 semantic versions: v1.0.0, v1.1.0, v2.0.0
 - Automatic contract migration engine with multi-step migration support
 - Version validation and compatibility checking
@@ -85,14 +85,14 @@ Supports:
 ### Backward Compatibility
 ```bash
 # v1.0.0 contract automatically migrates to v2.0.0
-$ dcv validate --contract legacy_contract_v1.yaml --data data.csv
+$ datapact validate --contract legacy_contract_v1.yaml --data data.csv
 INFO: Auto-migrated contract from v1.0.0 to v2.0.0
 ```
 
 ### Latest Version Support
 ```bash
 # v2.0.0 contracts load directly
-$ dcv validate --contract modern_contract_v2.yaml --data data.csv
+$ datapact validate --contract modern_contract_v2.yaml --data data.csv
 ```
 
 ## Migration Path Validation
@@ -120,16 +120,16 @@ $ dcv validate --contract modern_contract_v2.yaml --data data.csv
 ## Files Modified/Created
 
 ### New Files
-- `src/data_contract_validator/versioning.py` (180+ lines)
+- `src/datapact/versioning.py` (180+ lines)
 - `tests/test_versioning.py` (280+ lines)
 - `tests/fixtures/customer_contract_v1.yaml`
 - `tests/fixtures/customer_contract_v2.yaml`
 - `docs/VERSIONING.md` (250+ lines)
 
 ### Modified Files
-- `src/data_contract_validator/contracts.py` (added version validation, auto-migration)
-- `src/data_contract_validator/reporting.py` (added version info to reports)
-- `src/data_contract_validator/cli.py` (added tool compatibility checking)
+- `src/datapact/contracts.py` (added version validation, auto-migration)
+- `src/datapact/reporting.py` (added version info to reports)
+- `src/datapact/cli.py` (added tool compatibility checking)
 - `README.md` (added versioning section)
 - `.github/copilot-instructions.md` (added versioning details)
 - `COMPLETION_CHECKLIST.md` (updated with versioning status)

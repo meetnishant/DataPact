@@ -3,15 +3,15 @@ Quality validation - nulls, uniqueness, ranges, regex, enums.
 Checks field-level quality rules and produces errors for violations.
 """
 
-from typing import List, Tuple, Optional
-import re
+from typing import List, Tuple
 import pandas as pd
-from data_contract_validator.contracts import Contract, Field, FieldRule
+from datapact.contracts import Contract, Field
 
 
 class QualityValidator:
     """
-    Validate data quality against field rules (not_null, unique, min/max, regex, enum, max_null_ratio).
+    Validate data quality against field rules
+    (not_null, unique, min/max, regex, enum, max_null_ratio).
     Produces errors for violations of quality rules.
     """
 
@@ -81,14 +81,16 @@ class QualityValidator:
                 violations = (non_null < rules.min).sum()
                 if violations > 0:
                     self.errors.append(
-                        f"ERROR: Field '{field.name}' has {violations} values < min ({rules.min})"
+                        f"ERROR: Field '{field.name}' has {violations} values "
+                        f"< min ({rules.min})"
                     )
 
             if rules.max is not None:
                 violations = (non_null > rules.max).sum()
                 if violations > 0:
                     self.errors.append(
-                        f"ERROR: Field '{field.name}' has {violations} values > max ({rules.max})"
+                        f"ERROR: Field '{field.name}' has {violations} values "
+                        f"> max ({rules.max})"
                     )
 
         # regex constraint
@@ -102,7 +104,8 @@ class QualityValidator:
             violations = (~non_null.str.fullmatch(pattern)).sum()
             if violations > 0:
                 self.errors.append(
-                    f"ERROR: Field '{field.name}' has {violations} values not matching regex '{rules.regex}'"
+                    f"ERROR: Field '{field.name}' has {violations} values "
+                    f"not matching regex '{rules.regex}'"
                 )
 
         # enum constraint
@@ -112,5 +115,6 @@ class QualityValidator:
             violations = (~non_null.isin(valid_set)).sum()
             if violations > 0:
                 self.errors.append(
-                    f"ERROR: Field '{field.name}' has {violations} values not in enum {valid_set}"
+                    f"ERROR: Field '{field.name}' has {violations} values "
+                    f"not in enum {valid_set}"
                 )

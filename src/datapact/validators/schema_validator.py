@@ -5,7 +5,7 @@ Checks that dataset matches contract schema (required fields, types, extra colum
 
 from typing import List, Tuple
 import pandas as pd
-from data_contract_validator.contracts import Contract
+from datapact.contracts import Contract
 
 
 class SchemaValidator:
@@ -25,7 +25,7 @@ class SchemaValidator:
         Returns (is_valid, error_messages).
         """
         self.errors = []
-        
+
         # Check for missing required fields
         for field in self.contract.fields:
             if field.required and field.name not in self.df.columns:
@@ -56,7 +56,8 @@ class SchemaValidator:
     @staticmethod
     def _type_matches(actual: str, expected: str) -> bool:
         """
-        Check if actual pandas dtype matches contract type (integer, float, string, boolean).
+        Check if actual pandas dtype matches contract type
+        (integer, float, string, boolean).
         """
         type_map = {
             "integer": ["int", "int32", "int64"],

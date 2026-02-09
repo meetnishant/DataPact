@@ -1,30 +1,4 @@
-# Banking & Finance Test Cases
-
-## Overview
-The test suite covers multi-table data products for commercial banking and institutional finance, with deposits and lending modeled as accounts/loans plus transactions/payments. It also reflects consumer-specific contract needs (strict vs aggregate) to validate schema and quality expectations across different consumption patterns.
-
-## Test Categories
-
-- **PositiveCases**: Valid data rows that should pass all schema and quality checks. These represent typical, correct records for deposits and lending products.
-- **NegativeCases**: Rows intentionally containing errors (e.g., missing required fields, invalid dates, negative balances, out-of-range values, or type mismatches). These ensure the validator catches real-world data quality issues.
-- **BoundaryCases**: Edge-case rows that test the limits of contract rules (e.g., zero balances, maximum allowed values, dates at the edge of valid ranges). These confirm the validator's correct handling of contract boundaries.
-
-## Example Scenarios
-
-### Deposits
-- **Accounts (strict)**: Unique, non-null customer_id and account_id; valid product/status enums; balances within allowed range.
-- **Accounts (aggregate)**: customer_id may be 1% null with 99% uniqueness, while other fields remain strict.
-- **Transactions**: Valid txn_type/channel enums, valid dates, and amounts within limits (including withdrawals/fees).
-
-### Lending
-- **Loans (strict)**: Non-null loan_id and customer_id, valid product/status enums, balances within limits, rates in [0, 0.25].
-- **Loans (aggregate)**: customer_id may be 1% null with 99% uniqueness, other fields remain strict.
-- **Payments**: Valid payment_status enums, non-negative amounts, and valid dates.
-
-## Usage
-Test cases are tagged using `@pytest.mark.PositiveCases`, `@pytest.mark.NegativeCases`, and `@pytest.mark.BoundaryCases` for easy filtering and reporting. See `tests/test_banking_finance.py` for implementation details and `tests/fixtures/` for sample data and contracts.
-
-# Data Contract Validator
+# DataPact
 
 Validate datasets against YAML-based data contracts to ensure data quality, schema compliance, and distribution health.
 
@@ -88,13 +62,13 @@ fields:
 ### Validate Data
 
 ```bash
-dcv validate --contract customer_contract.yaml --data customers.csv
+datapact validate --contract customer_contract.yaml --data customers.csv
 ```
 
 ### Infer Contract from Data
 
 ```bash
-dcv init --contract new_contract.yaml --data data.csv
+datapact init --contract new_contract.yaml --data data.csv
 ```
 
 ## CLI Usage
@@ -102,7 +76,7 @@ dcv init --contract new_contract.yaml --data data.csv
 ### Validate Command
 
 ```bash
-dcv validate --contract <path/to/contract.yaml> --data <path/to/data> [--format auto|csv|parquet|jsonl] [--output-dir ./reports]
+datapact validate --contract <path/to/contract.yaml> --data <path/to/data> [--format auto|csv|parquet|jsonl] [--output-dir ./reports]
 ```
 
 **Options:**
@@ -118,7 +92,7 @@ dcv validate --contract <path/to/contract.yaml> --data <path/to/data> [--format 
 ### Init Command
 
 ```bash
-dcv init --contract <path/to/output.yaml> --data <path/to/data>
+datapact init --contract <path/to/output.yaml> --data <path/to/data>
 ```
 
 Infers a starter contract from a dataset (columns and types only).
@@ -185,15 +159,17 @@ JSON reports are saved to `./reports/<timestamp>.json`:
 
 ## Testing
 
+For scenario coverage details, see [Banking & Finance Test Cases](#banking--finance-test-cases).
+
 ```bash
 # Run tests
 pytest
 
 # With coverage
-pytest --cov=src/data_contract_validator
+pytest --cov=src/datapact
 
 # Coverage check with total percent
-dcv-coverage --min 80
+datapact-coverage --min 80
 ```
 
 ## Development
@@ -215,7 +191,7 @@ mypy src/
 ## Project Structure
 
 ```
-src/data_contract_validator/
+src/datapact/
 ├── __init__.py           # Package exports
 ├── contracts.py          # Contract parsing (YAML → dataclass models)
 ├── datasource.py         # Data loading and schema inference
@@ -250,3 +226,31 @@ See [docs/VERSIONING.md](docs/VERSIONING.md) for detailed version history, migra
 ## License
 
 MIT
+
+---
+
+# Banking & Finance Test Cases
+
+## Overview
+The test suite covers multi-table data products for commercial banking and institutional finance, with deposits and lending modeled as accounts/loans plus transactions/payments. It also reflects consumer-specific contract needs (strict vs aggregate) to validate schema and quality expectations across different consumption patterns.
+
+## Test Categories
+
+- **PositiveCases**: Valid data rows that should pass all schema and quality checks. These represent typical, correct records for deposits and lending products.
+- **NegativeCases**: Rows intentionally containing errors (e.g., missing required fields, invalid dates, negative balances, out-of-range values, or type mismatches). These ensure the validator catches real-world data quality issues.
+- **BoundaryCases**: Edge-case rows that test the limits of contract rules (e.g., zero balances, maximum allowed values, dates at the edge of valid ranges). These confirm the validator's correct handling of contract boundaries.
+
+## Example Scenarios
+
+### Deposits
+- **Accounts (strict)**: Unique, non-null customer_id and account_id; valid product/status enums; balances within allowed range.
+- **Accounts (aggregate)**: customer_id may be 1% null with 99% uniqueness, while other fields remain strict.
+- **Transactions**: Valid txn_type/channel enums, valid dates, and amounts within limits (including withdrawals/fees).
+
+### Lending
+- **Loans (strict)**: Non-null loan_id and customer_id, valid product/status enums, balances within limits, rates in [0, 0.25].
+- **Loans (aggregate)**: customer_id may be 1% null with 99% uniqueness, other fields remain strict.
+- **Payments**: Valid payment_status enums, non-negative amounts, and valid dates.
+
+## Usage
+Test cases are tagged using `@pytest.mark.PositiveCases`, `@pytest.mark.NegativeCases`, and `@pytest.mark.BoundaryCases` for easy filtering and reporting. See `tests/test_banking_finance.py` for implementation details and `tests/fixtures/` for sample data and contracts.

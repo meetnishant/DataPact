@@ -3,10 +3,10 @@ Distribution validation - drift detection for numeric columns.
 Checks for mean/std drift and outliers using contract distribution rules.
 """
 
-from typing import List, Tuple, Optional
+from typing import List, Tuple
 import pandas as pd
 import numpy as np
-from data_contract_validator.contracts import Contract, Field
+from datapact.contracts import Contract, Field
 
 
 class DistributionValidator:
@@ -62,7 +62,10 @@ class DistributionValidator:
 
         # Check mean drift
         if dist.mean is not None and dist.max_drift_pct is not None:
-            drift_pct = abs(current_mean - dist.mean) / abs(dist.mean) * 100 if dist.mean != 0 else 0
+            if dist.mean != 0:
+                drift_pct = abs(current_mean - dist.mean) / abs(dist.mean) * 100
+            else:
+                drift_pct = 0
             if drift_pct > dist.max_drift_pct:
                 self.warnings.append(
                     f"WARN: Field '{field.name}' mean drift {drift_pct:.2f}% "
@@ -71,7 +74,10 @@ class DistributionValidator:
 
         # Check std drift
         if dist.std is not None and dist.max_drift_pct is not None:
-            drift_pct = abs(current_std - dist.std) / abs(dist.std) * 100 if dist.std != 0 else 0
+            if dist.std != 0:
+                drift_pct = abs(current_std - dist.std) / abs(dist.std) * 100
+            else:
+                drift_pct = 0
             if drift_pct > dist.max_drift_pct:
                 self.warnings.append(
                     f"WARN: Field '{field.name}' std drift {drift_pct:.2f}% "

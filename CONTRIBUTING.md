@@ -1,4 +1,4 @@
-# Contributing to Data Contract Validator
+# Contributing to DataPact
 
 ## Development Setup
 
@@ -30,7 +30,7 @@
 
 ## Adding a New Validator
 
-1. Create `src/data_contract_validator/validators/your_validator.py`
+1. Create `src/datapact/validators/your_validator.py`
 2. Implement validator class with `validate()` method returning `(bool, List[str])`
 3. Add tests in `tests/test_validator.py`
 4. Export from `validators/__init__.py`
@@ -44,7 +44,7 @@
 
 ## Adding Support for New Contract Versions
 
-1. Add version info to `VERSION_REGISTRY` in `src/data_contract_validator/versioning.py`
+1. Add version info to `VERSION_REGISTRY` in `src/datapact/versioning.py`
 2. Implement migration path in `VersionMigration._migrate_step()` method
 3. Update `TOOL_COMPATIBILITY` matrix if needed
 4. Add test fixtures in `tests/fixtures/`
@@ -66,7 +66,7 @@ pytest tests/test_validator.py -v
 pytest tests/test_versioning.py -v
 
 # With coverage
-pytest --cov=src/data_contract_validator
+pytest --cov=src/datapact
 ```
 
 ## Versioning Strategy

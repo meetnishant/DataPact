@@ -1,6 +1,7 @@
 """
 Validation reporting - summary, errors, warnings, and JSON export.
-Defines ErrorRecord and ValidationReport for aggregating and outputting validation results.
+Defines ErrorRecord and ValidationReport for aggregating and outputting
+validation results.
 """
 
 from typing import List, Dict, Any, Optional
@@ -8,10 +9,8 @@ from dataclasses import dataclass, asdict
 from datetime import datetime
 import json
 from pathlib import Path
-from data_contract_validator.contracts import Contract
-from data_contract_validator.versioning import (
+from datapact.versioning import (
     get_breaking_changes,
-    check_tool_compatibility,
 )
 
 
@@ -76,7 +75,7 @@ class ValidationReport:
             },
             "errors": [asdict(e) for e in self.errors],
         }
-        
+
         # Add version information when breaking changes exist
         breaking_changes = get_breaking_changes(self.contract_version)
         if breaking_changes:
@@ -84,11 +83,11 @@ class ValidationReport:
                 "breaking_changes": breaking_changes,
                 "migration_available": True,
             }
-        
+
         # Add compatibility warnings if any
         if self.compatibility_warnings:
             result["compatibility_warnings"] = self.compatibility_warnings
-        
+
         return result
 
     def save_json(self, output_dir: str = "./reports") -> str:
@@ -113,18 +112,18 @@ class ValidationReport:
         """
         status = "PASS" if self.passed else "FAIL"
         print(f"\n{'='*60}")
-        print(f"Data Contract Validation Report")
+        print("DataPact Validation Report")
         print(f"{'='*60}")
         print(f"Status: {status}")
         print(f"Contract: {self.contract_name} (v{self.contract_version})")
         print(f"Dataset: {self.dataset_name}")
         print(f"Timestamp: {self.timestamp}")
-        print(f"\nSummary:")
+        print("\nSummary:")
         print(f"  Errors: {self.error_count}")
         print(f"  Warnings: {self.warning_count}")
 
         if self.errors:
-            print(f"\nDetails:")
+            print("\nDetails:")
             for err in self.errors:
                 print(f"  [{err.severity}] {err.field}: {err.message}")
         print(f"{'='*60}\n")

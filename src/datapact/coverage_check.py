@@ -21,7 +21,7 @@ def _run_pytest(cov_xml: Path) -> int:
         sys.executable,
         "-m",
         "pytest",
-        "--cov=src/data_contract_validator",
+        "--cov=src/datapact",
         f"--cov-report=xml:{cov_xml}",
         "--cov-report=term-missing",
         "-q",
@@ -47,7 +47,9 @@ def main() -> int:
     CLI entry point for coverage checks.
     Runs tests with coverage and prints the total percentage.
     """
-    parser = argparse.ArgumentParser(description="Run coverage check and report total coverage.")
+    parser = argparse.ArgumentParser(
+        description="Run coverage check and report total coverage."
+    )
     parser.add_argument(
         "--cov-file",
         default="coverage.xml",

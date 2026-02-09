@@ -1,12 +1,12 @@
 
-	1	Create a new GitHub-ready repository named data-contract-validator with a clean Python project layout, packaging, and tests.
+	1	Create a new GitHub-ready repository named DataPact with a clean Python project layout, packaging, and tests.
 	2	Goal of the toolBuild a framework that validates datasets against a “data contract” (YAML) containing:
 	◦	schema expectations (columns, types, required/optional)
 	◦	quality rules (nulls, uniqueness, ranges, regex, allowed values)
 	◦	basic distribution rules (mean/std drift thresholds for numeric columns)
 	◦	contract versioning + compatibility checks
 	3	Primary user experience
-	◦	Provide a CLI command:dcv validate --contract <contract.yaml> --data <file.csv|parquet|json> --format <auto>
+	◦	Provide a CLI command:datapact validate --contract <contract.yaml> --data <file.csv|parquet|json> --format <auto>
 	◦	Output:
 	▪	console summary (PASS/FAIL + key errors)
 	▪	machine-readable JSON report saved to ./reports/<timestamp>.json
@@ -69,5 +69,5 @@
 	•	Tests passing locally
 	11	Nice-to-have (only if time)
 	•	GitHub Actions workflow for running tests on PRs
-	•	dcv init command to generate a starter contract from a dataset (infer columns/types)
+	•	datapact init command to generate a starter contract from a dataset (infer columns/types)
 

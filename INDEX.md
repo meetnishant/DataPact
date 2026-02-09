@@ -1,6 +1,6 @@
 # 📚 Complete Index & Navigation Guide
 
-Welcome to the **data-contract-validator** repository! This file helps you navigate all resources.
+Welcome to the **DataPact** repository! This file helps you navigate all resources.
 
 ## 🎯 Start Here
 
@@ -37,7 +37,7 @@ Welcome to the **data-contract-validator** repository! This file helps you navig
 ## 🏗️ Project Structure
 
 ```
-src/data_contract_validator/          Core application
+src/datapact/          Core application
 ├── contracts.py                       YAML parsing & models
 ├── datasource.py                      Data loading (CSV/Parquet/JSON)
 ├── cli.py                             Command-line interface
@@ -86,7 +86,7 @@ Full tree: [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)
 #### Add a new feature
 1. Read [CONTRIBUTING.md](CONTRIBUTING.md#adding-a-new-validator)
 2. Check [FILE_REFERENCE.md](FILE_REFERENCE.md#adding-a-new-feature)
-3. Look at existing validator in [src/data_contract_validator/validators/](src/data_contract_validator/validators/)
+3. Look at existing validator in [src/datapact/validators/](src/datapact/validators/)
 
 #### Write a validation rule
 1. See examples in [tests/fixtures/customer_contract.yaml](tests/fixtures/customer_contract.yaml)
