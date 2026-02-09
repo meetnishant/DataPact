@@ -10,6 +10,7 @@ from datapact.validators.quality_validator import (
 )
 from datapact.validators.distribution_validator import DistributionValidator
 from datapact.validators.sla_validator import SLAValidator
+from datapact.validators.custom_rule_validator import CustomRuleValidator
 
 # Explicit public exports for validator classes
 __all__ = [
@@ -18,4 +19,5 @@ __all__ = [
 	"ChunkedQualityValidator",
 	"DistributionValidator",
 	"SLAValidator",
+	"CustomRuleValidator",
 ]

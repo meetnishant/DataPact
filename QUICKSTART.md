@@ -86,6 +86,16 @@ python3 src/datapact/cli.py validate \
 
 Chunked validation is supported for CSV and JSONL inputs.
 
+### Custom Rule Plugins
+```bash
+python3 src/datapact/cli.py validate \
+  --contract my_contract.yaml \
+  --data my_data.csv \
+  --plugin mypkg.rules
+```
+
+Custom rules run on full data; in streaming mode they run only when sampling is enabled.
+
 ## Running Tests
 
 ```bash

@@ -50,6 +50,7 @@
 - Schema drift policy is configured in `schema.extra_columns.severity`.
 - SLA checks are configured in `sla.min_rows` and `sla.max_rows`.
 - Chunked validation is available via `--chunksize` with optional sampling.
+- Custom rule plugins are configured via `rules.custom` and `custom_rules`.
 
 ## Adding Support for New Contract Versions
 

@@ -72,6 +72,13 @@ This guide maps each file to its purpose and shows how they fit together.
 - **Output**: ERROR or WARN severity violations (rule-level severities supported)
 - **When to modify**: Adding new validation rules (min, max, regex, enum, etc.)
 
+#### `src/datapact/validators/custom_rule_validator.py`
+- **Purpose**: Validate custom plugin rules
+- **Classes**: `CustomRuleValidator`
+- **Runs**: After SLA validation (non-blocking)
+- **Output**: ERROR or WARN severity violations
+- **When to modify**: Adjusting plugin rule interfaces or behavior
+
 #### `src/datapact/validators/sla_validator.py`
 - **Purpose**: Validate SLA checks (row count thresholds)
 - **Classes**: `SLAValidator`
@@ -214,6 +221,14 @@ This guide maps each file to its purpose and shows how they fit together.
 ### `tests/test_chunked_validation.py`
 - **Purpose**: Chunked validation and sampling tests
 - **When to modify**: Adjusting chunking or sampling behavior
+
+### `tests/test_custom_rules.py`
+- **Purpose**: Custom rule plugin tests
+- **When to modify**: Adjusting plugin rule interfaces or examples
+
+### `tests/plugins/sample_plugin.py`
+- **Purpose**: Example plugin module for custom rules
+- **When to modify**: Updating plugin examples for documentation/tests
 
 ### `tests/test_profiling.py`
 - **Purpose**: Profiling tests for inferred rules and distributions

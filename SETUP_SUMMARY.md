@@ -22,6 +22,7 @@ DataContracts/
 │       ├── schema_validator.py
 │       ├── quality_validator.py
 │       ├── sla_validator.py
+│       ├── custom_rule_validator.py
 │       └── distribution_validator.py
 ├── tests/
 │   ├── test_validator.py           ← Core validator tests
@@ -30,7 +31,10 @@ DataContracts/
 │   ├── test_concurrency.py         ← Concurrency validation
 │   ├── test_concurrency_mp.py      ← Multiprocessing concurrency
 │   ├── test_chunked_validation.py  ← Chunked validation and sampling
+│   ├── test_custom_rules.py        ← Custom rule plugin tests
 │   ├── test_profiling.py           ← Profiling tests
+│   ├── plugins/
+│   │   └── sample_plugin.py         ← Custom rule plugin example
 │   └── fixtures/
 │       ├── customer_contract.yaml
 │       ├── customer_contract_v1.yaml
@@ -76,6 +80,7 @@ DataContracts/
 ✅ **Schema Drift** - Control extra columns via WARN/ERROR policy  
 ✅ **SLA Checks** - Enforce row count thresholds and freshness rules  
 ✅ **Chunked Validation** - Stream CSV/JSONL with optional sampling  
+✅ **Custom Rule Plugins** - Load validation logic from plugin modules  
 ✅ **CLI** - Full command-line interface with `validate`, `init`, and `profile` commands  
 
 ### Testing & Quality

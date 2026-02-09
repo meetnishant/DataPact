@@ -48,7 +48,7 @@ Supports:
 
 **Test Results:**
 ```
-✅ 59 total tests collected (19 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling)
+✅ 61 total tests collected (21 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling)
 ✅ 66%+ code coverage
 ✅ All validators working correctly with versioning
 ```
@@ -148,7 +148,7 @@ Test Suite Results:
 ✅ TestContractVersionLoading: 4 passed
 ✅ TestVersionInfo: 1 passed
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Total: 59 tests collected
+Total: 61 tests collected
 Coverage: 66%+ (including all versioning code paths)
 ```
 

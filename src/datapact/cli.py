@@ -22,6 +22,7 @@ from datapact.validators import (
     QualityValidator,  # Validates quality rules (nulls, unique, etc.)
     DistributionValidator,  # Validates distribution/drift rules
     SLAValidator,  # Validates SLA checks (row count thresholds)
+    CustomRuleValidator,  # Validates custom plugin rules
 )
 from datapact.validators.quality_validator import ChunkedQualityValidator
 from datapact.validators.distribution_validator import DistributionAccumulator
@@ -93,6 +94,12 @@ def main() -> int:
         action="append",
         default=[],
         help="Override rule severity (format: field.rule=warn)",
+    )
+    parser.add_argument(
+        "--plugin",
+        action="append",
+        default=[],
+        help="Plugin module path for custom rules (repeatable)",
     )
     parser.add_argument(
         "--max-enum-size",
@@ -199,6 +206,8 @@ def validate_command(args) -> int:
         dist_warnings: List[str]
         sla_errors: List[str]
 
+        custom_errors: List[str] = []
+
         if _use_streaming(args):
             schema_errors, quality_errors, dist_warnings, sla_errors = (
                 _validate_streaming(
@@ -207,6 +216,11 @@ def validate_command(args) -> int:
                     args,
                     severity_overrides,
                 )
+            )
+            custom_errors = _validate_custom_rules_streaming(
+                contract,
+                datasource,
+                args,
             )
         else:
             df = datasource.load()
@@ -230,6 +244,14 @@ def validate_command(args) -> int:
             # Run SLA validation (non-blocking: collect errors/warnings)
             sla_validator = SLAValidator(contract, df)
             _, sla_errors = sla_validator.validate()
+
+            # Run custom rule validation (non-blocking: collect errors/warnings)
+            custom_validator = CustomRuleValidator(
+                contract,
+                df,
+                args.plugin,
+            )
+            _, custom_errors = custom_validator.validate()
 
         # Collect all errors and warnings as ErrorRecord objects
         all_errors = []
@@ -260,6 +282,13 @@ def validate_command(args) -> int:
             msg = err.replace("ERROR: ", "").replace("WARN: ", "")
             all_errors.append(
                 ErrorRecord(code="SLA", field="", message=msg, severity=severity)
+            )
+
+        for err in custom_errors:
+            severity = "ERROR" if err.startswith("ERROR") else "WARN"
+            msg = err.replace("ERROR: ", "").replace("WARN: ", "")
+            all_errors.append(
+                ErrorRecord(code="CUSTOM", field="", message=msg, severity=severity)
             )
 
         # Count errors and warnings for reporting
@@ -490,6 +519,30 @@ def _validate_streaming(
     sla_errors = _evaluate_sla(contract, total_rows)
 
     return list(schema_errors), quality_errors, dist_warnings, sla_errors
+
+
+def _validate_custom_rules_streaming(
+    contract: Contract,
+    datasource: DataSource,
+    args,
+) -> List[str]:
+    if not args.plugin:
+        return []
+
+    if args.sample_rows is None and args.sample_frac is None:
+        return [
+            "WARN: Custom rules skipped in streaming mode without sampling"
+        ]
+
+    sample_df = datasource.sample_dataframe(
+        sample_rows=args.sample_rows,
+        sample_frac=args.sample_frac,
+        seed=args.sample_seed,
+        chunksize=args.chunksize or 10000,
+    )
+    validator = CustomRuleValidator(contract, sample_df, args.plugin)
+    _, errors = validator.validate()
+    return errors
 
 
 def _evaluate_sla(contract: Contract, total_rows: int) -> List[str]:

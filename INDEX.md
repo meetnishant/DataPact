@@ -58,6 +58,7 @@ tests/                                 Test suite & fixtures
 ├── test_concurrency.py                Concurrency validation
 ├── test_concurrency_mp.py             Multiprocessing concurrency
 ├── test_chunked_validation.py         Chunked validation tests
+├── test_custom_rules.py               Custom rule plugin tests
 ├── test_profiling.py                  Profiling tests
 └── fixtures/                          Example data & contracts
 
@@ -129,13 +130,14 @@ Full tree: [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)
 - **Schema Drift** - Control extra columns via WARN/ERROR policy
 - **SLA Checks** - Enforce row count and freshness constraints
 - **Chunked Validation** - Stream large files with optional sampling
+- **Custom Rule Plugins** - Extend validation with plugin modules
 
 ## ✨ Project Statistics
 
-- **12** Python source files (~1000+ lines including SLA and profiling)
+- **13** Python source files (~1050+ lines including plugins)
 - **17** Documentation files
 - **17** Test fixture files
-- **59** Test cases (19 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling)
+- **61** Test cases (21 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling)
 - **1** GitHub Actions workflow
 - **100%** Type hints in core modules
 - **66%+** Code coverage achieved

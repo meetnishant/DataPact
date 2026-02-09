@@ -21,6 +21,7 @@ Related features:
 - **Schema Drift**: Extra columns can be WARN or ERROR via schema policy.
 - **SLA Checks**: Row count and freshness constraints are supported.
 - **Chunked Validation**: Stream CSV/JSONL files with optional sampling.
+- **Custom Rule Plugins**: Extend validation via plugin modules.
 
 ## Supported Versions
 

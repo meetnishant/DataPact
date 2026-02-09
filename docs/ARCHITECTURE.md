@@ -53,6 +53,10 @@ Three specialized validators run sequentially:
 #### **sla_validator.py**
 - Checks dataset SLAs (row count thresholds)
 - Produces `ERROR` or `WARN` depending on SLA severity
+
+#### **custom_rule_validator.py**
+- Executes plugin-based custom rules
+- Supports field-level and dataset-level checks
 - **Input**: DataFrame + Field rules
 
 #### **distribution_validator.py**
@@ -88,8 +92,9 @@ Three specialized validators run sequentially:
   - Type mismatches are recorded as ERRORs
 2. **Quality validation** skips missing columns
 3. **SLA validation** runs after quality checks (non-blocking)
-4. **Distribution validation** is always non-blocking (WARNings only)
-5. **Exit code** is non-zero if any ERRORs exist (for CI/CD)
+4. **Custom rule validation** runs after SLA checks (non-blocking)
+5. **Distribution validation** is always non-blocking (WARNings only)
+6. **Exit code** is non-zero if any ERRORs exist (for CI/CD)
 
 ## Data Flow Example
 

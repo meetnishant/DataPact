@@ -31,6 +31,7 @@ class FieldRule:
     enum: Optional[List[Any]] = None
     max_null_ratio: Optional[float] = None
     freshness_max_age_hours: Optional[float] = None
+    custom: Dict[str, Any] = field(default_factory=dict)
     severities: Dict[str, str] = field(default_factory=dict)
 
 
@@ -97,6 +98,7 @@ class Contract:
     fields: List[Field]
     schema_policy: SchemaPolicy = field(default_factory=SchemaPolicy)
     sla: SLA = field(default_factory=SLA)
+    custom_rules: List[Dict[str, Any]] = field(default_factory=list)
 
     @classmethod
     def from_yaml(cls, yaml_path: str) -> "Contract":
@@ -153,6 +155,7 @@ class Contract:
         dataset_data = data.get("dataset", {})
         schema_policy = cls._parse_schema_policy(data.get("schema", {}))
         sla = cls._parse_sla(data.get("sla", {}))
+        custom_rules = cls._parse_custom_rules(data.get("custom_rules", []))
         fields_data = data.get("fields", [])
         if not isinstance(fields_data, list):
             raise ValueError("Contract 'fields' must be a list")
@@ -188,6 +191,7 @@ class Contract:
             fields=fields,
             schema_policy=schema_policy,
             sla=sla,
+            custom_rules=custom_rules,
         )
 
     @staticmethod
@@ -226,6 +230,10 @@ class Contract:
                 )
             return normalized
 
+        custom_rules = rules_dict.get("custom", {})
+        if custom_rules and not isinstance(custom_rules, dict):
+            raise ValueError("rules.custom must be a mapping of rule_name to config")
+
         return FieldRule(
             not_null=read_rule("not_null", False, boolean_default=True),
             unique=read_rule("unique", False, boolean_default=True),
@@ -235,8 +243,26 @@ class Contract:
             enum=read_rule("enum"),
             max_null_ratio=read_rule("max_null_ratio"),
             freshness_max_age_hours=read_rule("freshness_max_age_hours"),
+            custom=custom_rules or {},
             severities=severities,
         )
+
+    @staticmethod
+    def _parse_custom_rules(custom_rules: Any) -> List[Dict[str, Any]]:
+        if not custom_rules:
+            return []
+        if not isinstance(custom_rules, list):
+            raise ValueError("custom_rules must be a list")
+        for idx, rule in enumerate(custom_rules):
+            if not isinstance(rule, dict):
+                raise ValueError(
+                    f"custom_rules entry at index {idx} must be a mapping"
+                )
+            if "name" not in rule:
+                raise ValueError(
+                    f"custom_rules entry at index {idx} must include 'name'"
+                )
+        return custom_rules
 
     @staticmethod
     def _parse_schema_policy(schema_dict: Dict[str, Any]) -> SchemaPolicy:

@@ -6,8 +6,8 @@ A **production-ready Python data validation framework** called **DataPact** that
 
 ### Key Deliverables
 
-✅ **Complete Project Structure** (77 files total)
-- 12 Python source modules (~1000 lines of well-typed code)
+✅ **Complete Project Structure** (80 files total)
+- 13 Python source modules (~1050 lines of well-typed code)
 - Modular validator pipeline (schema → quality → SLA → distribution)
 - Comprehensive test suite with fixtures
 - GitHub Actions CI/CD workflow
@@ -23,6 +23,7 @@ A **production-ready Python data validation framework** called **DataPact** that
 - Schema drift policy for extra columns (WARN/ERROR)
 - SLA checks (row count thresholds and freshness rules)
 - Chunked validation and sampling for large datasets
+- Custom rule plugins for extensible validation
 
 ✅ **Enterprise-Ready Code**
 - Full type hints throughout
@@ -60,6 +61,8 @@ YAML Contract                Data File
            Quality Validator (non-blocking)
                     ↓
            SLA Validator (non-blocking)
+                    ↓
+           Custom Rule Validator (non-blocking)
                     ↓
         Distribution Validator (warnings only)
                     ↓
@@ -100,10 +103,10 @@ This enables AI agents (Copilot, Claude, etc.) to be immediately productive with
 
 | Metric | Value |
 |--------|-------|
-| Python Files | 12 |
+| Python Files | 13 |
 | Documentation Files | 17 |
 | Total Lines of Code | ~900 |
-| Test Coverage | Comprehensive (59 tests) |
+| Test Coverage | Comprehensive (61 tests) |
 | Type Hints | 100% |
 | External APIs | 0 |
 | Configuration Files | 4 |
@@ -125,6 +128,7 @@ src/datapact/
     ├── schema_validator.py
     ├── quality_validator.py
     ├── sla_validator.py
+    ├── custom_rule_validator.py
     └── distribution_validator.py
 ```
 
@@ -137,6 +141,7 @@ tests/
 ├── test_concurrency.py       Concurrency validation
 ├── test_concurrency_mp.py    Multiprocessing concurrency validation
 ├── test_chunked_validation.py Chunked validation tests
+├── test_custom_rules.py      Custom rule plugin tests
 ├── test_profiling.py         Profiling tests
 └── fixtures/
     ├── customer_contract.yaml

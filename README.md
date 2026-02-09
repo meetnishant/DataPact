@@ -12,6 +12,7 @@ Validate datasets against YAML-based data contracts to ensure data quality, sche
 - **Profiling**: Auto-generate rule baselines from data
 - **SLA Checks**: Enforce row count and freshness constraints
 - **Big Data Support**: Chunked validation with optional sampling
+- **Custom Rule Plugins**: Load rule logic from plugin modules
 - **Contract Versioning**: Track contract evolution with automatic migration
 - **Multiple Formats**: Support CSV, Parquet, and JSON Lines
 - **CI/CD Ready**: Exit codes for automation pipelines
@@ -100,6 +101,7 @@ datapact validate --contract <path/to/contract.yaml> --data <path/to/data> [--fo
 - `--sample-rows`: Sample N rows for validation
 - `--sample-frac`: Sample fraction for validation
 - `--sample-seed`: Random seed for sampling
+- `--plugin`: Plugin module path for custom rules (repeatable)
 
 **Exit Codes:**
 - `0`: Validation passed
@@ -201,6 +203,31 @@ datapact validate --contract contract.yaml --data data.csv --sample-rows 10000
 ```
 
 Chunked validation is supported for CSV and JSONL inputs.
+
+### Custom Rule Plugins
+
+```yaml
+fields:
+  - name: score
+    type: float
+    rules:
+      custom:
+        field_max_value:
+          value: 100
+          severity: WARN
+
+custom_rules:
+  - name: dataset_min_rows
+    config:
+      value: 1000
+    severity: ERROR
+```
+
+```bash
+datapact validate --contract contract.yaml --data data.csv --plugin mypkg.rules
+```
+
+Custom rules run on full data; in streaming mode they run only when sampling is enabled.
 ```
 
 ## Report Format
