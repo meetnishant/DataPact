@@ -118,16 +118,16 @@ Project: DataPact
 ## What's Included in the Delivery
 
 ```
-Total files created: 83
-├── Python modules: 13 (including custom rules)
-├── Test files: 10 (validator, versioning, banking/finance, concurrency, profiling, chunked, custom, reporting, policy packs)
-├── Test fixtures: 18 (including multi-table banking/finance data + contracts)
+Total files created: 131
+├── Python modules: 14 (including policy packs)
+├── Test files: 11 (validator, versioning, banking/finance, concurrency, profiling, chunked, custom, reporting, policy packs, exhaustive)
+├── Test fixtures: 65 (including multi-table banking/finance data + contracts)
 ├── Documentation: 18
 
-Test cases: 66 (21 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling + 3 reporting + 2 policy packs)
+Test cases: 109 (21 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling + 4 reporting + 2 policy packs + 42 exhaustive)
 
 Lines of code: ~900+
-Test cases: 64 (21 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling + 3 reporting)
+Test cases: 109 (21 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling + 4 reporting + 2 policy packs + 42 exhaustive)
 Documentation coverage: Comprehensive
 Test coverage: Extensive (66%+)
 CI/CD: GitHub Actions configured

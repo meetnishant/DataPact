@@ -1,0 +1,18 @@
+contract:
+  name: sla_demo
+  version: 2.0.0
+dataset:
+  name: sla_demo
+sla:
+  min_rows: 3
+  max_rows:
+    value: 5
+    severity: WARN
+fields:
+  - name: id
+    type: integer
+    required: true
+  - name: event_time
+    type: string
+    rules:
+      freshness_max_age_hours: 24

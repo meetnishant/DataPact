@@ -10,6 +10,7 @@ from datapact.reporting import (
     WebhookReportSink,
     write_report_sinks,
 )
+from urllib.error import URLError
 
 
 def _sample_report() -> ValidationReport:
@@ -66,3 +67,13 @@ def test_webhook_report_sink_posts_json():
 
     assert messages == ["Webhook report sent (status 200)"]
     assert mocked.call_count == 1
+
+
+def test_webhook_report_sink_failure():
+    report = _sample_report()
+    sink = WebhookReportSink("https://example.test/hook")
+
+    with mock.patch("urllib.request.urlopen", side_effect=URLError("down")):
+        messages = write_report_sinks(report, [sink])
+
+    assert any("Report sink 'webhook' failed" in msg for msg in messages)

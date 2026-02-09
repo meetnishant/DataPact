@@ -1,0 +1,11 @@
+contract:
+  name: custom_missing_rule
+  version: 2.0.0
+dataset:
+  name: custom_missing_rule
+custom_rules:
+  - name: unknown_rule
+    severity: ERROR
+fields:
+  - name: score
+    type: integer

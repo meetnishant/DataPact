@@ -1,0 +1,11 @@
+contract:
+  name: distribution_demo
+  version: 2.0.0
+dataset:
+  name: distribution_demo
+fields:
+  - name: value
+    type: float
+    distribution:
+      mean: 10.0
+      max_drift_pct: 10.0

@@ -1,0 +1,12 @@
+contract:
+  name: custom_invalid_config
+  version: 2.0.0
+dataset:
+  name: custom_invalid_config
+custom_rules:
+  - name: dataset_min_rows
+    severity: ERROR
+    config: invalid
+fields:
+  - name: score
+    type: integer

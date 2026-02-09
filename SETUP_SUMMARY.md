@@ -36,6 +36,7 @@ DataContracts/
 │   ├── test_profiling.py           ← Profiling tests
 │   ├── test_reporting.py           ← Report sink tests
 │   ├── test_policy_packs.py        ← Policy pack tests
+│   ├── test_exhaustive_features.py ← Exhaustive feature tests
 │   ├── plugins/
 │   │   └── sample_plugin.py         ← Custom rule plugin example
 │   └── fixtures/
@@ -56,7 +57,8 @@ DataContracts/
 │       ├── lending_payments.csv
 │       ├── deposits_accounts_agg.csv
 │       ├── lending_loans_agg.csv
-│       └── policy_pack_contract.yaml
+│       ├── policy_pack_contract.yaml
+│       └── schema_*/quality_*/sla_*/distribution_* (exhaustive fixtures)
 ├── docs/
 │   ├── ARCHITECTURE.md             ← Design decisions & data flow
 │   ├── sequenceDiagram.mmd         ← Mermaid sequence diagram

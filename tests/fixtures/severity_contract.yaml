@@ -1,0 +1,12 @@
+contract:
+  name: severity_demo
+  version: 2.0.0
+dataset:
+  name: severity_demo
+fields:
+  - name: score
+    type: integer
+    rules:
+      max:
+        value: 10
+        severity: WARN

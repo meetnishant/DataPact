@@ -238,6 +238,10 @@ This guide maps each file to its purpose and shows how they fit together.
 - **Purpose**: Policy pack parsing and merge tests
 - **When to modify**: Adding new policy packs or override behavior
 
+### `tests/test_exhaustive_features.py`
+- **Purpose**: Exhaustive positive/negative/boundary coverage for core features
+- **When to modify**: Expanding feature coverage or new rule types
+
 ### `tests/test_chunked_validation.py`
 - **Purpose**: Chunked validation and sampling tests
 - **When to modify**: Adjusting chunking or sampling behavior

@@ -1,0 +1,12 @@
+contract:
+  name: schema_extra_error
+  version: 2.0.0
+dataset:
+  name: schema_extra_error
+schema:
+  extra_columns:
+    severity: ERROR
+fields:
+  - name: id
+    type: integer
+    required: true

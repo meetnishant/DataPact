@@ -1,0 +1,12 @@
+contract:
+  name: schema_drift_warn
+  version: 2.0.0
+dataset:
+  name: schema_drift
+schema:
+  extra_columns:
+    severity: WARN
+fields:
+  - name: id
+    type: integer
+    required: true

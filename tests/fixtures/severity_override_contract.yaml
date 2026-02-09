@@ -1,0 +1,10 @@
+contract:
+  name: severity_override
+  version: 2.0.0
+dataset:
+  name: severity_override
+fields:
+  - name: score
+    type: integer
+    rules:
+      max: 10

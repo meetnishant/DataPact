@@ -1,0 +1,5 @@
+id,age,status,code,note,email
+1,0,A,AB12,,a@example.com
+2,10,B,CD34,ok,b@example.com
+3,5,A,EF56,ok,c@example.com
+4,7,B,GH78,ok,d@example.com

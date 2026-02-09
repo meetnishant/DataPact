@@ -1,0 +1,32 @@
+contract:
+  name: quality_demo
+  version: 2.0.0
+dataset:
+  name: quality_demo
+fields:
+  - name: id
+    type: integer
+    required: true
+    rules:
+      unique: true
+  - name: age
+    type: integer
+    rules:
+      min: 0
+      max: 10
+  - name: status
+    type: string
+    rules:
+      enum: [A, B]
+  - name: code
+    type: string
+    rules:
+      regex: '^[A-Z]{2}[0-9]{2}$'
+  - name: note
+    type: string
+    rules:
+      max_null_ratio: 0.25
+  - name: email
+    type: string
+    rules:
+      not_null: true

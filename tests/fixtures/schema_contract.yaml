@@ -1,0 +1,12 @@
+contract:
+  name: schema_demo
+  version: 2.0.0
+dataset:
+  name: schema_demo
+fields:
+  - name: id
+    type: integer
+    required: true
+  - name: email
+    type: string
+    required: true

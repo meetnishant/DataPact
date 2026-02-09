@@ -44,6 +44,7 @@ DataPact/
 │   ├── test_profiling.py            # Profiling tests
 │   ├── test_reporting.py            # Report sink tests
 │   ├── test_policy_packs.py         # Policy pack tests
+│   ├── test_exhaustive_features.py  # Exhaustive feature tests
 │   ├── plugins/
 │   │   └── sample_plugin.py          # Custom rule plugin example
 │   └── fixtures/
@@ -64,7 +65,8 @@ DataPact/
 │       ├── lending_payments.csv                # Lending payments data
 │       ├── deposits_accounts_agg.csv           # Aggregate deposits data
 │       ├── lending_loans_agg.csv               # Aggregate lending data
-│       └── policy_pack_contract.yaml           # Policy pack contract
+│       ├── policy_pack_contract.yaml           # Policy pack contract
+│       └── schema_*/quality_*/sla_*/distribution_* # Exhaustive fixtures
 └── docs/
     ├── ARCHITECTURE.md              # Design decisions & data flow
     ├── sequenceDiagram.mmd          # Mermaid sequence diagram

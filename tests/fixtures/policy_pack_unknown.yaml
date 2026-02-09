@@ -1,0 +1,10 @@
+contract:
+  name: policy_unknown
+  version: 2.0.0
+dataset:
+  name: policy_unknown
+policies:
+  - name: does_not_exist
+fields:
+  - name: email
+    type: string

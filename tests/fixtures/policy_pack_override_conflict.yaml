@@ -1,0 +1,17 @@
+contract:
+  name: policy_override_conflict
+  version: 2.0.0
+dataset:
+  name: policy_override_conflict
+policies:
+  - name: pii_basic
+    overrides:
+      fields:
+        email:
+          rules:
+            regex: '^[A-Z]+$'
+fields:
+  - name: email
+    type: string
+    rules:
+      regex: '^[a-z]+@example\.com$'
