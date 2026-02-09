@@ -18,6 +18,8 @@ The DataPact now includes comprehensive contract versioning support with:
 Related features:
 - **Profiling**: Auto-generate rule baselines from data (`datapact profile`).
 - **Rule Severity**: Rules can declare WARN/ERROR severities with CLI overrides.
+- **Schema Drift**: Extra columns can be WARN or ERROR via schema policy.
+- **SLA Checks**: Row count and freshness constraints are supported.
 
 ## Supported Versions
 

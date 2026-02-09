@@ -10,6 +10,7 @@ from datapact.validators import (
     SchemaValidator,
     QualityValidator,
     DistributionValidator,
+    SLAValidator,
 )
 
 
@@ -59,6 +60,23 @@ class TestSchemaValidator:
         assert not passed
         assert any("customer_id" in e for e in errors)
 
+    def test_extra_columns_error_severity(self):
+        contract_data = {
+            "contract": {"name": "test", "version": "2.0.0"},
+            "dataset": {"name": "test"},
+            "schema": {"extra_columns": {"severity": "ERROR"}},
+            "fields": [
+                {"name": "id", "type": "integer", "required": True},
+            ],
+        }
+        contract = Contract._from_dict(contract_data)
+        df = pd.DataFrame({"id": [1], "extra": ["x"]})
+
+        validator = SchemaValidator(contract, df)
+        passed, errors = validator.validate()
+        assert not passed
+        assert any(err.startswith("ERROR") for err in errors)
+
 
 class TestQualityValidator:
     """Tests for quality validation."""
@@ -102,6 +120,7 @@ class TestQualityValidator:
                     'regex': None,
                     'enum': None,
                     'max_null_ratio': None,
+                    'freshness_max_age_hours': None,
                 })(),
                 'distribution': None,
             })(),
@@ -136,6 +155,7 @@ class TestQualityValidator:
                     'regex': None,
                     'enum': ["active", "inactive"],
                     'max_null_ratio': None,
+                    'freshness_max_age_hours': None,
                 })(),
                 'distribution': None,
             })(),
@@ -193,6 +213,27 @@ class TestQualityValidator:
         assert passed
         assert any(err.startswith("WARN") for err in errors)
 
+    def test_freshness_max_age_hours(self):
+        contract_data = {
+            "contract": {"name": "test", "version": "2.0.0"},
+            "dataset": {"name": "test"},
+            "fields": [
+                {
+                    "name": "event_time",
+                    "type": "string",
+                    "required": True,
+                    "rules": {"freshness_max_age_hours": 0.01},
+                }
+            ],
+        }
+        contract = Contract._from_dict(contract_data)
+        df = pd.DataFrame({"event_time": ["2000-01-01T00:00:00Z"]})
+
+        validator = QualityValidator(contract, df)
+        passed, errors = validator.validate()
+        assert not passed
+        assert any("freshness" in err.lower() for err in errors)
+
 
 class TestDataSource:
     """Tests for data source loading."""
@@ -227,6 +268,42 @@ class TestDistributionValidator:
         passed, warnings = validator.validate()
         # Should not produce warnings for sample data
         assert len(warnings) == 0
+
+
+class TestSLAValidator:
+    def test_min_rows_violation(self):
+        contract_data = {
+            "contract": {"name": "test", "version": "2.0.0"},
+            "dataset": {"name": "test"},
+            "sla": {"min_rows": 2},
+            "fields": [
+                {"name": "id", "type": "integer", "required": True},
+            ],
+        }
+        contract = Contract._from_dict(contract_data)
+        df = pd.DataFrame({"id": [1]})
+
+        validator = SLAValidator(contract, df)
+        passed, errors = validator.validate()
+        assert not passed
+        assert any("min_rows" in err for err in errors)
+
+    def test_max_rows_warn_severity(self):
+        contract_data = {
+            "contract": {"name": "test", "version": "2.0.0"},
+            "dataset": {"name": "test"},
+            "sla": {"max_rows": {"value": 1, "severity": "WARN"}},
+            "fields": [
+                {"name": "id", "type": "integer", "required": True},
+            ],
+        }
+        contract = Contract._from_dict(contract_data)
+        df = pd.DataFrame({"id": [1, 2]})
+
+        validator = SLAValidator(contract, df)
+        passed, errors = validator.validate()
+        assert passed
+        assert any(err.startswith("WARN") for err in errors)
 
 
 if __name__ == "__main__":

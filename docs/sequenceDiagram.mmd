@@ -6,6 +6,7 @@ sequenceDiagram
     participant Loader as Data Loader
     participant Schema as Schema Validator
     participant Quality as Quality Validator
+    participant SLA as SLA Validator
     participant Distribution as Distribution Validator
     participant Reporter as Report Generator
     participant Output as JSON/Console
@@ -24,6 +25,9 @@ sequenceDiagram
     
     CLI->>+Quality: Validate quality rules
     Quality-->>-CLI: Errors & warnings
+
+    CLI->>+SLA: Validate SLA checks
+    SLA-->>-CLI: Errors & warnings
     
     CLI->>+Distribution: Check distributions
     Distribution-->>-CLI: Warnings only

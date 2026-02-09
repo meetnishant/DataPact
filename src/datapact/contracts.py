@@ -30,6 +30,7 @@ class FieldRule:
     regex: Optional[str] = None
     enum: Optional[List[Any]] = None
     max_null_ratio: Optional[float] = None
+    freshness_max_age_hours: Optional[float] = None
     severities: Dict[str, str] = field(default_factory=dict)
 
 
@@ -67,6 +68,25 @@ class Dataset:
 
 
 @dataclass
+class SchemaPolicy:
+    """
+    Schema drift handling configuration.
+    """
+    extra_columns_severity: str = "WARN"
+
+
+@dataclass
+class SLA:
+    """
+    Service-level agreement checks for datasets.
+    """
+    min_rows: Optional[int] = None
+    max_rows: Optional[int] = None
+    min_rows_severity: str = "ERROR"
+    max_rows_severity: str = "ERROR"
+
+
+@dataclass
 class Contract:
     """
     Root contract object. Contains contract metadata, dataset, and fields.
@@ -75,6 +95,8 @@ class Contract:
     version: str
     dataset: Dataset
     fields: List[Field]
+    schema_policy: SchemaPolicy = field(default_factory=SchemaPolicy)
+    sla: SLA = field(default_factory=SLA)
 
     @classmethod
     def from_yaml(cls, yaml_path: str) -> "Contract":
@@ -129,6 +151,8 @@ class Contract:
                 raise ValueError(f"Failed to migrate contract: {e}")
 
         dataset_data = data.get("dataset", {})
+        schema_policy = cls._parse_schema_policy(data.get("schema", {}))
+        sla = cls._parse_sla(data.get("sla", {}))
         fields_data = data.get("fields", [])
         if not isinstance(fields_data, list):
             raise ValueError("Contract 'fields' must be a list")
@@ -162,6 +186,8 @@ class Contract:
             version=contract_data.get("version"),
             dataset=Dataset(name=dataset_data.get("name")),
             fields=fields,
+            schema_policy=schema_policy,
+            sla=sla,
         )
 
     @staticmethod
@@ -208,7 +234,62 @@ class Contract:
             regex=read_rule("regex"),
             enum=read_rule("enum"),
             max_null_ratio=read_rule("max_null_ratio"),
+            freshness_max_age_hours=read_rule("freshness_max_age_hours"),
             severities=severities,
+        )
+
+    @staticmethod
+    def _parse_schema_policy(schema_dict: Dict[str, Any]) -> SchemaPolicy:
+        if not schema_dict:
+            return SchemaPolicy()
+
+        def normalize_severity(value: Optional[str]) -> str:
+            if value is None:
+                return "WARN"
+            normalized = str(value).upper()
+            if normalized not in {"ERROR", "WARN"}:
+                raise ValueError(
+                    f"Unsupported schema severity '{value}'. Use ERROR or WARN."
+                )
+            return normalized
+
+        raw_extra = schema_dict.get("extra_columns")
+        if isinstance(raw_extra, dict):
+            extra_severity = normalize_severity(raw_extra.get("severity"))
+        else:
+            extra_severity = normalize_severity(raw_extra)
+
+        return SchemaPolicy(extra_columns_severity=extra_severity)
+
+    @staticmethod
+    def _parse_sla(sla_dict: Dict[str, Any]) -> SLA:
+        if not sla_dict:
+            return SLA()
+
+        def read_sla(key: str) -> Optional[int]:
+            raw = sla_dict.get(key)
+            if isinstance(raw, dict):
+                return raw.get("value")
+            return raw
+
+        def read_severity(key: str, default: str = "ERROR") -> str:
+            raw = sla_dict.get(key)
+            if isinstance(raw, dict):
+                severity = raw.get("severity", default)
+            else:
+                severity = default
+            normalized = str(severity).upper()
+            if normalized not in {"ERROR", "WARN"}:
+                raise ValueError(
+                    f"Unsupported SLA severity '{severity}'. Use ERROR or WARN."
+                )
+            return normalized
+
+        return SLA(
+            min_rows=read_sla("min_rows"),
+            max_rows=read_sla("max_rows"),
+            min_rows_severity=read_severity("min_rows"),
+            max_rows_severity=read_severity("max_rows"),
         )
 
     @staticmethod

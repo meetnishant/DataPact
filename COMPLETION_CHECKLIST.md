@@ -6,8 +6,10 @@ Project: DataPact
 - ✅ Contract parsing (YAML → Python models)
 - ✅ Data loading (CSV, Parquet, JSON with auto-detection)
 - ✅ Schema validation (columns, types, required fields)
+- ✅ Schema drift policy (extra columns WARN/ERROR)
 - ✅ Quality validation (nulls, unique, ranges, regex, enums)
 - ✅ Distribution validation (mean/std drift detection)
+- ✅ SLA validation (row count thresholds)
 - ✅ Report generation (JSON + console output)
 - ✅ CLI interface (validate, init, profile commands)
 - ✅ Profiling (auto-generate rule baselines from data)
@@ -61,6 +63,7 @@ Project: DataPact
 ## Features Implemented
 - ✅ Schema validation (required fields, type matching)
 - ✅ Quality rules: not_null, unique, min, max, regex, enum, max_null_ratio
+- ✅ Freshness rule: freshness_max_age_hours
 - ✅ Distribution rules: mean, std, max_drift_pct, max_z_score
 - ✅ Contract versioning with automatic migration
 - ✅ Version compatibility checking
@@ -74,11 +77,14 @@ Project: DataPact
 - ✅ Contract profiling with rules (profile command)
 - ✅ Rule severity metadata in contracts
 - ✅ CLI severity overrides for quality rules
+- ✅ SLA checks (min_rows, max_rows) with severity
+- ✅ Schema drift severity for extra columns
 - ✅ Banking/finance test data contracts and fixtures
 
 ## Non-Blocking vs Blocking
 - ✅ Schema validation runs first and is blocking
 - ✅ Quality validation is non-blocking (continues on errors)
+- ✅ SLA validation is non-blocking (continues on errors)
 - ✅ Distribution validation always produces warnings only
 - ✅ Only ERRORs trigger non-zero exit code
 
@@ -104,16 +110,16 @@ Project: DataPact
 ## What's Included in the Delivery
 
 ```
-Total files created: 75
-├── Python modules: 10 (including versioning.py)
-├── Test files: 5 (validator, versioning, banking/finance, concurrency)
+Total files created: 76
+├── Python modules: 12 (including SLA validator)
+├── Test files: 6 (validator, versioning, banking/finance, concurrency, profiling)
 ├── Test fixtures: 17 (including multi-table banking/finance data + contracts)
 ├── Documentation: 17
 ├── Config files: 4
 └── Project metadata: various
 
 Lines of code: ~900+
-Test cases: 52 (12 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling)
+Test cases: 56 (16 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling)
 Documentation coverage: Comprehensive
 Test coverage: Extensive (66%+)
 CI/CD: GitHub Actions configured

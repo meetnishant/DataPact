@@ -48,7 +48,7 @@ Supports:
 
 **Test Results:**
 ```
-✅ 52 total tests collected (12 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling)
+✅ 56 total tests collected (16 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling)
 ✅ 66%+ code coverage
 ✅ All validators working correctly with versioning
 ```
@@ -148,7 +148,7 @@ Test Suite Results:
 ✅ TestContractVersionLoading: 4 passed
 ✅ TestVersionInfo: 1 passed
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Total: 52 tests collected
+Total: 56 tests collected
 Coverage: 66%+ (including all versioning code paths)
 ```
 
@@ -169,3 +169,5 @@ The contract versioning system is fully functional, tested, and integrated. Old 
 
 - **Profiling**: `datapact profile` can generate contract rules and distributions from data.
 - **Rule Severity**: Rules can declare `WARN` or `ERROR` severities, with CLI overrides.
+- **Schema Drift**: Extra columns can be WARN or ERROR via schema policy.
+- **SLA Checks**: Row count thresholds and freshness rules are supported.

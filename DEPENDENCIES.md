@@ -26,3 +26,4 @@ This document summarizes the direct dependencies declared in `pyproject.toml`.
 ## Feature Notes
 - Profiling uses pandas statistics to infer rule baselines.
 - Rule severity metadata and overrides are handled in core validation logic (no new dependencies).
+- Schema drift and SLA checks are handled in core validation logic (no new dependencies).

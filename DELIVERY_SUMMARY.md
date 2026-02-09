@@ -6,20 +6,22 @@ A **production-ready Python data validation framework** called **DataPact** that
 
 ### Key Deliverables
 
-✅ **Complete Project Structure** (75 files total)
-- 10 Python source modules (~900 lines of well-typed code)
-- Modular validator pipeline (schema → quality → distribution)
+✅ **Complete Project Structure** (76 files total)
+- 12 Python source modules (~950 lines of well-typed code)
+- Modular validator pipeline (schema → quality → SLA → distribution)
 - Comprehensive test suite with fixtures
 - GitHub Actions CI/CD workflow
 
 ✅ **Core Functionality**
 - Contract parsing (YAML → typed Python models)
 - Multi-format data loading (CSV, Parquet, JSON)
-- Three-stage validation pipeline with proper error semantics
+- Four-stage validation pipeline with proper error semantics
 - JSON report generation with console output
 - CLI interface with `validate`, `init`, and `profile` commands
 - Profiling to auto-generate rule baselines from data
 - Rule severity support with WARN/ERROR metadata and CLI overrides
+- Schema drift policy for extra columns (WARN/ERROR)
+- SLA checks (row count thresholds and freshness rules)
 
 ✅ **Enterprise-Ready Code**
 - Full type hints throughout
@@ -55,6 +57,8 @@ YAML Contract                Data File
            Schema Validator (blocking)
                     ↓
            Quality Validator (non-blocking)
+                    ↓
+           SLA Validator (non-blocking)
                     ↓
         Distribution Validator (warnings only)
                     ↓
@@ -95,10 +99,10 @@ This enables AI agents (Copilot, Claude, etc.) to be immediately productive with
 
 | Metric | Value |
 |--------|-------|
-| Python Files | 11 |
+| Python Files | 12 |
 | Documentation Files | 17 |
 | Total Lines of Code | ~900 |
-| Test Coverage | Comprehensive (52 tests) |
+| Test Coverage | Comprehensive (56 tests) |
 | Type Hints | 100% |
 | External APIs | 0 |
 | Configuration Files | 4 |
@@ -119,6 +123,7 @@ src/datapact/
 └── validators/
     ├── schema_validator.py
     ├── quality_validator.py
+    ├── sla_validator.py
     └── distribution_validator.py
 ```
 

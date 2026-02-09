@@ -58,6 +58,19 @@ python3 src/datapact/cli.py validate \
   --severity-override status.not_null=warn
 ```
 
+### Add SLA and Schema Drift Policy
+```yaml
+schema:
+  extra_columns:
+    severity: WARN
+
+sla:
+  min_rows: 100
+  max_rows:
+    value: 100000
+    severity: WARN
+```
+
 ## Running Tests
 
 ```bash

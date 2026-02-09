@@ -48,6 +48,7 @@ src/datapact/          Core application
 └── validators/
     ├── schema_validator.py            Structure validation
     ├── quality_validator.py           Content validation
+    ├── sla_validator.py               SLA validation
     └── distribution_validator.py      Statistical monitoring
 
 tests/                                 Test suite & fixtures
@@ -124,13 +125,15 @@ Full tree: [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)
 - **Auto-Migration** - Automatic upgrade of old contracts to latest version
 - **Profiling** - Auto-generate rule baselines from data
 - **Rule Severity** - WARN/ERROR per rule with CLI overrides
+- **Schema Drift** - Control extra columns via WARN/ERROR policy
+- **SLA Checks** - Enforce row count and freshness constraints
 
 ## ✨ Project Statistics
 
-- **11** Python source files (~950+ lines including profiling)
+- **12** Python source files (~1000+ lines including SLA and profiling)
 - **17** Documentation files
 - **17** Test fixture files
-- **52** Test cases (12 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling)
+- **56** Test cases (16 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling)
 - **1** GitHub Actions workflow
 - **100%** Type hints in core modules
 - **66%+** Code coverage achieved

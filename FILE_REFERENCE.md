@@ -60,8 +60,8 @@ This guide maps each file to its purpose and shows how they fit together.
 - **Purpose**: Check structure (columns, types, required fields)
 - **Classes**: `SchemaValidator`
 - **Runs**: First (blocks if critical issues)
-- **Output**: ERROR severity violations
-- **When to modify**: Adding new schema checks (e.g., column ordering)
+- **Output**: ERROR or WARN (extra columns)
+- **When to modify**: Adding new schema checks (e.g., column ordering, drift policy)
 
 #### `src/datapact/validators/quality_validator.py`
 - **Purpose**: Validate data content (nulls, ranges, patterns, etc.)
@@ -69,6 +69,13 @@ This guide maps each file to its purpose and shows how they fit together.
 - **Runs**: Second (non-blocking)
 - **Output**: ERROR or WARN severity violations (rule-level severities supported)
 - **When to modify**: Adding new validation rules (min, max, regex, enum, etc.)
+
+#### `src/datapact/validators/sla_validator.py`
+- **Purpose**: Validate SLA checks (row count thresholds)
+- **Classes**: `SLAValidator`
+- **Runs**: After quality validation (non-blocking)
+- **Output**: ERROR or WARN severity violations
+- **When to modify**: Adding new SLA checks
 
 #### `src/datapact/validators/distribution_validator.py`
 - **Purpose**: Monitor numeric distributions (mean, std drift)

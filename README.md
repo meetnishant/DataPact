@@ -7,8 +7,10 @@ Validate datasets against YAML-based data contracts to ensure data quality, sche
 - **Schema Validation**: Check columns, types, and required fields
 - **Quality Rules**: Validate nulls, uniqueness, ranges, regex patterns, and enums
 - **Rule Severity**: Mark rules as WARN or ERROR, with CLI overrides
+- **Schema Drift**: Control extra column handling with WARN/ERROR policies
 - **Distribution Monitoring**: Detect drift in numeric column statistics
 - **Profiling**: Auto-generate rule baselines from data
+- **SLA Checks**: Enforce row count and freshness constraints
 - **Contract Versioning**: Track contract evolution with automatic migration
 - **Multiple Formats**: Support CSV, Parquet, and JSON Lines
 - **CI/CD Ready**: Exit codes for automation pipelines
@@ -142,6 +144,7 @@ In contracts, use:
 - `regex`: Regex pattern match
 - `enum`: Value must be in list
 - `max_null_ratio`: Tolerate up to X% nulls (0.0 to 1.0)
+- `freshness_max_age_hours`: Max age in hours for timestamp fields
 
 Rules can include severity metadata:
 
@@ -161,6 +164,30 @@ rules:
 - `std`: Expected standard deviation
 - `max_drift_pct`: Alert if mean/std changes by >X%
 - `max_z_score`: Flag outliers with |z-score| > threshold
+
+### Schema Drift Policy
+
+```yaml
+schema:
+  extra_columns:
+    severity: WARN
+```
+
+### SLA Checks
+
+```yaml
+sla:
+  min_rows: 100
+  max_rows:
+    value: 100000
+    severity: WARN
+
+fields:
+  - name: event_time
+    type: string
+    rules:
+      freshness_max_age_hours: 24
+```
 
 ## Report Format
 

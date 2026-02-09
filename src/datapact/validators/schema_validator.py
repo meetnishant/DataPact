@@ -34,11 +34,12 @@ class SchemaValidator:
                 )
 
         # Track contract-defined fields for extra-column warnings
+        extra_severity = self.contract.schema_policy.extra_columns_severity
         contract_fields = {f.name for f in self.contract.fields}
         for col in self.df.columns:
             if col not in contract_fields:
                 self.errors.append(
-                    f"WARN: Column '{col}' not in contract schema"
+                    f"{extra_severity}: Column '{col}' not in contract schema"
                 )
 
         # Check type mismatches between pandas dtypes and contract types
@@ -51,7 +52,8 @@ class SchemaValidator:
                         f"Expected {field.type}, got {actual_type}"
                     )
 
-        return len(self.errors) == 0, self.errors
+        has_errors = any(err.startswith("ERROR") for err in self.errors)
+        return not has_errors, self.errors
 
     @staticmethod
     def _type_matches(actual: str, expected: str) -> bool:

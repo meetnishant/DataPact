@@ -8,8 +8,8 @@ Version: 0.2.0
 Status: ✅ READY FOR PRODUCTION
 Created: February 8, 2026
 
-📁 Total Files:    75
-💻 Code Files:     11 (Python modules)
+📁 Total Files:    76
+💻 Code Files:     12 (Python modules)
 📚 Docs Files:     17 (markdown + guides)
 ⚙️  Config Files:   4 (toml, yaml, gitignore)
 🧪 Test Files:     6 test modules + 17 fixtures
@@ -19,13 +19,13 @@ Created: February 8, 2026
    Type Hint Coverage:      100%
    Docstring Coverage:      Comprehensive
    External API Calls:      0 (local only)
-    Test Cases:              52 (12 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling)
+    Test Cases:              56 (16 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling)
    Code Coverage:           66%+
 
 🔧 Supported Python:  3.9, 3.10, 3.11, 3.12
 📦 Dependencies:      pandas, pyyaml, pyarrow
 ✅ CI/CD:            GitHub Actions configured
-✨ Features:         Schema, Quality, Distribution validation + Profiling + Rule Severity + Versioning with auto-migration
+✨ Features:         Schema drift + Quality + SLA + Distribution validation + Profiling + Rule Severity + Versioning with auto-migration
 ```
 
 ## Documentation Structure
@@ -105,7 +105,11 @@ Configuration (4 files):
         │    (nulls, unique, ranges, regex, enum)│
         │    → Non-blocking                      │
         ├────────────────────────────────────────┤
-        │ 3. Distribution Validator              │
+        │ 3. SLA Validator                       │
+        │    (min/max rows, freshness rules)     │
+        │    → Non-blocking                      │
+        ├────────────────────────────────────────┤
+        │ 4. Distribution Validator              │
         │    (mean, std, drift detection)        │
         │    → Warnings only                     │
         └────────────┬───────────────────────────┘
@@ -203,8 +207,12 @@ src/datapact/
 | Parquet Loading | ✅ | datasource.py |
 | JSON Lines Loading | ✅ | datasource.py |
 | Schema Validation | ✅ | validators/schema_validator.py |
+| Schema Drift Policy | ✅ | contracts.py |
 | Quality Rules | ✅ | validators/quality_validator.py |
+| SLA Checks | ✅ | validators/sla_validator.py |
 | Distribution Monitoring | ✅ | validators/distribution_validator.py |
+| Profiling | ✅ | profiling.py |
+| Rule Severity | ✅ | contracts.py |
 | JSON Report Output | ✅ | reporting.py |
 | Console Output | ✅ | reporting.py |
 | CLI: validate | ✅ | cli.py |
@@ -246,6 +254,7 @@ src/datapact/
 Unit Tests:
 ├─ TestSchemaValidator       (schema checks)
 ├─ TestQualityValidator      (quality rules)
+├─ TestSLAValidator          (row count checks)
 ├─ TestDataSource            (loading & inference)
 └─ TestDistributionValidator (distribution checks)
 
@@ -285,6 +294,7 @@ Coverage:
 - **regex** - Pattern matching
 - **enum** - Value whitelist
 - **max_null_ratio** - Tolerance for nulls
+- **freshness_max_age_hours** - Max allowed timestamp age (hours)
 
 ### Distribution Rules
 - **mean** - Expected average
@@ -302,7 +312,7 @@ ERROR (blocks validation)
 └─ Validation failures
 
 WARN (informational)
-├─ Extra columns not in contract
+├─ Extra columns not in contract (configurable)
 ├─ Distribution drift detected
 ├─ Statistical anomalies
 └─ Soft constraint violations

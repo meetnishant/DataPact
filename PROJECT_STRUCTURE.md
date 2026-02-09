@@ -28,6 +28,7 @@ DataPact/
 │           ├── __init__.py
 │           ├── schema_validator.py      # Column/type/required checks
 │           ├── quality_validator.py     # Null/unique/range/regex/enum
+│           ├── sla_validator.py         # SLA row count checks
 │           └── distribution_validator.py # Mean/std drift detection
 ├── tests/
 │   ├── test_validator.py            # Core validator tests

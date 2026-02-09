@@ -20,6 +20,7 @@ from datapact.validators import (
     SchemaValidator,  # Validates schema (columns, types, required)
     QualityValidator,  # Validates quality rules (nulls, unique, etc.)
     DistributionValidator,  # Validates distribution/drift rules
+    SLAValidator,  # Validates SLA checks (row count thresholds)
 )
 from datapact.reporting import ValidationReport, ErrorRecord  # Reporting utilities
 from datapact.versioning import check_tool_compatibility  # Version compatibility check
@@ -187,6 +188,10 @@ def validate_command(args) -> int:
         dist_validator = DistributionValidator(contract, df)
         dist_pass, dist_warnings = dist_validator.validate()
 
+        # Run SLA validation (non-blocking: collect errors/warnings)
+        sla_validator = SLAValidator(contract, df)
+        sla_pass, sla_errors = sla_validator.validate()
+
         # Collect all errors and warnings as ErrorRecord objects
         all_errors = []
         for err in schema_errors:
@@ -209,6 +214,13 @@ def validate_command(args) -> int:
             msg = warn.replace("WARN: ", "")
             all_errors.append(
                 ErrorRecord(code="DISTRIBUTION", field="", message=msg, severity="WARN")
+            )
+
+        for err in sla_errors:
+            severity = "ERROR" if err.startswith("ERROR") else "WARN"
+            msg = err.replace("ERROR: ", "").replace("WARN: ", "")
+            all_errors.append(
+                ErrorRecord(code="SLA", field="", message=msg, severity=severity)
             )
 
         # Count errors and warnings for reporting

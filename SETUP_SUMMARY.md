@@ -21,6 +21,7 @@ DataContracts/
 │   └── validators/
 │       ├── schema_validator.py
 │       ├── quality_validator.py
+│       ├── sla_validator.py
 │       └── distribution_validator.py
 ├── tests/
 │   ├── test_validator.py           ← Core validator tests
@@ -71,6 +72,8 @@ DataContracts/
 ✅ **Reporting** - JSON + console output with proper severity levels  
 ✅ **Profiling** - Auto-generate rule baselines from data  
 ✅ **Rule Severity** - WARN/ERROR per rule with CLI overrides  
+✅ **Schema Drift** - Control extra columns via WARN/ERROR policy  
+✅ **SLA Checks** - Enforce row count thresholds and freshness rules  
 ✅ **CLI** - Full command-line interface with `validate`, `init`, and `profile` commands  
 
 ### Testing & Quality

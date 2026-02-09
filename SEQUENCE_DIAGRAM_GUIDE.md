@@ -31,9 +31,10 @@ User/CLI Request
     ↓
 3. Data Loader (loads CSV/Parquet/JSON)
     ↓
-4. VALIDATION PIPELINE (3 sequential validators):
+4. VALIDATION PIPELINE (4 sequential validators):
     • Schema Validator (columns, types, required fields)
     • Quality Validator (nulls, unique, ranges, regex, enum)
+    • SLA Validator (row count thresholds)
     • Distribution Validator (mean, std, drift)
     ↓
 5. Report Generator (aggregates results)
@@ -52,6 +53,7 @@ Exit Code (0 or 1)
 ✅ **Return values** shown for each component  
 ✅ **Error handling** included (errors, warnings, OK status)  
 ✅ **Rule severity** (WARN/ERROR) reflected in quality validation  
+✅ **SLA validator** shown as part of the pipeline  
 ✅ **Profiling command** documented outside the validate flow  
 ✅ **Report generation** and output demonstrated  
 ✅ **Exit code** shown at the end  

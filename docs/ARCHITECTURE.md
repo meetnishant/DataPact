@@ -40,6 +40,7 @@ Three specialized validators run sequentially:
 - Validates structure: column existence, types, required fields
 - Runs first because structural issues block detailed validation
 - Produces `ERROR` severity violations
+- Applies schema drift policy for extra columns (WARN/ERROR)
 - **Exit**: Errors prevent subsequent validators from running on affected fields
 
 #### **quality_validator.py**
@@ -47,6 +48,10 @@ Three specialized validators run sequentially:
 - Operates only on columns present in schema
 - Produces both `ERROR` (constraint violations) and `WARN` (soft failures)
 - Supports rule-level severity metadata and CLI overrides
+
+#### **sla_validator.py**
+- Checks dataset SLAs (row count thresholds)
+- Produces `ERROR` or `WARN` depending on SLA severity
 - **Input**: DataFrame + Field rules
 
 #### **distribution_validator.py**
@@ -80,8 +85,9 @@ Three specialized validators run sequentially:
   - If required fields are missing, stop early
   - Type mismatches are recorded as ERRORs
 2. **Quality validation** skips missing columns
-3. **Distribution validation** is always non-blocking (WARNings only)
-4. **Exit code** is non-zero if any ERRORs exist (for CI/CD)
+3. **SLA validation** runs after quality checks (non-blocking)
+4. **Distribution validation** is always non-blocking (WARNings only)
+5. **Exit code** is non-zero if any ERRORs exist (for CI/CD)
 
 ## Data Flow Example
 

@@ -148,6 +148,27 @@ class QualityValidator:
                         f"not matching regex '{rules.regex}'",
                     )
 
+        # freshness constraint
+        if rules.freshness_max_age_hours is not None:
+            parsed = pd.to_datetime(column, errors="coerce", utc=True)
+            max_ts = parsed.max()
+            if pd.isna(max_ts):
+                self._record(
+                    field.name,
+                    "freshness_max_age_hours",
+                    f"Field '{field.name}' has no parsable timestamps",
+                )
+            else:
+                now = pd.Timestamp.utcnow()
+                age_hours = (now - max_ts).total_seconds() / 3600
+                if age_hours > rules.freshness_max_age_hours:
+                    self._record(
+                        field.name,
+                        "freshness_max_age_hours",
+                        f"Field '{field.name}' freshness age {age_hours:.2f}h "
+                        f"exceeds max_age_hours={rules.freshness_max_age_hours}",
+                    )
+
         # enum constraint
         if rules.enum:
             try:
