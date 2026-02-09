@@ -5,6 +5,7 @@ DataPact/
 │       └── tests.yml                # GitHub Actions CI/CD
 ├── .gitignore
 ├── README.md                        # Project overview & usage
+├── FEATURES.md                      # Feature list with examples
 ├── QUICKSTART.md                    # Setup & quick usage
 ├── CONTRIBUTING.md                  # Developer guide
 ├── FILE_REFERENCE.md                # File-by-file responsibilities

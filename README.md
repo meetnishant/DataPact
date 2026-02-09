@@ -18,6 +18,8 @@ Validate datasets against YAML-based data contracts to ensure data quality, sche
 - **CI/CD Ready**: Exit codes for automation pipelines
 - **Detailed Reporting**: JSON reports with machine-readable errors
 
+See [FEATURES.md](FEATURES.md) for a functional feature list with compact examples.
+
 ## Installation
 
 ```bash

@@ -12,6 +12,7 @@ Welcome to the **DataPact** repository! This file helps you navigate all resourc
 
 ### For End Users
 → [README.md](README.md) - Features, usage, examples
+→ [FEATURES.md](FEATURES.md) - Functional feature list with examples
 
 ### For Developers
 → [CONTRIBUTING.md](CONTRIBUTING.md) - Development workflow and contribution guidelines
@@ -21,6 +22,7 @@ Welcome to the **DataPact** repository! This file helps you navigate all resourc
 ### Getting Started
 - [QUICKSTART.md](QUICKSTART.md) - Installation, running CLI, running tests
 - [README.md](README.md) - Full user guide with contract format and examples
+- [FEATURES.md](FEATURES.md) - Feature list with compact examples
 - [SETUP_SUMMARY.md](SETUP_SUMMARY.md) - What was created and project overview
 
 ### For Development

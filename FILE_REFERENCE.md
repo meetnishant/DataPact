@@ -128,6 +128,12 @@ This guide maps each file to its purpose and shows how they fit together.
 - **Audience**: End users and integrators
 - **When to modify**: Updating examples, adding features
 
+### `FEATURES.md`
+- **Purpose**: Functional feature list with compact examples
+- **Sections**: Validation, rules, policies, streaming, plugins, reporting
+- **Audience**: End users and evaluators
+- **When to modify**: Adding or changing feature capabilities
+
 ### `QUICKSTART.md`
 - **Purpose**: Get developers running in minutes
 - **Sections**: Installation, running CLI, running tests, code quality
