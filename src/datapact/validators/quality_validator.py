@@ -4,6 +4,7 @@ Checks field-level quality rules and produces errors for violations.
 """
 
 from typing import List, Tuple
+import re
 import pandas as pd
 from datapact.contracts import Contract, Field
 
@@ -57,12 +58,18 @@ class QualityValidator:
 
         # max_null_ratio constraint
         if rules.max_null_ratio is not None:
-            null_ratio = column.isna().sum() / len(column)
-            if null_ratio > rules.max_null_ratio:
+            if len(column) == 0:
                 self.errors.append(
-                    f"ERROR: Field '{field.name}' null ratio ({null_ratio:.2%}) "
-                    f"exceeds max_null_ratio={rules.max_null_ratio}"
+                    f"ERROR: Field '{field.name}' has no rows; "
+                    "cannot evaluate max_null_ratio"
                 )
+            else:
+                null_ratio = column.isna().sum() / len(column)
+                if null_ratio > rules.max_null_ratio:
+                    self.errors.append(
+                        f"ERROR: Field '{field.name}' null ratio ({null_ratio:.2%}) "
+                        f"exceeds max_null_ratio={rules.max_null_ratio}"
+                    )
 
         # unique constraint
         if rules.unique:
@@ -101,16 +108,29 @@ class QualityValidator:
             # Debug: print actual values being checked for regex
             if field.name in ("date", "origination_date"):
                 print(f"[DEBUG] Regex check for field '{field.name}':", list(non_null))
-            violations = (~non_null.str.fullmatch(pattern)).sum()
-            if violations > 0:
+            try:
+                violations = (~non_null.str.fullmatch(pattern)).sum()
+            except re.error as exc:
                 self.errors.append(
-                    f"ERROR: Field '{field.name}' has {violations} values "
-                    f"not matching regex '{rules.regex}'"
+                    f"ERROR: Field '{field.name}' has invalid regex '{rules.regex}': "
+                    f"{exc}"
                 )
+            else:
+                if violations > 0:
+                    self.errors.append(
+                        f"ERROR: Field '{field.name}' has {violations} values "
+                        f"not matching regex '{rules.regex}'"
+                    )
 
         # enum constraint
         if rules.enum:
-            valid_set = set(rules.enum)
+            try:
+                valid_set = set(rules.enum)
+            except TypeError:
+                self.errors.append(
+                    f"ERROR: Field '{field.name}' enum contains unhashable values"
+                )
+                return
             non_null = column.dropna()
             violations = (~non_null.isin(valid_set)).sum()
             if violations > 0:

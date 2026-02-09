@@ -91,6 +91,9 @@ class Contract:
         Construct Contract from dictionary with validation and migration.
         Handles version checks, deprecation, and field parsing.
         """
+        if not isinstance(data, dict):
+            raise ValueError("Contract YAML must be a mapping with top-level keys")
+
         contract_data = data.get("contract", {})
         version = contract_data.get("version")
 
@@ -126,18 +129,32 @@ class Contract:
 
         dataset_data = data.get("dataset", {})
         fields_data = data.get("fields", [])
+        if not isinstance(fields_data, list):
+            raise ValueError("Contract 'fields' must be a list")
 
         # Build field objects with parsed rules and distribution metadata
-        fields = [
-            Field(
-                name=f["name"],
-                type=f["type"],
-                required=f.get("required", False),
-                rules=cls._parse_rules(f.get("rules", {})),
-                distribution=cls._parse_distribution(f.get("distribution", {})),
+        fields: List[Field] = []
+        for idx, field_data in enumerate(fields_data):
+            if not isinstance(field_data, dict):
+                raise ValueError(
+                    f"Field entry at index {idx} must be a mapping"
+                )
+            if "name" not in field_data or "type" not in field_data:
+                raise ValueError(
+                    f"Field entry at index {idx} must include 'name' and 'type'"
+                )
+
+            fields.append(
+                Field(
+                    name=field_data["name"],
+                    type=field_data["type"],
+                    required=field_data.get("required", False),
+                    rules=cls._parse_rules(field_data.get("rules", {})),
+                    distribution=cls._parse_distribution(
+                        field_data.get("distribution", {})
+                    ),
+                )
             )
-            for f in fields_data
-        ]
 
         return cls(
             name=contract_data.get("name"),

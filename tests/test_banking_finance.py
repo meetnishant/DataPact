@@ -8,11 +8,17 @@ from pathlib import Path
 
 import pandas as pd
 import pytest
+import yaml
 
 from datapact.contracts import Contract
 from datapact.validators import SchemaValidator, QualityValidator
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
+
+
+def _load_contract_dict(filename: str) -> dict:
+    with open(FIXTURES_DIR / filename, "r") as handle:
+        return yaml.safe_load(handle)
 
 
 @pytest.fixture
@@ -151,6 +157,14 @@ class TestDepositsAccountsAggregate:
         unique_ratio = non_null.nunique() / len(non_null)
         assert null_ratio <= 0.01, f"Null ratio too high: {null_ratio:.2%}"
         assert unique_ratio >= 0.99, f"Uniqueness ratio too low: {unique_ratio:.2%}"
+
+    def test_max_null_ratio_empty_dataset(self, deposits_agg_contract, deposits_agg_df):
+        empty_df = deposits_agg_df.iloc[0:0]
+        q_passed, q_errors = QualityValidator(deposits_agg_contract, empty_df).validate()
+        assert not q_passed
+        assert any(
+            "cannot evaluate max_null_ratio" in err for err in q_errors
+        ), f"Expected max_null_ratio error, got: {q_errors}"
 
 
 class TestDepositsTransactions:
@@ -294,3 +308,43 @@ class TestComplexConsumption:
         )
         valid_txns["rolling_30d_sum"] = rolling.values
         assert valid_txns["rolling_30d_sum"].isna().sum() < len(valid_txns)
+
+
+class TestValidationExceptions:
+    def test_invalid_regex_rule(self, tmp_path, lending_df):
+        contract_data = _load_contract_dict("lending_contract.yaml")
+        for field in contract_data.get("fields", []):
+            if field.get("name") == "origination_date":
+                field["rules"]["regex"] = "["
+                break
+
+        contract_path = tmp_path / "lending_contract_bad_regex.yaml"
+        contract_path.write_text(yaml.safe_dump(contract_data))
+
+        contract = Contract.from_yaml(str(contract_path))
+        q_passed, q_errors = QualityValidator(
+            contract, lending_df.iloc[0:5]
+        ).validate()
+        assert not q_passed
+        assert any(
+            "invalid regex" in err for err in q_errors
+        ), f"Expected invalid regex error, got: {q_errors}"
+
+    def test_unhashable_enum_rule(self, tmp_path, deposits_df):
+        contract_data = _load_contract_dict("deposits_contract.yaml")
+        for field in contract_data.get("fields", []):
+            if field.get("name") == "product_type":
+                field["rules"]["enum"] = ["checking", ["bad"]]
+                break
+
+        contract_path = tmp_path / "deposits_contract_bad_enum.yaml"
+        contract_path.write_text(yaml.safe_dump(contract_data))
+
+        contract = Contract.from_yaml(str(contract_path))
+        q_passed, q_errors = QualityValidator(
+            contract, deposits_df.iloc[0:5]
+        ).validate()
+        assert not q_passed
+        assert any(
+            "enum contains unhashable values" in err for err in q_errors
+        ), f"Expected enum error, got: {q_errors}"
