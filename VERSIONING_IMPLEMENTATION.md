@@ -48,7 +48,7 @@ Supports:
 
 **Test Results:**
 ```
-✅ 56 total tests collected (16 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling)
+✅ 59 total tests collected (19 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling)
 ✅ 66%+ code coverage
 ✅ All validators working correctly with versioning
 ```
@@ -148,7 +148,7 @@ Test Suite Results:
 ✅ TestContractVersionLoading: 4 passed
 ✅ TestVersionInfo: 1 passed
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Total: 56 tests collected
+Total: 59 tests collected
 Coverage: 66%+ (including all versioning code paths)
 ```
 
@@ -171,3 +171,4 @@ The contract versioning system is fully functional, tested, and integrated. Old 
 - **Rule Severity**: Rules can declare `WARN` or `ERROR` severities, with CLI overrides.
 - **Schema Drift**: Extra columns can be WARN or ERROR via schema policy.
 - **SLA Checks**: Row count thresholds and freshness rules are supported.
+- **Chunked Validation**: CSV/JSONL files can be validated in chunks with sampling.

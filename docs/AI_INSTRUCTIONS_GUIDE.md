@@ -28,3 +28,4 @@ Organize instructions as:
 - Document **rule severity** metadata (WARN/ERROR) and CLI overrides.
 - Document **schema drift** policy (`schema.extra_columns.severity`).
 - Document **SLA checks** (`sla.min_rows`, `sla.max_rows`, and freshness rules).
+- Document **chunked validation** options (`--chunksize`, `--sample-rows`, `--sample-frac`).

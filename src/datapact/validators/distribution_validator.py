@@ -3,7 +3,7 @@ Distribution validation - drift detection for numeric columns.
 Checks for mean/std drift and outliers using contract distribution rules.
 """
 
-from typing import List, Tuple
+from typing import Dict, List, Tuple
 import pandas as pd
 import numpy as np
 from datapact.contracts import Contract, Field
@@ -94,3 +94,122 @@ class DistributionValidator:
                         f"WARN: Field '{field.name}' has {outlier_count} outliers "
                         f"(z-score > {dist.max_z_score})"
                     )
+
+
+class DistributionAccumulator:
+    """
+    Accumulate distribution stats across chunks for drift detection.
+    """
+
+    def __init__(self, contract: Contract):
+        self.contract = contract
+        self.stats: Dict[str, dict] = {}
+        self.rules: Dict[str, DistributionRule] = {}
+
+        for field in contract.fields:
+            if field.distribution:
+                self.rules[field.name] = field.distribution
+                self.stats[field.name] = {
+                    "count": 0,
+                    "mean": 0.0,
+                    "m2": 0.0,
+                }
+
+    def process_chunk(self, df: pd.DataFrame) -> None:
+        for field_name, dist in self.rules.items():
+            if field_name not in df.columns:
+                continue
+
+            column = df[field_name].dropna()
+            if len(column) == 0:
+                continue
+
+            try:
+                numeric_col = pd.to_numeric(column)
+            except (ValueError, TypeError):
+                continue
+
+            stats = self.stats[field_name]
+            for value in numeric_col:
+                stats["count"] += 1
+                delta = value - stats["mean"]
+                stats["mean"] += delta / stats["count"]
+                delta2 = value - stats["mean"]
+                stats["m2"] += delta * delta2
+
+    def finalize_drift(self) -> List[str]:
+        warnings: List[str] = []
+        for field_name, dist in self.rules.items():
+            stats = self.stats[field_name]
+            count = stats["count"]
+            if count == 0:
+                continue
+
+            current_mean = stats["mean"]
+            current_std = (stats["m2"] / count) ** 0.5 if count > 0 else 0.0
+
+            if dist.mean is not None and dist.max_drift_pct is not None:
+                drift_pct = 0.0
+                if dist.mean != 0:
+                    drift_pct = abs(current_mean - dist.mean) / abs(dist.mean) * 100
+                if drift_pct > dist.max_drift_pct:
+                    warnings.append(
+                        f"WARN: Field '{field_name}' mean drift {drift_pct:.2f}% "
+                        f"exceeds threshold {dist.max_drift_pct}%"
+                    )
+
+            if dist.std is not None and dist.max_drift_pct is not None:
+                drift_pct = 0.0
+                if dist.std != 0:
+                    drift_pct = abs(current_std - dist.std) / abs(dist.std) * 100
+                if drift_pct > dist.max_drift_pct:
+                    warnings.append(
+                        f"WARN: Field '{field_name}' std drift {drift_pct:.2f}% "
+                        f"exceeds threshold {dist.max_drift_pct}%"
+                    )
+
+        return warnings
+
+    def needs_outlier_pass(self) -> bool:
+        return any(
+            dist.max_z_score is not None
+            for dist in self.rules.values()
+        )
+
+    def count_outliers(self, df_iter) -> List[str]:
+        warnings: List[str] = []
+        for field_name, dist in self.rules.items():
+            if dist.max_z_score is None:
+                continue
+
+            stats = self.stats[field_name]
+            count = stats["count"]
+            if count == 0:
+                continue
+
+            mean = stats["mean"]
+            std = (stats["m2"] / count) ** 0.5 if count > 0 else 0.0
+            if std <= 0:
+                continue
+
+            outliers = 0
+            for chunk in df_iter:
+                if field_name not in chunk.columns:
+                    continue
+                column = chunk[field_name].dropna()
+                if len(column) == 0:
+                    continue
+                try:
+                    numeric_col = pd.to_numeric(column)
+                except (ValueError, TypeError):
+                    continue
+                z_scores = np.abs((numeric_col - mean) / std)
+                outliers += (z_scores > dist.max_z_score).sum()
+
+            if outliers > 0:
+                warnings.append(
+                    f"WARN: Field '{field_name}' has {outliers} outliers "
+                    f"(z-score > {dist.max_z_score})"
+                )
+
+        return warnings

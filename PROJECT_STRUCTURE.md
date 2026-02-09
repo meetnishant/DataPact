@@ -36,6 +36,7 @@ DataPact/
 │   ├── test_banking_finance.py      # Banking/finance scenarios
 │   ├── test_concurrency.py          # Concurrency validation
 │   ├── test_concurrency_mp.py       # Multiprocessing concurrency
+│   ├── test_chunked_validation.py   # Chunked validation and sampling
 │   ├── test_profiling.py            # Profiling tests
 │   └── fixtures/
 │       ├── customer_contract.yaml   # Example contract

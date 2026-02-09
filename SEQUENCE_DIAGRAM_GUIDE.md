@@ -55,6 +55,7 @@ Exit Code (0 or 1)
 ✅ **Rule severity** (WARN/ERROR) reflected in quality validation  
 ✅ **SLA validator** shown as part of the pipeline  
 ✅ **Profiling command** documented outside the validate flow  
+✅ **Chunked validation** supported via CLI options for large files  
 ✅ **Report generation** and output demonstrated  
 ✅ **Exit code** shown at the end  
 

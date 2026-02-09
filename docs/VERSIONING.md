@@ -20,6 +20,7 @@ Related features:
 - **Rule Severity**: Rules can declare WARN/ERROR severities with CLI overrides.
 - **Schema Drift**: Extra columns can be WARN or ERROR via schema policy.
 - **SLA Checks**: Row count and freshness constraints are supported.
+- **Chunked Validation**: Stream CSV/JSONL files with optional sampling.
 
 ## Supported Versions
 

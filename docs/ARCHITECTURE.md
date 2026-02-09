@@ -26,6 +26,7 @@ Data File → DataSource Loader ↓
 - Loads CSV, Parquet, JSON Lines formats
 - Auto-detects format from file extension
 - Provides schema inference (column names and inferred types)
+- Supports chunked streaming for large CSV/JSONL files
 - **Responsibility**: Data I/O and schema discovery
 
 ### 3. **profiling.py** - Rule Profiling
@@ -78,6 +79,7 @@ Three specialized validators run sequentially:
 - Performs version compatibility checking before validation
 - Commands: `validate` (run validation), `init` (infer contract), `profile` (infer rules)
 - Handles exit codes (0 = pass, 1 = fail with errors)
+- Supports chunked validation and sampling options for large datasets
 
 ## Validation Semantics
 

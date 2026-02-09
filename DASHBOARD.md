@@ -8,24 +8,24 @@ Version: 0.2.0
 Status: ✅ READY FOR PRODUCTION
 Created: February 8, 2026
 
-📁 Total Files:    76
+📁 Total Files:    77
 💻 Code Files:     12 (Python modules)
 📚 Docs Files:     17 (markdown + guides)
 ⚙️  Config Files:   4 (toml, yaml, gitignore)
-🧪 Test Files:     6 test modules + 17 fixtures
+🧪 Test Files:     7 test modules + 17 fixtures
 
 📊 Code Statistics:
    Lines of Code:           ~900+
    Type Hint Coverage:      100%
    Docstring Coverage:      Comprehensive
    External API Calls:      0 (local only)
-    Test Cases:              56 (16 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling)
+    Test Cases:              59 (19 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling)
    Code Coverage:           66%+
 
 🔧 Supported Python:  3.9, 3.10, 3.11, 3.12
 📦 Dependencies:      pandas, pyyaml, pyarrow
 ✅ CI/CD:            GitHub Actions configured
-✨ Features:         Schema drift + Quality + SLA + Distribution validation + Profiling + Rule Severity + Versioning with auto-migration
+✨ Features:         Schema drift + Quality + SLA + Distribution validation + Chunked validation + Profiling + Rule Severity + Versioning with auto-migration
 ```
 
 ## Documentation Structure
@@ -211,6 +211,7 @@ src/datapact/
 | Quality Rules | ✅ | validators/quality_validator.py |
 | SLA Checks | ✅ | validators/sla_validator.py |
 | Distribution Monitoring | ✅ | validators/distribution_validator.py |
+| Chunked Validation | ✅ | datasource.py |
 | Profiling | ✅ | profiling.py |
 | Rule Severity | ✅ | contracts.py |
 | JSON Report Output | ✅ | reporting.py |
@@ -255,6 +256,7 @@ Unit Tests:
 ├─ TestSchemaValidator       (schema checks)
 ├─ TestQualityValidator      (quality rules)
 ├─ TestSLAValidator          (row count checks)
+├─ TestChunkedValidation     (chunked validation)
 ├─ TestDataSource            (loading & inference)
 └─ TestDistributionValidator (distribution checks)
 

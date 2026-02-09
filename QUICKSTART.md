@@ -71,6 +71,21 @@ sla:
     severity: WARN
 ```
 
+### Chunked Validation and Sampling
+```bash
+python3 src/datapact/cli.py validate \
+  --contract my_contract.yaml \
+  --data my_data.csv \
+  --chunksize 50000
+
+python3 src/datapact/cli.py validate \
+  --contract my_contract.yaml \
+  --data my_data.csv \
+  --sample-rows 10000
+```
+
+Chunked validation is supported for CSV and JSONL inputs.
+
 ## Running Tests
 
 ```bash

@@ -29,6 +29,7 @@ DataContracts/
 │   ├── test_banking_finance.py     ← Banking/finance scenarios
 │   ├── test_concurrency.py         ← Concurrency validation
 │   ├── test_concurrency_mp.py      ← Multiprocessing concurrency
+│   ├── test_chunked_validation.py  ← Chunked validation and sampling
 │   ├── test_profiling.py           ← Profiling tests
 │   └── fixtures/
 │       ├── customer_contract.yaml
@@ -74,6 +75,7 @@ DataContracts/
 ✅ **Rule Severity** - WARN/ERROR per rule with CLI overrides  
 ✅ **Schema Drift** - Control extra columns via WARN/ERROR policy  
 ✅ **SLA Checks** - Enforce row count thresholds and freshness rules  
+✅ **Chunked Validation** - Stream CSV/JSONL with optional sampling  
 ✅ **CLI** - Full command-line interface with `validate`, `init`, and `profile` commands  
 
 ### Testing & Quality

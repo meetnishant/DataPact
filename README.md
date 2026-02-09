@@ -11,6 +11,7 @@ Validate datasets against YAML-based data contracts to ensure data quality, sche
 - **Distribution Monitoring**: Detect drift in numeric column statistics
 - **Profiling**: Auto-generate rule baselines from data
 - **SLA Checks**: Enforce row count and freshness constraints
+- **Big Data Support**: Chunked validation with optional sampling
 - **Contract Versioning**: Track contract evolution with automatic migration
 - **Multiple Formats**: Support CSV, Parquet, and JSON Lines
 - **CI/CD Ready**: Exit codes for automation pipelines
@@ -95,6 +96,10 @@ datapact validate --contract <path/to/contract.yaml> --data <path/to/data> [--fo
 - `--format`: Data format. Default: auto-detect from file extension
 - `--output-dir`: Directory for JSON report. Default: ./reports
 - `--severity-override`: Override rule severity (format: field.rule=warn)
+- `--chunksize`: Stream validation in chunks (CSV/JSONL)
+- `--sample-rows`: Sample N rows for validation
+- `--sample-frac`: Sample fraction for validation
+- `--sample-seed`: Random seed for sampling
 
 **Exit Codes:**
 - `0`: Validation passed
@@ -187,6 +192,15 @@ fields:
     type: string
     rules:
       freshness_max_age_hours: 24
+
+### Chunked Validation and Sampling
+
+```bash
+datapact validate --contract contract.yaml --data data.csv --chunksize 50000
+datapact validate --contract contract.yaml --data data.csv --sample-rows 10000
+```
+
+Chunked validation is supported for CSV and JSONL inputs.
 ```
 
 ## Report Format

@@ -49,6 +49,7 @@
 - Profiling uses `datapact profile` and `profile_dataframe()` for rule baselines.
 - Schema drift policy is configured in `schema.extra_columns.severity`.
 - SLA checks are configured in `sla.min_rows` and `sla.max_rows`.
+- Chunked validation is available via `--chunksize` with optional sampling.
 
 ## Adding Support for New Contract Versions
 

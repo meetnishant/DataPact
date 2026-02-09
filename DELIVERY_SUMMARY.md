@@ -6,8 +6,8 @@ A **production-ready Python data validation framework** called **DataPact** that
 
 ### Key Deliverables
 
-✅ **Complete Project Structure** (76 files total)
-- 12 Python source modules (~950 lines of well-typed code)
+✅ **Complete Project Structure** (77 files total)
+- 12 Python source modules (~1000 lines of well-typed code)
 - Modular validator pipeline (schema → quality → SLA → distribution)
 - Comprehensive test suite with fixtures
 - GitHub Actions CI/CD workflow
@@ -22,6 +22,7 @@ A **production-ready Python data validation framework** called **DataPact** that
 - Rule severity support with WARN/ERROR metadata and CLI overrides
 - Schema drift policy for extra columns (WARN/ERROR)
 - SLA checks (row count thresholds and freshness rules)
+- Chunked validation and sampling for large datasets
 
 ✅ **Enterprise-Ready Code**
 - Full type hints throughout
@@ -102,7 +103,7 @@ This enables AI agents (Copilot, Claude, etc.) to be immediately productive with
 | Python Files | 12 |
 | Documentation Files | 17 |
 | Total Lines of Code | ~900 |
-| Test Coverage | Comprehensive (56 tests) |
+| Test Coverage | Comprehensive (59 tests) |
 | Type Hints | 100% |
 | External APIs | 0 |
 | Configuration Files | 4 |
@@ -135,6 +136,7 @@ tests/
 ├── test_banking_finance.py   Banking/finance scenarios
 ├── test_concurrency.py       Concurrency validation
 ├── test_concurrency_mp.py    Multiprocessing concurrency validation
+├── test_chunked_validation.py Chunked validation tests
 ├── test_profiling.py         Profiling tests
 └── fixtures/
     ├── customer_contract.yaml

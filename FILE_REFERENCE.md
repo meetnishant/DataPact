@@ -24,6 +24,8 @@ This guide maps each file to its purpose and shows how they fit together.
 - **Key methods**:
   - `load()` - Load data into DataFrame
   - `infer_schema()` - Discover column types
+  - `iter_chunks()` - Stream CSV/JSONL in chunks
+  - `sample_dataframe()` - Sample rows for large datasets
   - `_detect_format()` - Auto-detect file format
 - **When to modify**: Adding support for new data formats (e.g., Excel)
 
@@ -208,6 +210,10 @@ This guide maps each file to its purpose and shows how they fit together.
 ### `tests/test_concurrency_mp.py`
 - **Purpose**: Concurrency validation using multiprocessing
 - **When to modify**: Changing multiprocessing behavior or validation safety checks
+
+### `tests/test_chunked_validation.py`
+- **Purpose**: Chunked validation and sampling tests
+- **When to modify**: Adjusting chunking or sampling behavior
 
 ### `tests/test_profiling.py`
 - **Purpose**: Profiling tests for inferred rules and distributions
