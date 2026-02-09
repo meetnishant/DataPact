@@ -48,7 +48,7 @@ Supports:
 
 **Test Results:**
 ```
-✅ 45 total tests collected (10 core + 17 versioning + 16 banking/finance + 2 concurrency)
+✅ 52 total tests collected (12 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling)
 ✅ 66%+ code coverage
 ✅ All validators working correctly with versioning
 ```
@@ -148,7 +148,7 @@ Test Suite Results:
 ✅ TestContractVersionLoading: 4 passed
 ✅ TestVersionInfo: 1 passed
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Total: 45 tests collected
+Total: 52 tests collected
 Coverage: 66%+ (including all versioning code paths)
 ```
 
@@ -164,3 +164,8 @@ Coverage: 66%+ (including all versioning code paths)
 The contract versioning system is fully functional, tested, and integrated. Old contracts automatically upgrade, version compatibility is checked, breaking changes are tracked, and comprehensive documentation is provided.
 
 **Status: ✅ COMPLETE AND TESTED**
+
+## Related Enhancements
+
+- **Profiling**: `datapact profile` can generate contract rules and distributions from data.
+- **Rule Severity**: Rules can declare `WARN` or `ERROR` severities, with CLI overrides.

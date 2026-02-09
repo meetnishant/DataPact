@@ -6,7 +6,9 @@ Validate datasets against YAML-based data contracts to ensure data quality, sche
 
 - **Schema Validation**: Check columns, types, and required fields
 - **Quality Rules**: Validate nulls, uniqueness, ranges, regex patterns, and enums
+- **Rule Severity**: Mark rules as WARN or ERROR, with CLI overrides
 - **Distribution Monitoring**: Detect drift in numeric column statistics
+- **Profiling**: Auto-generate rule baselines from data
 - **Contract Versioning**: Track contract evolution with automatic migration
 - **Multiple Formats**: Support CSV, Parquet, and JSON Lines
 - **CI/CD Ready**: Exit codes for automation pipelines
@@ -71,6 +73,12 @@ datapact validate --contract customer_contract.yaml --data customers.csv
 datapact init --contract new_contract.yaml --data data.csv
 ```
 
+### Profile Contract with Rules
+
+```bash
+datapact profile --contract new_profile.yaml --data data.csv
+```
+
 ## CLI Usage
 
 ### Validate Command
@@ -84,6 +92,7 @@ datapact validate --contract <path/to/contract.yaml> --data <path/to/data> [--fo
 - `--data`: Path to data file (required)
 - `--format`: Data format. Default: auto-detect from file extension
 - `--output-dir`: Directory for JSON report. Default: ./reports
+- `--severity-override`: Override rule severity (format: field.rule=warn)
 
 **Exit Codes:**
 - `0`: Validation passed
@@ -96,6 +105,23 @@ datapact init --contract <path/to/output.yaml> --data <path/to/data>
 ```
 
 Infers a starter contract from a dataset (columns and types only).
+
+### Profile Command
+
+```bash
+datapact profile --contract <path/to/output.yaml> --data <path/to/data>
+```
+
+**Options:**
+- `--max-enum-size`: Max enum size for profiling (default: 20)
+- `--max-enum-ratio`: Max enum ratio for profiling (default: 0.2)
+- `--unique-threshold`: Unique ratio threshold (default: 0.99)
+- `--null-ratio-buffer`: Buffer added to observed null ratio (default: 0.01)
+- `--range-buffer-pct`: Buffer added to min/max (default: 0.05)
+- `--max-drift-pct`: Drift threshold for distributions (default: 10.0)
+- `--max-z-score`: Outlier z-score threshold (default: 3.0)
+- `--no-distribution`: Disable distribution profiling
+- `--no-date-regex`: Disable date regex inference
 
 ## Supported Data Types
 
@@ -116,6 +142,18 @@ In contracts, use:
 - `regex`: Regex pattern match
 - `enum`: Value must be in list
 - `max_null_ratio`: Tolerate up to X% nulls (0.0 to 1.0)
+
+Rules can include severity metadata:
+
+```yaml
+rules:
+  not_null:
+    value: true
+    severity: WARN
+  max:
+    value: 100
+    severity: ERROR
+```
 
 ### Distribution Rules
 

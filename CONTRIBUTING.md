@@ -42,6 +42,12 @@
 2. Implement loading in `DataSource.load()`
 3. Add test fixture and test case
 
+## Rule Severities and Profiling
+
+- Rule severities can be specified per rule (WARN/ERROR) in YAML.
+- CLI overrides are supported via `--severity-override field.rule=warn`.
+- Profiling uses `datapact profile` and `profile_dataframe()` for rule baselines.
+
 ## Adding Support for New Contract Versions
 
 1. Add version info to `VERSION_REGISTRY` in `src/datapact/versioning.py`

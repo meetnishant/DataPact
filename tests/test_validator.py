@@ -145,6 +145,54 @@ class TestQualityValidator:
         assert not passed
         assert any("enum" in e.lower() for e in errors)
 
+    def test_rule_severity_warn(self):
+        contract_data = {
+            "contract": {"name": "test", "version": "2.0.0"},
+            "dataset": {"name": "test"},
+            "fields": [
+                {
+                    "name": "status",
+                    "type": "string",
+                    "required": True,
+                    "rules": {
+                        "not_null": {"value": True, "severity": "WARN"}
+                    },
+                }
+            ],
+        }
+        contract = Contract._from_dict(contract_data)
+        df = pd.DataFrame({"status": [None]})
+
+        validator = QualityValidator(contract, df)
+        passed, errors = validator.validate()
+        assert passed
+        assert any(err.startswith("WARN") for err in errors)
+
+    def test_rule_severity_override(self):
+        contract_data = {
+            "contract": {"name": "test", "version": "2.0.0"},
+            "dataset": {"name": "test"},
+            "fields": [
+                {
+                    "name": "status",
+                    "type": "string",
+                    "required": True,
+                    "rules": {"not_null": True},
+                }
+            ],
+        }
+        contract = Contract._from_dict(contract_data)
+        df = pd.DataFrame({"status": [None]})
+
+        validator = QualityValidator(
+            contract,
+            df,
+            severity_overrides={"status.not_null": "warn"},
+        )
+        passed, errors = validator.validate()
+        assert passed
+        assert any(err.startswith("WARN") for err in errors)
+
 
 class TestDataSource:
     """Tests for data source loading."""

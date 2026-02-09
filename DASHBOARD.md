@@ -8,24 +8,24 @@ Version: 0.2.0
 Status: ✅ READY FOR PRODUCTION
 Created: February 8, 2026
 
-📁 Total Files:    73
-💻 Code Files:     10 (Python modules)
+📁 Total Files:    75
+💻 Code Files:     11 (Python modules)
 📚 Docs Files:     17 (markdown + guides)
 ⚙️  Config Files:   4 (toml, yaml, gitignore)
-🧪 Test Files:     5 test modules + 17 fixtures
+🧪 Test Files:     6 test modules + 17 fixtures
 
 📊 Code Statistics:
    Lines of Code:           ~900+
    Type Hint Coverage:      100%
    Docstring Coverage:      Comprehensive
    External API Calls:      0 (local only)
-    Test Cases:              45 (10 core + 17 versioning + 16 banking/finance + 2 concurrency)
+    Test Cases:              52 (12 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling)
    Code Coverage:           66%+
 
 🔧 Supported Python:  3.9, 3.10, 3.11, 3.12
 📦 Dependencies:      pandas, pyyaml, pyarrow
 ✅ CI/CD:            GitHub Actions configured
-✨ Features:         Schema, Quality, Distribution validation + Versioning with auto-migration
+✨ Features:         Schema, Quality, Distribution validation + Profiling + Rule Severity + Versioning with auto-migration
 ```
 
 ## Documentation Structure
@@ -182,7 +182,9 @@ src/datapact/
 ├── cli.py                   CLI interface
 │   ├─ main()
 │   ├─ validate_command()
-│   └─ init_command()
+│   ├─ init_command()
+│   └─ profile_command()
+├── profiling.py             Contract profiling helpers
 ├── reporting.py             Report generation
 │   ├─ ErrorRecord
 │   └─ ValidationReport

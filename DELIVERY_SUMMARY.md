@@ -6,7 +6,7 @@ A **production-ready Python data validation framework** called **DataPact** that
 
 ### Key Deliverables
 
-✅ **Complete Project Structure** (73 files total)
+✅ **Complete Project Structure** (75 files total)
 - 10 Python source modules (~900 lines of well-typed code)
 - Modular validator pipeline (schema → quality → distribution)
 - Comprehensive test suite with fixtures
@@ -17,7 +17,9 @@ A **production-ready Python data validation framework** called **DataPact** that
 - Multi-format data loading (CSV, Parquet, JSON)
 - Three-stage validation pipeline with proper error semantics
 - JSON report generation with console output
-- CLI interface with `validate` and `init` commands
+- CLI interface with `validate`, `init`, and `profile` commands
+- Profiling to auto-generate rule baselines from data
+- Rule severity support with WARN/ERROR metadata and CLI overrides
 
 ✅ **Enterprise-Ready Code**
 - Full type hints throughout
@@ -93,10 +95,10 @@ This enables AI agents (Copilot, Claude, etc.) to be immediately productive with
 
 | Metric | Value |
 |--------|-------|
-| Python Files | 10 |
+| Python Files | 11 |
 | Documentation Files | 17 |
 | Total Lines of Code | ~900 |
-| Test Coverage | Comprehensive |
+| Test Coverage | Comprehensive (52 tests) |
 | Type Hints | 100% |
 | External APIs | 0 |
 | Configuration Files | 4 |
@@ -111,6 +113,7 @@ src/datapact/
 ├── contracts.py              YAML parsing
 ├── datasource.py             Data loading
 ├── cli.py                    CLI interface
+├── profiling.py              Contract profiling helpers
 ├── reporting.py              Report generation
 ├── versioning.py             Contract versioning
 └── validators/
@@ -127,6 +130,7 @@ tests/
 ├── test_banking_finance.py   Banking/finance scenarios
 ├── test_concurrency.py       Concurrency validation
 ├── test_concurrency_mp.py    Multiprocessing concurrency validation
+├── test_profiling.py         Profiling tests
 └── fixtures/
     ├── customer_contract.yaml
     ├── customer_contract_v1.yaml

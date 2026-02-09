@@ -6,7 +6,7 @@ This guide maps each file to its purpose and shows how they fit together.
 
 ### `src/datapact/__init__.py`
 - **Purpose**: Package entry point, exports main classes
-- **Exports**: `Contract`, `ValidationReport`, `DataSource`
+- **Exports**: `Contract`, `ValidationReport`, `DataSource`, `profile_dataframe`
 - **When to modify**: Adding new top-level exports
 
 ### `src/datapact/contracts.py`
@@ -29,9 +29,14 @@ This guide maps each file to its purpose and shows how they fit together.
 
 ### `src/datapact/cli.py`
 - **Purpose**: Command-line interface and orchestration
-- **Functions**: `main()`, `validate_command()`, `init_command()`
-- **Commands**: `validate`, `init`
+- **Functions**: `main()`, `validate_command()`, `init_command()`, `profile_command()`
+- **Commands**: `validate`, `init`, `profile`
 - **When to modify**: Adding new CLI commands or options
+
+### `src/datapact/profiling.py`
+- **Purpose**: Profile data to infer rules for new contracts
+- **Functions**: `profile_dataframe()`
+- **When to modify**: Adjusting inference heuristics or defaults
 
 ### `src/datapact/reporting.py`
 - **Purpose**: Generate validation reports
@@ -62,7 +67,7 @@ This guide maps each file to its purpose and shows how they fit together.
 - **Purpose**: Validate data content (nulls, ranges, patterns, etc.)
 - **Classes**: `QualityValidator`
 - **Runs**: Second (non-blocking)
-- **Output**: ERROR or WARN severity violations
+- **Output**: ERROR or WARN severity violations (rule-level severities supported)
 - **When to modify**: Adding new validation rules (min, max, regex, enum, etc.)
 
 #### `src/datapact/validators/distribution_validator.py`
@@ -196,6 +201,10 @@ This guide maps each file to its purpose and shows how they fit together.
 ### `tests/test_concurrency_mp.py`
 - **Purpose**: Concurrency validation using multiprocessing
 - **When to modify**: Changing multiprocessing behavior or validation safety checks
+
+### `tests/test_profiling.py`
+- **Purpose**: Profiling tests for inferred rules and distributions
+- **When to modify**: Adjusting profiling heuristics or defaults
 
 ### `tests/fixtures/customer_contract.yaml`
 - **Purpose**: Example contract with all rule types (v2.0.0)

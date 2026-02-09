@@ -21,7 +21,8 @@ DataPact/
 │       ├── __init__.py              # Package entry point
 │       ├── contracts.py             # YAML contract parsing
 │       ├── datasource.py            # Data loading (CSV/Parquet/JSON)
-│       ├── cli.py                   # CLI: validate, init commands
+│       ├── profiling.py             # Contract profiling helpers
+│       ├── cli.py                   # CLI: validate, init, profile commands
 │       ├── reporting.py             # Report generation
 │       └── validators/
 │           ├── __init__.py
@@ -34,6 +35,7 @@ DataPact/
 │   ├── test_banking_finance.py      # Banking/finance scenarios
 │   ├── test_concurrency.py          # Concurrency validation
 │   ├── test_concurrency_mp.py       # Multiprocessing concurrency
+│   ├── test_profiling.py            # Profiling tests
 │   └── fixtures/
 │       ├── customer_contract.yaml   # Example contract
 │       ├── customer_contract_v1.yaml # Legacy contract

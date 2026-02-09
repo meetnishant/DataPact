@@ -16,10 +16,19 @@ class QualityValidator:
     Produces errors for violations of quality rules.
     """
 
-    def __init__(self, contract: Contract, df: pd.DataFrame):
+    def __init__(
+        self,
+        contract: Contract,
+        df: pd.DataFrame,
+        severity_overrides: dict = None,
+    ):
         self.contract = contract
         self.df = df
         self.errors: List[str] = []
+        self.severity_overrides = {
+            k.lower(): self._normalize_severity(v)
+            for k, v in (severity_overrides or {}).items()
+        }
 
     def validate(self) -> Tuple[bool, List[str]]:
         """
@@ -36,7 +45,8 @@ class QualityValidator:
             if field.rules:
                 self._validate_field_rules(field, column)
 
-        return len(self.errors) == 0, self.errors
+        has_errors = any(err.startswith("ERROR") for err in self.errors)
+        return not has_errors, self.errors
 
     def _validate_field_rules(self, field: Field, column: pd.Series) -> None:
         """
@@ -51,24 +61,30 @@ class QualityValidator:
         if rules.not_null:
             null_count = column.isna().sum()
             if null_count > 0:
-                self.errors.append(
-                    f"ERROR: Field '{field.name}' has {null_count} null values, "
-                    f"but not_null=true"
+                self._record(
+                    field.name,
+                    "not_null",
+                    f"Field '{field.name}' has {null_count} null values, "
+                    "but not_null=true",
                 )
 
         # max_null_ratio constraint
         if rules.max_null_ratio is not None:
             if len(column) == 0:
-                self.errors.append(
-                    f"ERROR: Field '{field.name}' has no rows; "
-                    "cannot evaluate max_null_ratio"
+                self._record(
+                    field.name,
+                    "max_null_ratio",
+                    f"Field '{field.name}' has no rows; "
+                    "cannot evaluate max_null_ratio",
                 )
             else:
                 null_ratio = column.isna().sum() / len(column)
                 if null_ratio > rules.max_null_ratio:
-                    self.errors.append(
-                        f"ERROR: Field '{field.name}' null ratio ({null_ratio:.2%}) "
-                        f"exceeds max_null_ratio={rules.max_null_ratio}"
+                    self._record(
+                        field.name,
+                        "max_null_ratio",
+                        f"Field '{field.name}' null ratio ({null_ratio:.2%}) "
+                        f"exceeds max_null_ratio={rules.max_null_ratio}",
                     )
 
         # unique constraint
@@ -76,9 +92,11 @@ class QualityValidator:
             non_null = column.dropna()
             duplicates = non_null.duplicated().sum()
             if duplicates > 0:
-                self.errors.append(
-                    f"ERROR: Field '{field.name}' has {duplicates} duplicate values, "
-                    f"but unique=true"
+                self._record(
+                    field.name,
+                    "unique",
+                    f"Field '{field.name}' has {duplicates} duplicate values, "
+                    "but unique=true",
                 )
 
         # min/max range constraints
@@ -87,17 +105,21 @@ class QualityValidator:
             if rules.min is not None:
                 violations = (non_null < rules.min).sum()
                 if violations > 0:
-                    self.errors.append(
-                        f"ERROR: Field '{field.name}' has {violations} values "
-                        f"< min ({rules.min})"
+                    self._record(
+                        field.name,
+                        "min",
+                        f"Field '{field.name}' has {violations} values "
+                        f"< min ({rules.min})",
                     )
 
             if rules.max is not None:
                 violations = (non_null > rules.max).sum()
                 if violations > 0:
-                    self.errors.append(
-                        f"ERROR: Field '{field.name}' has {violations} values "
-                        f"> max ({rules.max})"
+                    self._record(
+                        field.name,
+                        "max",
+                        f"Field '{field.name}' has {violations} values "
+                        f"> max ({rules.max})",
                     )
 
         # regex constraint
@@ -111,15 +133,19 @@ class QualityValidator:
             try:
                 violations = (~non_null.str.fullmatch(pattern)).sum()
             except re.error as exc:
-                self.errors.append(
-                    f"ERROR: Field '{field.name}' has invalid regex '{rules.regex}': "
-                    f"{exc}"
+                self._record(
+                    field.name,
+                    "regex",
+                    f"Field '{field.name}' has invalid regex '{rules.regex}': "
+                    f"{exc}",
                 )
             else:
                 if violations > 0:
-                    self.errors.append(
-                        f"ERROR: Field '{field.name}' has {violations} values "
-                        f"not matching regex '{rules.regex}'"
+                    self._record(
+                        field.name,
+                        "regex",
+                        f"Field '{field.name}' has {violations} values "
+                        f"not matching regex '{rules.regex}'",
                     )
 
         # enum constraint
@@ -127,14 +153,48 @@ class QualityValidator:
             try:
                 valid_set = set(rules.enum)
             except TypeError:
-                self.errors.append(
-                    f"ERROR: Field '{field.name}' enum contains unhashable values"
+                self._record(
+                    field.name,
+                    "enum",
+                    f"Field '{field.name}' enum contains unhashable values",
                 )
                 return
             non_null = column.dropna()
             violations = (~non_null.isin(valid_set)).sum()
             if violations > 0:
-                self.errors.append(
-                    f"ERROR: Field '{field.name}' has {violations} values "
-                    f"not in enum {valid_set}"
+                self._record(
+                    field.name,
+                    "enum",
+                    f"Field '{field.name}' has {violations} values "
+                    f"not in enum {valid_set}",
                 )
+
+    def _record(self, field_name: str, rule_name: str, message: str) -> None:
+        severity = self._rule_severity(field_name, rule_name)
+        self.errors.append(f"{severity}: {message}")
+
+    def _rule_severity(self, field_name: str, rule_name: str) -> str:
+        override_key = f"{field_name}.{rule_name}".lower()
+        if override_key in self.severity_overrides:
+            return self.severity_overrides[override_key]
+
+        severities = getattr(self.contract_field_rules(field_name), "severities", {})
+        if rule_name in severities:
+            return self._normalize_severity(severities[rule_name])
+
+        return "ERROR"
+
+    def contract_field_rules(self, field_name: str):
+        for field in self.contract.fields:
+            if field.name == field_name:
+                return field.rules
+        return None
+
+    @staticmethod
+    def _normalize_severity(value) -> str:
+        if value is None:
+            return "ERROR"
+        normalized = str(value).upper()
+        if normalized not in {"ERROR", "WARN"}:
+            return "ERROR"
+        return normalized

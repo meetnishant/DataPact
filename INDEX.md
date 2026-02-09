@@ -41,6 +41,7 @@ Welcome to the **DataPact** repository! This file helps you navigate all resourc
 src/datapact/          Core application
 ├── contracts.py                       YAML parsing & models
 ├── datasource.py                      Data loading (CSV/Parquet/JSON)
+├── profiling.py                       Contract profiling helpers
 ├── cli.py                             Command-line interface
 ├── reporting.py                       Report generation
 ├── versioning.py                      Contract version management
@@ -55,6 +56,7 @@ tests/                                 Test suite & fixtures
 ├── test_banking_finance.py            Banking/finance scenarios
 ├── test_concurrency.py                Concurrency validation
 ├── test_concurrency_mp.py             Multiprocessing concurrency
+├── test_profiling.py                  Profiling tests
 └── fixtures/                          Example data & contracts
 
 .github/                               GitHub-specific files
@@ -120,13 +122,15 @@ Full tree: [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)
 - **ValidationReport** - Complete validation result (JSON + console summary)
 - **Exit Code** - Non-zero if ERRORs present (for CI/CD integration)
 - **Auto-Migration** - Automatic upgrade of old contracts to latest version
+- **Profiling** - Auto-generate rule baselines from data
+- **Rule Severity** - WARN/ERROR per rule with CLI overrides
 
 ## ✨ Project Statistics
 
-- **10** Python source files (~900+ lines including versioning)
+- **11** Python source files (~950+ lines including profiling)
 - **17** Documentation files
 - **17** Test fixture files
-- **45** Test cases (10 core + 17 versioning + 16 banking/finance + 2 concurrency)
+- **52** Test cases (12 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling)
 - **1** GitHub Actions workflow
 - **100%** Type hints in core modules
 - **66%+** Code coverage achieved

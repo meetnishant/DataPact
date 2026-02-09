@@ -21,3 +21,8 @@ Organize instructions as:
 - Project conventions (naming, patterns, structure)
 - Integration points (how components talk)
 - External dependencies (what systems it connects to)
+
+## DataPact Feature Notes
+
+- Include **profiling** (`datapact profile`) and `profile_dataframe()` in workflows.
+- Document **rule severity** metadata (WARN/ERROR) and CLI overrides.

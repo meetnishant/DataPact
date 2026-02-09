@@ -5,7 +5,7 @@ YAML parsing and migration logic.
 """
 
 from typing import Any, Dict, List, Optional
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import yaml
 from datapact.versioning import (
     validate_version,
@@ -30,6 +30,7 @@ class FieldRule:
     regex: Optional[str] = None
     enum: Optional[List[Any]] = None
     max_null_ratio: Optional[float] = None
+    severities: Dict[str, str] = field(default_factory=dict)
 
 
 @dataclass
@@ -170,14 +171,44 @@ class Contract:
         """
         if not rules_dict:
             return None
+        severities: Dict[str, str] = {}
+
+        def read_rule(
+            key: str,
+            default: Any = None,
+            boolean_default: bool = False,
+        ) -> Any:
+            raw = rules_dict.get(key, default)
+            if isinstance(raw, dict):
+                severity = raw.get("severity")
+                value = raw.get("value") if "value" in raw else None
+                if value is None and boolean_default:
+                    value = True
+                normalized = _normalize_severity(severity)
+                if normalized:
+                    severities[key] = normalized
+                return value
+            return raw
+
+        def _normalize_severity(value: Optional[str]) -> Optional[str]:
+            if value is None:
+                return None
+            normalized = str(value).upper()
+            if normalized not in {"ERROR", "WARN"}:
+                raise ValueError(
+                    f"Unsupported severity '{value}'. Use ERROR or WARN."
+                )
+            return normalized
+
         return FieldRule(
-            not_null=rules_dict.get("not_null", False),
-            unique=rules_dict.get("unique", False),
-            min=rules_dict.get("min"),
-            max=rules_dict.get("max"),
-            regex=rules_dict.get("regex"),
-            enum=rules_dict.get("enum"),
-            max_null_ratio=rules_dict.get("max_null_ratio"),
+            not_null=read_rule("not_null", False, boolean_default=True),
+            unique=read_rule("unique", False, boolean_default=True),
+            min=read_rule("min"),
+            max=read_rule("max"),
+            regex=read_rule("regex"),
+            enum=read_rule("enum"),
+            max_null_ratio=read_rule("max_null_ratio"),
+            severities=severities,
         )
 
     @staticmethod

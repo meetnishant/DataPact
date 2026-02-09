@@ -11,5 +11,6 @@ __author__ = "Your Name"
 from datapact.contracts import Contract
 from datapact.reporting import ValidationReport
 from datapact.datasource import DataSource
+from datapact.profiling import profile_dataframe
 
-__all__ = ["Contract", "ValidationReport", "DataSource"]
+__all__ = ["Contract", "ValidationReport", "DataSource", "profile_dataframe"]

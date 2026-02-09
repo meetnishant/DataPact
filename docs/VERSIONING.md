@@ -15,6 +15,10 @@ The DataPact now includes comprehensive contract versioning support with:
 - **Breaking change tracking** - Know what changed between versions
 - **Migration utilities** - Convert contracts between versions
 
+Related features:
+- **Profiling**: Auto-generate rule baselines from data (`datapact profile`).
+- **Rule Severity**: Rules can declare WARN/ERROR severities with CLI overrides.
+
 ## Supported Versions
 
 | Version | Status | Release Date | Notes |

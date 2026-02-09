@@ -22,3 +22,7 @@ This document summarizes the direct dependencies declared in `pyproject.toml`.
 - The project depends on the open source libraries listed above.
 - Transitive dependencies are not listed here and are resolved by your package manager.
 - Licenses for direct and transitive dependencies may vary; verify them via PyPI metadata or your environment as needed.
+
+## Feature Notes
+- Profiling uses pandas statistics to infer rule baselines.
+- Rule severity metadata and overrides are handled in core validation logic (no new dependencies).

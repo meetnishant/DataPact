@@ -43,6 +43,21 @@ python3 src/datapact/cli.py init \
   --data my_data.csv
 ```
 
+### Profile Contract with Rules
+```bash
+python3 src/datapact/cli.py profile \
+  --contract my_profile.yaml \
+  --data my_data.csv
+```
+
+### Override Rule Severity
+```bash
+python3 src/datapact/cli.py validate \
+  --contract my_contract.yaml \
+  --data my_data.csv \
+  --severity-override status.not_null=warn
+```
+
 ## Running Tests
 
 ```bash

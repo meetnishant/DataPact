@@ -9,7 +9,9 @@ Project: DataPact
 - ✅ Quality validation (nulls, unique, ranges, regex, enums)
 - ✅ Distribution validation (mean/std drift detection)
 - ✅ Report generation (JSON + console output)
-- ✅ CLI interface (validate and init commands)
+- ✅ CLI interface (validate, init, profile commands)
+- ✅ Profiling (auto-generate rule baselines from data)
+- ✅ Rule severity support (WARN/ERROR per rule + CLI overrides)
 
 ## Code Quality
 - ✅ Type hints throughout
@@ -69,6 +71,9 @@ Project: DataPact
 - ✅ Error severity levels (ERROR vs WARN)
 - ✅ JSON report export
 - ✅ Contract inference from data (init command)
+- ✅ Contract profiling with rules (profile command)
+- ✅ Rule severity metadata in contracts
+- ✅ CLI severity overrides for quality rules
 - ✅ Banking/finance test data contracts and fixtures
 
 ## Non-Blocking vs Blocking
@@ -99,7 +104,7 @@ Project: DataPact
 ## What's Included in the Delivery
 
 ```
-Total files created: 73
+Total files created: 75
 ├── Python modules: 10 (including versioning.py)
 ├── Test files: 5 (validator, versioning, banking/finance, concurrency)
 ├── Test fixtures: 17 (including multi-table banking/finance data + contracts)
@@ -108,7 +113,7 @@ Total files created: 73
 └── Project metadata: various
 
 Lines of code: ~900+
-Test cases: 45 (10 core + 17 versioning + 16 banking/finance + 2 concurrency)
+Test cases: 52 (12 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling)
 Documentation coverage: Comprehensive
 Test coverage: Extensive (66%+)
 CI/CD: GitHub Actions configured

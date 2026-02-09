@@ -15,6 +15,7 @@ DataContracts/
 │   ├── __init__.py
 │   ├── contracts.py                ← YAML parsing & contract models
 │   ├── datasource.py               ← Data loading (CSV/Parquet/JSON)
+│   ├── profiling.py                ← Contract profiling helpers
 │   ├── cli.py                      ← CLI entry point
 │   ├── reporting.py                ← Report generation
 │   └── validators/
@@ -27,6 +28,7 @@ DataContracts/
 │   ├── test_banking_finance.py     ← Banking/finance scenarios
 │   ├── test_concurrency.py         ← Concurrency validation
 │   ├── test_concurrency_mp.py      ← Multiprocessing concurrency
+│   ├── test_profiling.py           ← Profiling tests
 │   └── fixtures/
 │       ├── customer_contract.yaml
 │       ├── customer_contract_v1.yaml
@@ -67,7 +69,9 @@ DataContracts/
 ✅ **Quality Validator** - Nulls, uniqueness, ranges, regex, enums  
 ✅ **Distribution Validator** - Mean/std drift detection  
 ✅ **Reporting** - JSON + console output with proper severity levels  
-✅ **CLI** - Full command-line interface with `validate` and `init` commands  
+✅ **Profiling** - Auto-generate rule baselines from data  
+✅ **Rule Severity** - WARN/ERROR per rule with CLI overrides  
+✅ **CLI** - Full command-line interface with `validate`, `init`, and `profile` commands  
 
 ### Testing & Quality
 ✅ **Test Suite** - Pytest with versioning, banking/finance, and concurrency coverage  

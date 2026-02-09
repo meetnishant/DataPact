@@ -28,7 +28,12 @@ Data File → DataSource Loader ↓
 - Provides schema inference (column names and inferred types)
 - **Responsibility**: Data I/O and schema discovery
 
-### 3. **validators/** - Validation Pipeline
+### 3. **profiling.py** - Rule Profiling
+- Generates contract rules from observed data
+- Infers enums, ranges, null ratios, and distributions
+- **Responsibility**: Baseline rule generation for new contracts
+
+### 4. **validators/** - Validation Pipeline
 Three specialized validators run sequentially:
 
 #### **schema_validator.py**
@@ -41,6 +46,7 @@ Three specialized validators run sequentially:
 - Checks data content: nulls, uniqueness, ranges, patterns, enums
 - Operates only on columns present in schema
 - Produces both `ERROR` (constraint violations) and `WARN` (soft failures)
+- Supports rule-level severity metadata and CLI overrides
 - **Input**: DataFrame + Field rules
 
 #### **distribution_validator.py**
@@ -49,23 +55,23 @@ Three specialized validators run sequentially:
 - Always produces `WARN` (never blocks validation)
 - **Input**: DataFrame + Distribution rules
 
-### 4. **reporting.py** - Report Generation
+### 5. **reporting.py** - Report Generation
 - Aggregates errors/warnings from all validators
 - Produces machine-readable JSON and human-readable console output
 - Tracks metadata: timestamp, contract version, tool version, breaking changes
 - **Output**: `./reports/<timestamp>.json`
 
-### 5. **versioning.py** - Version Management
+### 6. **versioning.py** - Version Management
 - Maintains version registry for all contract versions
 - Handles automatic migration between versions (1.0.0 → 1.1.0 → 2.0.0)
 - Checks tool-contract compatibility
 - Tracks breaking changes and deprecation status
 - **Responsibility**: Version validation, migration, compatibility checking
 
-### 6. **cli.py** - CLI Interface
+### 7. **cli.py** - CLI Interface
 - Entry point: parses arguments, orchestrates validation
 - Performs version compatibility checking before validation
-- Commands: `validate` (run validation), `init` (infer contract)
+- Commands: `validate` (run validation), `init` (infer contract), `profile` (infer rules)
 - Handles exit codes (0 = pass, 1 = fail with errors)
 
 ## Validation Semantics

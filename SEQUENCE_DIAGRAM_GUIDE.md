@@ -51,6 +51,8 @@ Exit Code (0 or 1)
 ✅ **Message flow** clearly labeled with parameters  
 ✅ **Return values** shown for each component  
 ✅ **Error handling** included (errors, warnings, OK status)  
+✅ **Rule severity** (WARN/ERROR) reflected in quality validation  
+✅ **Profiling command** documented outside the validate flow  
 ✅ **Report generation** and output demonstrated  
 ✅ **Exit code** shown at the end  
 
