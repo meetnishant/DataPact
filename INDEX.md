@@ -25,6 +25,7 @@ Welcome to the **DataPact** repository! This file helps you navigate all resourc
 
 ### For Development
 - [CONTRIBUTING.md](CONTRIBUTING.md) - Developer setup and workflow
+- [DEPENDENCIES.md](DEPENDENCIES.md) - Direct dependencies and tooling
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) - Design decisions and data flow
 - [docs/VERSIONING.md](docs/VERSIONING.md) - Contract versioning and migration guide
 - [FILE_REFERENCE.md](FILE_REFERENCE.md) - Detailed file-by-file guide

@@ -174,6 +174,8 @@ datapact-coverage --min 80
 
 ## Development
 
+Dependencies are documented in [DEPENDENCIES.md](DEPENDENCIES.md).
+
 ```bash
 # Install with dev dependencies
 pip install -e ".[dev]"

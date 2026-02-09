@@ -158,6 +158,10 @@ This guide maps each file to its purpose and shows how they fit together.
 - **Purpose**: Feature and QA checklist
 - **When to modify**: Updating scope or release status
 
+### `DEPENDENCIES.md`
+- **Purpose**: Direct dependency list and tool descriptions
+- **When to modify**: Updating dependencies or tooling
+
 ### `SEQUENCE_DIAGRAM_GUIDE.md`
 - **Purpose**: Guide for Mermaid sequence diagrams
 - **When to modify**: Diagram location or viewing changes
