@@ -236,7 +236,7 @@ This guide maps each file to its purpose and shows how they fit together.
 - **When to modify**: Adding new report sinks or output behaviors
 
 ### `tests/test_db_source.py`
-- **Purpose**: Database source tests (SQLite)
+- **Purpose**: Database source tests (SQLite, MySQL)
 - **When to modify**: Adding DB source capabilities or drivers
 
 ### `tests/test_policy_packs.py`

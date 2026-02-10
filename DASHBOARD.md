@@ -79,9 +79,9 @@ Configuration (4 files):
                      │
         ┌────────────┴────────────┐
         ↓                         ↓
-   Contract YAML              Data File
+  Contract YAML              Data File / DB
         │                         │
-   (validation)            (CSV/Parquet/JSON)
+  (validation)            (CSV/Parquet/JSON/DB)
         │                         │
         └────────────┬────────────┘
                      ↓

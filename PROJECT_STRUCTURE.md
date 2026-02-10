@@ -21,7 +21,7 @@ DataPact/
 │   └── datapact/
 │       ├── __init__.py              # Package entry point
 │       ├── contracts.py             # YAML contract parsing
-│       ├── datasource.py            # Data loading (CSV/Parquet/JSON)
+│       ├── datasource.py            # Data loading (CSV/Parquet/JSON/DB)
 │       ├── policies.py              # Policy pack registry
 │       ├── profiling.py             # Contract profiling helpers
 │       ├── cli.py                   # CLI: validate, init, profile commands

@@ -174,3 +174,4 @@ The contract versioning system is fully functional, tested, and integrated. Old 
 - **Chunked Validation**: CSV/JSONL files can be validated in chunks with sampling.
 - **Report Sinks**: Reports can be written to files, stdout, or webhooks.
 - **Policy Packs**: Reuse standard rule bundles across contracts.
+- **Database Sources**: Validate Postgres, MySQL, and SQLite tables.

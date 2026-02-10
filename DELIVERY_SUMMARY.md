@@ -14,7 +14,7 @@ A **production-ready Python data validation framework** called **DataPact** that
 
 ✅ **Core Functionality**
 - Contract parsing (YAML → typed Python models)
-- Multi-format data loading (CSV, Parquet, JSON)
+- Multi-format data loading (CSV, Parquet, JSON, database)
 - Four-stage validation pipeline with proper error semantics
 - JSON report generation with console output
 - Report sinks for file, stdout, and webhooks

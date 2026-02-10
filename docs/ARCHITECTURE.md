@@ -10,7 +10,7 @@ The DataPact follows a modular pipeline:
 
 ```
 Contract YAML → Contract Parser → Validators → Report → JSON/Console/Sinks
-Data File → DataSource Loader ↓
+Data File / DB → DataSource Loader ↓
 ```
 
 ## Key Components
