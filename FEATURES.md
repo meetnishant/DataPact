@@ -258,6 +258,19 @@ datapact validate --contract c.yaml --data data.parquet --format parquet
 ### Database sources
 Validate data directly from Postgres, MySQL, or SQLite.
 
+## ODCS Compatibility
+
+### Validate Open Data Contract Standard (ODCS) v3.1.0
+DataPact can load ODCS contracts and map schema + core quality/SLA checks.
+
+```bash
+datapact validate \
+  --contract contracts/customer.odcs.yaml \
+  --contract-format odcs \
+  --odcs-object customers \
+  --data data/customers.csv
+```
+
 ```bash
 datapact validate \
   --contract c.yaml \

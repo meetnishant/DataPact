@@ -36,3 +36,4 @@ This document summarizes the direct dependencies declared in `pyproject.toml`.
 - Report sinks use the Python standard library for JSON and HTTP (no new dependencies).
 - Policy packs use in-repo configuration (no new dependencies).
 - Database sources use optional drivers for Postgres/MySQL (SQLite uses stdlib).
+- ODCS compatibility relies on existing YAML parsing (no new dependencies).

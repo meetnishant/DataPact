@@ -25,6 +25,7 @@ Related features:
 - **Report Sinks**: Write reports to files, stdout, or webhooks.
 - **Policy Packs**: Reuse standard rule bundles across contracts.
 - **Database Sources**: Validate Postgres, MySQL, and SQLite tables.
+- **ODCS Compatibility**: Validate Open Data Contract Standard v3.1.0 contracts.
 
 ## Supported Versions
 
@@ -99,6 +100,17 @@ If a contract version is unsupported:
 ERROR: Tool v0.2.0 does not support contract v3.0.0
 Supported versions: 1.0.0, 1.1.0, 2.0.0
 ```
+
+## ODCS Standard Version
+
+ODCS contracts use a standard version (`apiVersion`) that is distinct from the
+business contract version. DataPact currently supports:
+
+```
+ODCS apiVersion: v3.1.0
+```
+
+If an unsupported ODCS version is provided, validation stops with an error.
 
 ## Version in Reports
 

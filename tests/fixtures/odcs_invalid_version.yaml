@@ -1,0 +1,11 @@
+apiVersion: v9.9.9
+kind: DataContract
+id: 33333333-3333-3333-3333-333333333333
+name: odcs_invalid_version
+version: 1.0.0
+status: active
+schema:
+  - name: customers
+    properties:
+      - name: id
+        logicalType: integer

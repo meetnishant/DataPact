@@ -1,0 +1,21 @@
+apiVersion: v3.1.0
+kind: DataContract
+id: 22222222-2222-2222-2222-222222222222
+name: odcs_multi
+version: 1.0.0
+status: active
+schema:
+  - id: obj_customers
+    name: customers
+    properties:
+      - name: id
+        logicalType: integer
+      - name: email
+        logicalType: string
+  - id: obj_orders
+    name: orders
+    properties:
+      - name: order_id
+        logicalType: integer
+      - name: amount
+        logicalType: number

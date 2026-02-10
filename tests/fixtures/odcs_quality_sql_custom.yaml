@@ -1,0 +1,20 @@
+apiVersion: v3.1.0
+kind: DataContract
+id: 44444444-4444-4444-4444-444444444444
+name: odcs_quality_sql_custom
+version: 1.0.0
+status: active
+schema:
+  - name: customers
+    properties:
+      - name: id
+        logicalType: integer
+        quality:
+          - id: id_sql_check
+            type: sql
+            query: "SELECT COUNT(*) FROM {object} WHERE {property} IS NULL"
+            mustBe: 0
+          - id: id_custom_check
+            type: custom
+            engine: soda
+            implementation: "checks for id"

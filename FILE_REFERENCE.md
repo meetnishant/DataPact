@@ -6,7 +6,7 @@ This guide maps each file to its purpose and shows how they fit together.
 
 ### `src/datapact/__init__.py`
 - **Purpose**: Package entry point, exports main classes
-- **Exports**: `Contract`, `ValidationReport`, `DataSource`, `DatabaseSource`, `DatabaseConfig`, `profile_dataframe`
+- **Exports**: `Contract`, `OdcsContract`, `ValidationReport`, `DataSource`, `DatabaseSource`, `DatabaseConfig`, `profile_dataframe`
 - **When to modify**: Adding new top-level exports
 
 ### `src/datapact/contracts.py`
@@ -17,6 +17,14 @@ This guide maps each file to its purpose and shows how they fit together.
   - `Contract._parse_rules()` - Extract field validation rules
   - `Contract._parse_distribution()` - Extract distribution rules
 - **When to modify**: Adding new rule types or contract metadata
+
+### `src/datapact/odcs_contracts.py`
+- **Purpose**: Parse ODCS v3.1.0 contracts and map to DataPact models
+- **Classes**: `OdcsContract`, `OdcsSchemaObject`, `OdcsSchemaProperty`
+- **Key methods**:
+  - `OdcsContract.from_dict()` - Parse ODCS contract dict
+  - `OdcsContract.to_datapact_contract()` - Map ODCS schema to DataPact
+- **When to modify**: Expanding ODCS mapping or metadata coverage
 
 ### `src/datapact/policies.py`
 - **Purpose**: Policy pack registry and merge logic
@@ -238,6 +246,10 @@ This guide maps each file to its purpose and shows how they fit together.
 ### `tests/test_db_source.py`
 - **Purpose**: Database source tests (SQLite, MySQL)
 - **When to modify**: Adding DB source capabilities or drivers
+
+### `tests/test_odcs_contract.py`
+- **Purpose**: ODCS contract parsing and mapping tests
+- **When to modify**: Expanding ODCS support or fixtures
 
 ### `tests/test_policy_packs.py`
 - **Purpose**: Policy pack parsing and merge tests

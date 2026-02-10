@@ -73,6 +73,13 @@
    - Migration guide
    - Examples
 
+## Adding or Extending ODCS Support
+
+1. Update `src/datapact/odcs_contracts.py` with new ODCS fields or mappings
+2. Add fixtures under `tests/fixtures/` (use `.odcs.yaml` extension when possible)
+3. Add tests in `tests/test_odcs_contract.py`
+4. Update README/QUICKSTART to document new ODCS mappings and CLI flags
+
 ## Running Tests
 
 ```bash

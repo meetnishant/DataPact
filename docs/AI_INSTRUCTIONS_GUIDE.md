@@ -33,3 +33,4 @@ Organize instructions as:
 - Document **report sinks** (`--report-sink`, `--report-webhook-url`, `--report-webhook-header`).
 - Document **policy packs** (`policies`, `overrides`).
 - Document **database sources** (`--db-type`, `--db-table`, `--db-query`, `--db-path`).
+- Document **ODCS compatibility** (`--contract-format odcs`, `--odcs-object`).

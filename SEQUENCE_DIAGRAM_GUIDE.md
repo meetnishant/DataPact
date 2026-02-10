@@ -61,6 +61,7 @@ Exit Code (0 or 1)
 ✅ **Report sinks** supported for file, stdout, or webhook output  
 ✅ **Policy packs** applied during contract parsing  
 ✅ **Database sources** supported for Postgres, MySQL, and SQLite  
+✅ **ODCS compatibility** supported via `--contract-format odcs`  
 ✅ **Report generation** and output demonstrated  
 ✅ **Exit code** shown at the end  
 

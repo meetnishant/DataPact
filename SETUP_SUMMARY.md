@@ -14,6 +14,7 @@ DataContracts/
 ├── src/datapact/
 │   ├── __init__.py
 │   ├── contracts.py                ← YAML parsing & contract models
+│   ├── odcs_contracts.py            ← ODCS parsing & mapping
 │   ├── datasource.py               ← Data loading (CSV/Parquet/JSON)
 │   ├── policies.py                 ← Policy pack registry
 │   ├── profiling.py                ← Contract profiling helpers
@@ -38,6 +39,7 @@ DataContracts/
 │   ├── test_policy_packs.py        ← Policy pack tests
 │   ├── test_exhaustive_features.py ← Exhaustive feature tests
 │   ├── test_db_source.py           ← Database source tests
+│   ├── test_odcs_contract.py        ← ODCS contract tests
 │   ├── plugins/
 │   │   └── sample_plugin.py         ← Custom rule plugin example
 │   └── fixtures/
@@ -59,6 +61,11 @@ DataContracts/
 │       ├── deposits_accounts_agg.csv
 │       ├── lending_loans_agg.csv
 │       ├── policy_pack_contract.yaml
+│       ├── odcs_minimal.yaml
+│       ├── odcs_multi_object.yaml
+│       ├── odcs_invalid_version.yaml
+│       ├── odcs_quality_sql_custom.yaml
+│       ├── odcs_logical_type_timestamp.yaml
 │       └── schema_*/quality_*/sla_*/distribution_* (exhaustive fixtures)
 ├── docs/
 │   ├── ARCHITECTURE.md             ← Design decisions & data flow
@@ -93,6 +100,7 @@ DataContracts/
 ✅ **Custom Rule Plugins** - Load validation logic from plugin modules  
 ✅ **Policy Packs** - Apply reusable rule bundles by name  
 ✅ **Database Sources** - Validate Postgres, MySQL, and SQLite tables  
+✅ **ODCS Compatibility** - Validate Open Data Contract Standard v3.1.0 contracts  
 ✅ **CLI** - Full command-line interface with `validate`, `init`, and `profile` commands  
 
 ### Testing & Quality

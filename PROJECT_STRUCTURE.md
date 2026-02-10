@@ -21,6 +21,7 @@ DataPact/
 │   └── datapact/
 │       ├── __init__.py              # Package entry point
 │       ├── contracts.py             # YAML contract parsing
+│       ├── odcs_contracts.py         # ODCS parsing & mapping
 │       ├── datasource.py            # Data loading (CSV/Parquet/JSON/DB)
 │       ├── policies.py              # Policy pack registry
 │       ├── profiling.py             # Contract profiling helpers
@@ -46,6 +47,7 @@ DataPact/
 │   ├── test_policy_packs.py         # Policy pack tests
 │   ├── test_exhaustive_features.py  # Exhaustive feature tests
 │   ├── test_db_source.py            # Database source tests
+│   ├── test_odcs_contract.py         # ODCS contract tests
 │   ├── plugins/
 │   │   └── sample_plugin.py          # Custom rule plugin example
 │   └── fixtures/
@@ -67,6 +69,11 @@ DataPact/
 │       ├── deposits_accounts_agg.csv           # Aggregate deposits data
 │       ├── lending_loans_agg.csv               # Aggregate lending data
 │       ├── policy_pack_contract.yaml           # Policy pack contract
+│       ├── odcs_minimal.yaml                   # ODCS contract fixture
+│       ├── odcs_multi_object.yaml             # ODCS multi-object fixture
+│       ├── odcs_invalid_version.yaml          # ODCS invalid version fixture
+│       ├── odcs_quality_sql_custom.yaml       # ODCS quality rule fixture
+│       ├── odcs_logical_type_timestamp.yaml   # ODCS logical type fixture
 │       └── schema_*/quality_*/sla_*/distribution_* # Exhaustive fixtures
 └── docs/
     ├── ARCHITECTURE.md              # Design decisions & data flow

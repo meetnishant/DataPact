@@ -41,6 +41,15 @@ python3 src/datapact/cli.py validate \
   --data tests/fixtures/valid_customers.csv
 ```
 
+### Validate an ODCS Contract
+```bash
+python3 src/datapact/cli.py validate \
+  --contract tests/fixtures/odcs_minimal.yaml \
+  --contract-format odcs \
+  --odcs-object customers \
+  --data tests/fixtures/valid_customers.csv
+```
+
 ### Validate a Database Table
 ```bash
 python3 src/datapact/cli.py validate \

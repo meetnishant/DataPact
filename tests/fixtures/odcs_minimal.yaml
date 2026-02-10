@@ -1,0 +1,26 @@
+apiVersion: v3.1.0
+kind: DataContract
+id: 11111111-1111-1111-1111-111111111111
+name: odcs_customers
+version: 1.0.0
+status: active
+schema:
+  - name: customers
+    properties:
+      - name: id
+        logicalType: integer
+        required: true
+        unique: true
+      - name: email
+        logicalType: string
+        required: true
+        quality:
+          - id: email_no_nulls
+            metric: nullValues
+            mustBe: 0
+      - name: age
+        logicalType: number
+    quality:
+      - id: customers_row_count
+        metric: rowCount
+        mustBeGreaterThanOrEqualTo: 100

@@ -42,6 +42,7 @@ Welcome to the **DataPact** repository! This file helps you navigate all resourc
 ```
 src/datapact/          Core application
 ├── contracts.py                       YAML parsing & models
+├── odcs_contracts.py                  ODCS parsing & mapping
 ├── datasource.py                      Data loading (CSV/Parquet/JSON)
 ├── profiling.py                       Contract profiling helpers
 ├── cli.py                             Command-line interface
@@ -62,6 +63,7 @@ tests/                                 Test suite & fixtures
 ├── test_chunked_validation.py         Chunked validation tests
 ├── test_custom_rules.py               Custom rule plugin tests
 ├── test_profiling.py                  Profiling tests
+├── test_odcs_contract.py              ODCS contract tests
 ├── test_db_source.py                 Database source tests
 └── fixtures/                          Example data & contracts
 
@@ -137,13 +139,14 @@ Full tree: [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)
 - **Report Sinks** - Write reports to files, stdout, or webhooks
 - **Policy Packs** - Reuse standard rule bundles across contracts
 - **Database Sources** - Validate Postgres, MySQL, and SQLite tables
+- **ODCS Compatibility** - Validate ODCS v3.1.0 contracts
 
 ## ✨ Project Statistics
 
-- **14** Python source files (~1050+ lines including plugins)
+- **15** Python source files (~1100+ lines including plugins)
 - **18** Documentation files
-- **65** Test fixture files
-- **113** Test cases (21 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling + 4 reporting + 2 policy packs + 42 exhaustive + 4 db source)
+- **70** Test fixture files
+- **118** Test cases (21 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling + 4 reporting + 2 policy packs + 42 exhaustive + 4 db source + 5 odcs)
 - **1** GitHub Actions workflow
 - **100%** Type hints in core modules
 - **66%+** Code coverage achieved

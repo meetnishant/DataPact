@@ -1,0 +1,15 @@
+apiVersion: v3.1.0
+kind: DataContract
+id: 55555555-5555-5555-5555-555555555555
+name: odcs_time_types
+version: 1.0.0
+status: active
+schema:
+  - name: events
+    properties:
+      - name: event_date
+        logicalType: date
+      - name: event_time
+        logicalType: time
+      - name: event_ts
+        logicalType: timestamp

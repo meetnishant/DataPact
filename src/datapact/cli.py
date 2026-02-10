@@ -16,6 +16,7 @@ import yaml
 
 # Project imports
 from datapact.contracts import Contract  # Contract model and parsing
+from datapact.odcs_contracts import OdcsContract, is_odcs_contract
 from datapact.datasource import (
     DataSource,
     DatabaseSource,
@@ -39,7 +40,10 @@ from datapact.reporting import (
     ReportContext,
     write_report_sinks,
 )
-from datapact.versioning import check_tool_compatibility  # Version compatibility check
+from datapact.versioning import (
+    check_tool_compatibility,
+    check_odcs_compatibility,
+)  # Version compatibility check
 from datapact.profiling import profile_dataframe  # Profiling utilities
 
 
@@ -61,6 +65,16 @@ def main() -> int:
     parser.add_argument(
         "--contract",
         help="Path to contract YAML file",
+    )
+    parser.add_argument(
+        "--contract-format",
+        choices=["auto", "datapact", "odcs"],
+        default="auto",
+        help="Contract format (default: auto-detect)",
+    )
+    parser.add_argument(
+        "--odcs-object",
+        help="ODCS schema object name or id to validate",
     )
     parser.add_argument(
         "--contract-name",
@@ -265,18 +279,37 @@ def validate_command(args) -> int:
         return 1
 
     try:
-        # Load contract from YAML file (includes version checks/migration)
-        contract = Contract.from_yaml(args.contract)
-
-        # Check contract version compatibility with tool version
+        contract_data = yaml.safe_load(Path(args.contract).read_text())
         tool_version = "0.2.0"  # Update as needed for tool releases
-        is_compatible, compat_msg = check_tool_compatibility(
-            tool_version, contract.version
-        )
-        compatibility_warnings = []
-        if not is_compatible:
-            print(f"ERROR: {compat_msg}")
-            return 1
+        compatibility_warnings: List[str] = []
+        odcs_metadata = None
+
+        if args.contract_format == "odcs" or (
+            args.contract_format == "auto" and is_odcs_contract(contract_data)
+        ):
+            odcs_contract = OdcsContract.from_dict(contract_data)
+            is_compatible, compat_msg = check_odcs_compatibility(
+                odcs_contract.api_version
+            )
+            if not is_compatible:
+                print(f"ERROR: {compat_msg}")
+                return 1
+
+            contract, odcs_warnings, odcs_metadata = (
+                odcs_contract.to_datapact_contract(args.odcs_object)
+            )
+            compatibility_warnings.extend(odcs_warnings)
+        else:
+            # Load contract from YAML file (includes version checks/migration)
+            contract = Contract._from_dict(contract_data)
+
+            # Check contract version compatibility with tool version
+            is_compatible, compat_msg = check_tool_compatibility(
+                tool_version, contract.version
+            )
+            if not is_compatible:
+                print(f"ERROR: {compat_msg}")
+                return 1
 
         # Load data file or database source into DataFrame
         datasource = _build_datasource(args)
@@ -390,6 +423,8 @@ def validate_command(args) -> int:
             warning_count=warning_count,
             errors=all_errors,
             compatibility_warnings=compatibility_warnings,
+            odcs_metadata=odcs_metadata,
+            odcs_warnings=compatibility_warnings if odcs_metadata else None,
         )
 
         # Print summary to console and write report sinks

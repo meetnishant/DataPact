@@ -47,6 +47,8 @@ class ValidationReport:
     warning_count: int
     errors: List[ErrorRecord]
     compatibility_warnings: Optional[List[str]] = None
+    odcs_metadata: Optional[Dict[str, Any]] = None
+    odcs_warnings: Optional[List[str]] = None
 
     def __post_init__(self):
         """
@@ -54,6 +56,8 @@ class ValidationReport:
         """
         if self.compatibility_warnings is None:
             self.compatibility_warnings = []
+        if self.odcs_warnings is None:
+            self.odcs_warnings = []
 
     def to_dict(self) -> Dict[str, Any]:
         """
@@ -90,6 +94,11 @@ class ValidationReport:
         if self.compatibility_warnings:
             result["compatibility_warnings"] = self.compatibility_warnings
 
+        if self.odcs_metadata:
+            result["odcs"] = self.odcs_metadata
+        if self.odcs_warnings:
+            result["odcs_warnings"] = self.odcs_warnings
+
         return result
 
     def save_json(self, output_dir: str = "./reports") -> str:
@@ -123,6 +132,8 @@ class ValidationReport:
         print("\nSummary:")
         print(f"  Errors: {self.error_count}")
         print(f"  Warnings: {self.warning_count}")
+        if self.odcs_warnings:
+            print(f"  ODCS warnings: {len(self.odcs_warnings)}")
 
         if self.errors:
             print("\nDetails:")

@@ -61,6 +61,8 @@ TOOL_COMPATIBILITY = {
     "0.2.0": ["1.0.0", "1.1.0", "2.0.0"],  # Adds v2.0 support
 }
 
+ODCS_SUPPORTED_VERSIONS = ["v3.1.0"]
+
 
 class VersionError(Exception):
     """Raised when a version-related error occurs."""
@@ -213,6 +215,15 @@ def check_tool_compatibility(
     return False, (
         f"Tool v{tool_version} does not support contract v{contract_version}. "
         f"Supported versions: {', '.join(supported)}"
+    )
+
+
+def check_odcs_compatibility(api_version: str) -> Tuple[bool, str]:
+    if api_version in ODCS_SUPPORTED_VERSIONS:
+        return True, ""
+    return False, (
+        f"Unsupported ODCS apiVersion '{api_version}'. "
+        f"Supported versions: {', '.join(ODCS_SUPPORTED_VERSIONS)}"
     )
 
 

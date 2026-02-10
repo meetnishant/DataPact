@@ -48,7 +48,7 @@ Supports:
 
 **Test Results:**
 ```
-✅ 113 total tests collected (21 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling + 4 reporting + 2 policy packs + 42 exhaustive + 4 db source)
+✅ 118 total tests collected (21 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling + 4 reporting + 2 policy packs + 42 exhaustive + 4 db source + 5 odcs)
 ✅ 66%+ code coverage
 ✅ All validators working correctly with versioning
 ```
@@ -148,7 +148,7 @@ Test Suite Results:
 ✅ TestContractVersionLoading: 4 passed
 ✅ TestVersionInfo: 1 passed
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Total: 113 tests collected
+Total: 118 tests collected
 Coverage: 66%+ (including all versioning code paths)
 ```
 
@@ -175,3 +175,4 @@ The contract versioning system is fully functional, tested, and integrated. Old 
 - **Report Sinks**: Reports can be written to files, stdout, or webhooks.
 - **Policy Packs**: Reuse standard rule bundles across contracts.
 - **Database Sources**: Validate Postgres, MySQL, and SQLite tables.
+- **ODCS Compatibility**: Validate Open Data Contract Standard v3.1.0 contracts.

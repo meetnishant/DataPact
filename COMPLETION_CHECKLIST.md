@@ -19,6 +19,7 @@ Project: DataPact
 - ✅ Custom rule plugins for extensible validation
 - ✅ Policy packs for reusable rule bundles
 - ✅ Database sources (Postgres, MySQL, SQLite)
+- ✅ ODCS compatibility (Open Data Contract Standard v3.1.0)
 
 ## Code Quality
 - ✅ Type hints throughout
@@ -119,15 +120,15 @@ Project: DataPact
 ## What's Included in the Delivery
 
 ```
-Total files created: 132
-├── Python modules: 14 (including policy packs)
-├── Test files: 12 (validator, versioning, banking/finance, concurrency, profiling, chunked, custom, reporting, policy packs, exhaustive, db source)
-├── Test fixtures: 65 (including multi-table banking/finance data + contracts)
+Total files created: 139
+├── Python modules: 15 (including policy packs)
+├── Test files: 13 (validator, versioning, banking/finance, concurrency, profiling, chunked, custom, reporting, policy packs, exhaustive, db source, odcs)
+├── Test fixtures: 70 (including multi-table banking/finance data + contracts)
 ├── Documentation: 18
 
-Test cases: 113 (21 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling + 4 reporting + 2 policy packs + 42 exhaustive + 4 db source)
+Test cases: 118 (21 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling + 4 reporting + 2 policy packs + 42 exhaustive + 4 db source + 5 odcs)
 
-Lines of code: ~900+
+Lines of code: ~1100+
 Documentation coverage: Comprehensive
 Test coverage: Extensive (66%+)
 CI/CD: GitHub Actions configured

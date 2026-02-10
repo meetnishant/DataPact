@@ -17,6 +17,7 @@ Data File / DB → DataSource Loader ↓
 
 ### 1. **contracts.py** - Contract Parsing
 - Parses YAML contract files into typed Python models
+- Supports ODCS v3.1.0 contracts via dedicated mapping
 - Defines `Contract`, `Field`, `FieldRule`, `DistributionRule` dataclasses
 - Handles contract versioning metadata
 - Applies policy packs before field rule parsing
@@ -87,6 +88,7 @@ Three specialized validators run sequentially:
 - Commands: `validate` (run validation), `init` (infer contract), `profile` (infer rules)
 - Handles exit codes (0 = pass, 1 = fail with errors)
 - Supports chunked validation and sampling options for large datasets
+- Supports ODCS input via `--contract-format odcs` and `--odcs-object`
 
 ## Validation Semantics
 

@@ -17,6 +17,7 @@ Validate datasets against YAML-based data contracts to ensure data quality, sche
 - **Contract Versioning**: Track contract evolution with automatic migration
 - **Multiple Formats**: Support CSV, Parquet, and JSON Lines
 - **Database Sources**: Validate Postgres, MySQL, and SQLite tables
+- **ODCS Support**: Validate Open Data Contract Standard v3.1.0 contracts
 - **CI/CD Ready**: Exit codes for automation pipelines
 - **Detailed Reporting**: JSON reports with machine-readable errors
 - **Report Sinks**: Send reports to files, stdout, or webhooks
@@ -94,6 +95,18 @@ datapact validate \
   --db-password secret \
   --db-name appdb \
   --db-table customers
+
+```
+
+Validate an ODCS contract:
+
+```bash
+datapact validate \
+  --contract my_contract.odcs.yaml \
+  --contract-format odcs \
+  --odcs-object customers \
+  --data customers.csv
+```
 ```
 
 ### Infer Contract from Data
@@ -118,6 +131,8 @@ datapact validate --contract <path/to/contract.yaml> --data <path/to/data> [--fo
 
 **Options:**
 - `--contract`: Path to contract YAML file (required)
+- `--contract-format`: Contract format (auto, datapact, odcs)
+- `--odcs-object`: ODCS schema object name or id (required if multiple objects)
 - `--data`: Path to data file (required)
 - `--format`: Data format. Default: auto-detect from file extension
 - `--output-dir`: Directory for JSON report. Default: ./reports
