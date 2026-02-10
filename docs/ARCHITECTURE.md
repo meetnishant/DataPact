@@ -28,7 +28,7 @@ Data File / DB → DataSource Loader ↓
 - Loads database tables and queries (Postgres, MySQL, SQLite)
 - Auto-detects format from file extension
 - Provides schema inference (column names and inferred types)
-- Supports chunked streaming for large CSV/JSONL files
+- Supports chunked streaming for large CSV/JSONL files and database queries via `--db-chunksize`
 - **Responsibility**: Data I/O and schema discovery
 
 ### 3. **profiling.py** - Rule Profiling
