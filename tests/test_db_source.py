@@ -17,13 +17,12 @@ def _create_sqlite_db(tmp_path: Path) -> Path:
         cursor.execute(
             "CREATE TABLE customers (id INTEGER, email TEXT, age INTEGER)"
         )
+        rows = [
+            (i, f"user{i}@example.com", 20 + (i % 50)) for i in range(1, 106)
+        ]
         cursor.executemany(
             "INSERT INTO customers (id, email, age) VALUES (?, ?, ?)",
-            [
-                (1, "a@example.com", 30),
-                (2, "b@example.com", 25),
-                (3, "c@example.com", 40),
-            ],
+            rows,
         )
         conn.commit()
     finally:
@@ -41,7 +40,7 @@ def test_sqlite_load_and_infer_schema(tmp_path: Path) -> None:
     ds = DatabaseSource(config)
     df = ds.load()
 
-    assert len(df) == 3
+    assert len(df) == 105
     assert set(df.columns) == {"id", "email", "age"}
 
     schema = ds.infer_schema()
@@ -57,9 +56,9 @@ def test_sqlite_iter_chunks(tmp_path: Path) -> None:
         table="customers",
     )
     ds = DatabaseSource(config)
-    chunks = list(ds.iter_chunks(chunksize=2))
+    chunks = list(ds.iter_chunks(chunksize=50))
 
-    assert [len(chunk) for chunk in chunks] == [2, 1]
+    assert [len(chunk) for chunk in chunks] == [50, 50, 5]
 
 
 def test_missing_table_or_query_raises() -> None:
@@ -93,5 +92,5 @@ def test_mysql_load_table() -> None:
     ds = DatabaseSource(config)
     df = ds.load()
 
-    assert len(df) >= 3
+    assert len(df) >= 100
     assert {"id", "email", "age"}.issubset(set(df.columns))
