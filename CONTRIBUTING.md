@@ -42,6 +42,12 @@
 2. Implement loading in `DataSource.load()`
 3. Add test fixture and test case
 
+## Adding Support for New Database Sources
+
+1. Update `DatabaseSource._connect()` in `src/datapact/datasource.py`
+2. Wire CLI flags in `src/datapact/cli.py`
+3. Add tests in `tests/test_db_source.py`
+
 ## Rule Severities and Profiling
 
 - Rule severities can be specified per rule (WARN/ERROR) in YAML.
@@ -72,6 +78,16 @@
 ```bash
 # All tests
 pytest
+
+# Enable MySQL-backed DB source tests
+export DATAPACT_MYSQL_TESTS=1
+export DATAPACT_MYSQL_PASSWORD=<your-mysql-password>
+export DATAPACT_MYSQL_HOST=127.0.0.1
+export DATAPACT_MYSQL_PORT=3306
+export DATAPACT_MYSQL_USER=root
+export DATAPACT_MYSQL_DB=datapact_test
+export DATAPACT_MYSQL_TABLE=customers
+pytest tests/test_db_source.py -v
 
 # Specific test file
 pytest tests/test_validator.py -v

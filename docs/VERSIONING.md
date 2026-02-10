@@ -24,6 +24,7 @@ Related features:
 - **Custom Rule Plugins**: Extend validation via plugin modules.
 - **Report Sinks**: Write reports to files, stdout, or webhooks.
 - **Policy Packs**: Reuse standard rule bundles across contracts.
+- **Database Sources**: Validate Postgres, MySQL, and SQLite tables.
 
 ## Supported Versions
 

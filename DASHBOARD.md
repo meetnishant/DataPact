@@ -8,24 +8,24 @@ Version: 0.2.0
 Status: ✅ READY FOR PRODUCTION
 Created: February 8, 2026
 
-📁 Total Files:    131
+📁 Total Files:    132
 💻 Code Files:     14 (Python modules)
 📚 Docs Files:     18 (markdown + guides)
 ⚙️  Config Files:   4 (toml, yaml, gitignore)
-🧪 Test Files:     11 test modules + 65 fixtures
+🧪 Test Files:     12 test modules + 65 fixtures
 
 📊 Code Statistics:
    Lines of Code:           ~900+
    Type Hint Coverage:      100%
    Docstring Coverage:      Comprehensive
    External API Calls:      0 (local only)
-    Test Cases:              109 (21 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling + 4 reporting + 2 policy packs + 42 exhaustive)
+    Test Cases:              113 (21 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling + 4 reporting + 2 policy packs + 42 exhaustive + 4 db source)
    Code Coverage:           66%+
 
 🔧 Supported Python:  3.9, 3.10, 3.11, 3.12
-📦 Dependencies:      pandas, pyyaml, pyarrow
+📦 Dependencies:      pandas, pyyaml, pyarrow (+ optional psycopg2-binary, pymysql)
 ✅ CI/CD:            GitHub Actions configured
-✨ Features:         Schema drift + Quality + SLA + Custom rules + Distribution validation + Chunked validation + Profiling + Rule Severity + Versioning with auto-migration + Report sinks + Policy packs
+✨ Features:         Schema drift + Quality + SLA + Custom rules + Distribution validation + Chunked validation + Profiling + Rule Severity + Versioning with auto-migration + Report sinks + Policy packs + Database sources
 ```
 
 ## Documentation Structure
@@ -145,12 +145,12 @@ sequenceDiagram
     participant Reporter as Report Generator
     participant Output as JSON/Console/Sinks
 
-    User->>+CLI: datapact validate --contract.yaml --data.csv
+    User->>+CLI: datapact validate --contract.yaml --data.csv/--db-*
     CLI->>+Parser: Parse contract YAML
     Parser->>Parser: Apply policy packs
     Parser-->>-CLI: Contract object
     
-    CLI->>+Loader: Load data file
+    CLI->>+Loader: Load data (file or DB)
     Loader-->>-CLI: DataFrame
     
     rect rgb(200, 220, 255)

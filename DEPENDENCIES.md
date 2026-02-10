@@ -18,6 +18,10 @@ This document summarizes the direct dependencies declared in `pyproject.toml`.
 - black >= 23.0 - Code formatter.
 - mypy >= 1.0 - Static type checker.
 
+## Database dependencies (optional)
+- psycopg2-binary >= 2.9 - Postgres driver for DB sources.
+- pymysql >= 1.1 - MySQL driver for DB sources.
+
 ## Notes on open source usage
 - The project depends on the open source libraries listed above.
 - Transitive dependencies are not listed here and are resolved by your package manager.
@@ -31,3 +35,4 @@ This document summarizes the direct dependencies declared in `pyproject.toml`.
 - Custom rule plugins are loaded via Python import modules (no new dependencies).
 - Report sinks use the Python standard library for JSON and HTTP (no new dependencies).
 - Policy packs use in-repo configuration (no new dependencies).
+- Database sources use optional drivers for Postgres/MySQL (SQLite uses stdlib).

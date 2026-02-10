@@ -254,3 +254,17 @@ Auto-detect input formats or specify explicitly.
 ```bash
 datapact validate --contract c.yaml --data data.parquet --format parquet
 ```
+
+### Database sources
+Validate data directly from Postgres, MySQL, or SQLite.
+
+```bash
+datapact validate \
+  --contract c.yaml \
+  --db-type postgres \
+  --db-host localhost \
+  --db-user app \
+  --db-password secret \
+  --db-name appdb \
+  --db-table customers
+```

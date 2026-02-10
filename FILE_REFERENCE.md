@@ -6,7 +6,7 @@ This guide maps each file to its purpose and shows how they fit together.
 
 ### `src/datapact/__init__.py`
 - **Purpose**: Package entry point, exports main classes
-- **Exports**: `Contract`, `ValidationReport`, `DataSource`, `profile_dataframe`
+- **Exports**: `Contract`, `ValidationReport`, `DataSource`, `DatabaseSource`, `DatabaseConfig`, `profile_dataframe`
 - **When to modify**: Adding new top-level exports
 
 ### `src/datapact/contracts.py`
@@ -32,7 +32,8 @@ This guide maps each file to its purpose and shows how they fit together.
   - `iter_chunks()` - Stream CSV/JSONL in chunks
   - `sample_dataframe()` - Sample rows for large datasets
   - `_detect_format()` - Auto-detect file format
-- **When to modify**: Adding support for new data formats (e.g., Excel)
+- **Database support**: `DatabaseConfig`, `DatabaseSource` for Postgres/MySQL/SQLite
+- **When to modify**: Adding support for new data formats (e.g., Excel) or DB engines
 
 ### `src/datapact/cli.py`
 - **Purpose**: Command-line interface and orchestration
@@ -233,6 +234,10 @@ This guide maps each file to its purpose and shows how they fit together.
 ### `tests/test_reporting.py`
 - **Purpose**: Report sink tests (file, stdout, webhook)
 - **When to modify**: Adding new report sinks or output behaviors
+
+### `tests/test_db_source.py`
+- **Purpose**: Database source tests (SQLite)
+- **When to modify**: Adding DB source capabilities or drivers
 
 ### `tests/test_policy_packs.py`
 - **Purpose**: Policy pack parsing and merge tests

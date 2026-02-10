@@ -6,7 +6,7 @@ A **production-ready Python data validation framework** called **DataPact** that
 
 ### Key Deliverables
 
-✅ **Complete Project Structure** (131 files total)
+✅ **Complete Project Structure** (132 files total)
 - 14 Python source modules (~1050 lines of well-typed code)
 - Modular validator pipeline (schema → quality → SLA → distribution)
 - Comprehensive test suite with fixtures
@@ -26,6 +26,7 @@ A **production-ready Python data validation framework** called **DataPact** that
 - Chunked validation and sampling for large datasets
 - Custom rule plugins for extensible validation
 - Policy packs for reusable rule bundles
+- Database sources for Postgres, MySQL, and SQLite
 
 ✅ **Enterprise-Ready Code**
 - Full type hints throughout
@@ -108,7 +109,7 @@ This enables AI agents (Copilot, Claude, etc.) to be immediately productive with
 | Python Files | 14 |
 | Documentation Files | 18 |
 | Total Lines of Code | ~900 |
-| Test Coverage | Comprehensive (109 tests) |
+| Test Coverage | Comprehensive (113 tests) |
 | Type Hints | 100% |
 | External APIs | 0 |
 | Configuration Files | 4 |
@@ -149,6 +150,7 @@ tests/
 ├── test_reporting.py         Report sink tests
 ├── test_policy_packs.py      Policy pack tests
 ├── test_exhaustive_features.py Exhaustive feature tests
+├── test_db_source.py         Database source tests
 └── fixtures/
     ├── customer_contract.yaml
     ├── customer_contract_v1.yaml

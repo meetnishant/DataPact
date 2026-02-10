@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-**DataPact** is a Python framework that validates datasets (CSV, Parquet, JSON) against YAML-defined "data contracts" containing schema, quality, and distribution rules. It produces JSON reports and non-zero exit codes for CI/CD integration.
+**DataPact** is a Python framework that validates datasets (CSV, Parquet, JSON, and database tables) against YAML-defined "data contracts" containing schema, quality, and distribution rules. It produces JSON reports and non-zero exit codes for CI/CD integration.
 
 **Key Goal**: Enable data quality checks in pipelines via a CLI tool (`datapact validate`).
 
@@ -11,7 +11,7 @@
 The validation pipeline is **modular and sequential**:
 
 1. **Contract Parsing** (`contracts.py`): Load YAML → typed Python models (Contract, Field, FieldRule, DistributionRule)
-2. **Data Loading** (`datasource.py`): CSV/Parquet/JSON → pandas DataFrame; auto-detect format
+2. **Data Loading** (`datasource.py`): CSV/Parquet/JSON/DB → pandas DataFrame; auto-detect format
 3. **Schema Validation** (`validators/schema_validator.py`): Check columns exist, types match, required fields present
 4. **Quality Validation** (`validators/quality_validator.py`): Check nulls, uniqueness, ranges, regex, enums
 5. **Distribution Validation** (`validators/distribution_validator.py`): Drift detection (mean/std changes)
@@ -69,6 +69,8 @@ fields:
 Supported types: `integer`, `float`, `string`, `boolean`.  
 Supported rules: `not_null`, `unique`, `min`, `max`, `regex`, `enum`, `max_null_ratio`.  
 Distribution rules: `mean`, `std`, `max_drift_pct`, `max_z_score`.
+
+Supported data inputs: CSV, Parquet, JSON Lines, and database tables (Postgres, MySQL, SQLite).
 
 ## Common Workflows
 
@@ -136,9 +138,9 @@ JSON reports always saved to `./reports/<timestamp>.json` with ISO timestamp for
 
 ## Integration Points
 
-- **Input**: YAML files (contracts) + data files (CSV/Parquet/JSON)
+- **Input**: YAML files (contracts) + data files (CSV/Parquet/JSON) or database sources
 - **Output**: JSON reports, console summary, exit codes
-- **Dependencies**: pandas (data loading), pyyaml (contract parsing), pyarrow (parquet support)
+- **Dependencies**: pandas (data loading), pyyaml (contract parsing), pyarrow (parquet support), optional psycopg2-binary/pymysql for DBs
 - **No external APIs**: Purely local validation, no network calls
 
 ## When Adding New Features

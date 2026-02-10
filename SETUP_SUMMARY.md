@@ -37,6 +37,7 @@ DataContracts/
 │   ├── test_reporting.py           ← Report sink tests
 │   ├── test_policy_packs.py        ← Policy pack tests
 │   ├── test_exhaustive_features.py ← Exhaustive feature tests
+│   ├── test_db_source.py           ← Database source tests
 │   ├── plugins/
 │   │   └── sample_plugin.py         ← Custom rule plugin example
 │   └── fixtures/
@@ -91,6 +92,7 @@ DataContracts/
 ✅ **Chunked Validation** - Stream CSV/JSONL with optional sampling  
 ✅ **Custom Rule Plugins** - Load validation logic from plugin modules  
 ✅ **Policy Packs** - Apply reusable rule bundles by name  
+✅ **Database Sources** - Validate Postgres, MySQL, and SQLite tables  
 ✅ **CLI** - Full command-line interface with `validate`, `init`, and `profile` commands  
 
 ### Testing & Quality

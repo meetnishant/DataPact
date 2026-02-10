@@ -11,12 +11,12 @@ sequenceDiagram
     participant Reporter as Report Generator
     participant Output as JSON/Console/Sinks
 
-    User->>+CLI: datapact validate --contract.yaml --data.csv
+    User->>+CLI: datapact validate --contract.yaml --data.csv/--db-*
     CLI->>+Parser: Parse contract YAML
     Parser->>Parser: Apply policy packs
     Parser-->>-CLI: Contract object
     
-    CLI->>+Loader: Load data file
+    CLI->>+Loader: Load data (file or DB)
     Loader-->>-CLI: DataFrame
     
     rect rgb(200, 220, 255)
@@ -48,3 +48,4 @@ sequenceDiagram
     Note over CLI: Profile command uses Data Loader + Profiling to emit contract YAML
     Note over CLI: Chunked validation streams CSV/JSONL with optional sampling
     Note over CLI: Custom rule plugins are loaded via --plugin module paths
+    Note over CLI: Database sources use --db-* flags

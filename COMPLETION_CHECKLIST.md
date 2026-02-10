@@ -18,6 +18,7 @@ Project: DataPact
 - ✅ Chunked validation and sampling for large datasets
 - ✅ Custom rule plugins for extensible validation
 - ✅ Policy packs for reusable rule bundles
+- ✅ Database sources (Postgres, MySQL, SQLite)
 
 ## Code Quality
 - ✅ Type hints throughout
@@ -118,13 +119,13 @@ Project: DataPact
 ## What's Included in the Delivery
 
 ```
-Total files created: 131
+Total files created: 132
 ├── Python modules: 14 (including policy packs)
-├── Test files: 11 (validator, versioning, banking/finance, concurrency, profiling, chunked, custom, reporting, policy packs, exhaustive)
+├── Test files: 12 (validator, versioning, banking/finance, concurrency, profiling, chunked, custom, reporting, policy packs, exhaustive, db source)
 ├── Test fixtures: 65 (including multi-table banking/finance data + contracts)
 ├── Documentation: 18
 
-Test cases: 109 (21 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling + 4 reporting + 2 policy packs + 42 exhaustive)
+Test cases: 113 (21 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling + 4 reporting + 2 policy packs + 42 exhaustive + 4 db source)
 
 Lines of code: ~900+
 Documentation coverage: Comprehensive

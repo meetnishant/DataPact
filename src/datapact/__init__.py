@@ -10,7 +10,14 @@ __author__ = "Your Name"
 # Public API re-exports for convenience
 from datapact.contracts import Contract
 from datapact.reporting import ValidationReport
-from datapact.datasource import DataSource
+from datapact.datasource import DataSource, DatabaseSource, DatabaseConfig
 from datapact.profiling import profile_dataframe
 
-__all__ = ["Contract", "ValidationReport", "DataSource", "profile_dataframe"]
+__all__ = [
+	"Contract",
+	"ValidationReport",
+	"DataSource",
+	"DatabaseSource",
+	"DatabaseConfig",
+	"profile_dataframe",
+]

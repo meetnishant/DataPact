@@ -16,7 +16,11 @@ import yaml
 
 # Project imports
 from datapact.contracts import Contract  # Contract model and parsing
-from datapact.datasource import DataSource  # Data loading and schema inference
+from datapact.datasource import (
+    DataSource,
+    DatabaseSource,
+    DatabaseConfig,
+)  # Data loading and schema inference
 from datapact.validators import (
     SchemaValidator,  # Validates schema (columns, types, required)
     QualityValidator,  # Validates quality rules (nulls, unique, etc.)
@@ -65,6 +69,55 @@ def main() -> int:
     parser.add_argument(
         "--data",
         help="Path to data file (CSV, Parquet, JSON)",
+    )
+    parser.add_argument(
+        "--db-type",
+        choices=["postgres", "mysql", "sqlite"],
+        help="Database type for DB sources",
+    )
+    parser.add_argument(
+        "--db-host",
+        help="Database host",
+    )
+    parser.add_argument(
+        "--db-port",
+        type=int,
+        help="Database port",
+    )
+    parser.add_argument(
+        "--db-user",
+        help="Database user",
+    )
+    parser.add_argument(
+        "--db-password",
+        help="Database password",
+    )
+    parser.add_argument(
+        "--db-name",
+        help="Database name",
+    )
+    parser.add_argument(
+        "--db-table",
+        help="Database table to read",
+    )
+    parser.add_argument(
+        "--db-query",
+        help="SQL query to read (overrides --db-table)",
+    )
+    parser.add_argument(
+        "--db-path",
+        help="SQLite database file path",
+    )
+    parser.add_argument(
+        "--db-connect-timeout",
+        type=int,
+        default=10,
+        help="DB connection timeout in seconds (default: 10)",
+    )
+    parser.add_argument(
+        "--db-chunksize",
+        type=int,
+        help="Chunk size for DB streaming validation",
     )
     parser.add_argument(
         "--format",
@@ -207,7 +260,7 @@ def validate_command(args) -> int:
         print("ERROR: --contract is required for validate command")
         return 1
 
-    if not args.data:
+    if not args.data and not _using_db(args):
         print("ERROR: --data is required for validate command")
         return 1
 
@@ -225,9 +278,8 @@ def validate_command(args) -> int:
             print(f"ERROR: {compat_msg}")
             return 1
 
-        # Load data file into DataFrame (auto-detect or use specified format)
-        format_arg = None if args.format == "auto" else args.format
-        datasource = DataSource(args.data, format=format_arg)
+        # Load data file or database source into DataFrame
+        datasource = _build_datasource(args)
 
         severity_overrides = _parse_severity_overrides(args.severity_override)
 
@@ -369,14 +421,13 @@ def init_command(args) -> int:
     Prints a YAML contract template to stdout.
     Returns 0 on success, 1 on failure.
     """
-    if not args.data:
+    if not args.data and not _using_db(args):
         print("ERROR: --data is required for init command")
         return 1
 
     try:
         # Load data and infer schema
-        format_arg = None if args.format == "auto" else args.format
-        datasource = DataSource(args.data, format=format_arg)
+        datasource = _build_datasource(args)
         schema = datasource.infer_schema()
 
         contract_name = args.contract_name or "my_contract"
@@ -386,7 +437,7 @@ def init_command(args) -> int:
                 "version": "1.0.0",
             },
             "dataset": {
-                "name": Path(args.data).stem,
+                "name": _resolve_dataset_name(args),
             },
             "fields": [],
         }
@@ -417,19 +468,19 @@ def profile_command(args) -> int:
     Writes YAML to stdout or to --contract path if provided.
     Returns 0 on success, 1 on failure.
     """
-    if not args.data:
+    if not args.data and not _using_db(args):
         print("ERROR: --data is required for profile command")
         return 1
 
     try:
-        format_arg = None if args.format == "auto" else args.format
-        datasource = DataSource(args.data, format=format_arg)
+        datasource = _build_datasource(args)
         df = datasource.load()
 
-        contract_name = args.contract_name or f"{Path(args.data).stem}_profile"
+        dataset_name = _resolve_dataset_name(args)
+        contract_name = args.contract_name or f"{dataset_name}_profile"
         contract_data = profile_dataframe(
             df,
-            dataset_name=Path(args.data).stem,
+            dataset_name=dataset_name,
             contract_name=contract_name,
             max_enum_size=args.max_enum_size,
             max_enum_ratio=args.max_enum_ratio,
@@ -512,13 +563,18 @@ def _build_report_sinks(args, webhook_headers: dict) -> List:
 def _use_streaming(args) -> bool:
     return any(
         value is not None
-        for value in (args.chunksize, args.sample_rows, args.sample_frac)
+        for value in (
+            args.chunksize,
+            args.db_chunksize,
+            args.sample_rows,
+            args.sample_frac,
+        )
     )
 
 
 def _validate_streaming(
     contract: Contract,
-    datasource: DataSource,
+    datasource,
     args,
     severity_overrides: dict,
 ) -> Tuple[List[str], List[str], List[str], List[str]]:
@@ -528,10 +584,11 @@ def _validate_streaming(
         raise ValueError("--sample-frac must be between 0 and 1")
     if args.sample_rows is not None and args.sample_frac is not None:
         raise ValueError("Specify only one of --sample-rows or --sample-frac")
-    if args.chunksize and datasource.format not in {"csv", "jsonl"}:
-        raise ValueError("--chunksize is supported for CSV and JSONL only")
+    if isinstance(datasource, DataSource):
+        if args.chunksize and datasource.format not in {"csv", "jsonl"}:
+            raise ValueError("--chunksize is supported for CSV and JSONL only")
 
-    chunksize = args.chunksize or 10000
+    chunksize = args.db_chunksize or args.chunksize or 10000
     schema_errors: set = set()
     total_rows = 0
     sample_mode = args.sample_rows is not None or args.sample_frac is not None
@@ -539,7 +596,7 @@ def _validate_streaming(
     chunked_quality = ChunkedQualityValidator(contract, severity_overrides)
     dist_accumulator = DistributionAccumulator(contract)
 
-    if datasource.format in {"csv", "jsonl"}:
+    if isinstance(datasource, DataSource) and datasource.format in {"csv", "jsonl"}:
         for chunk in datasource.iter_chunks(chunksize):
             total_rows += len(chunk)
 
@@ -550,7 +607,7 @@ def _validate_streaming(
             if not sample_mode:
                 chunked_quality.process_chunk(chunk)
                 dist_accumulator.process_chunk(chunk)
-    else:
+    elif isinstance(datasource, DataSource):
         df = datasource.load()
         total_rows = len(df)
         schema_validator = SchemaValidator(contract, df)
@@ -585,7 +642,12 @@ def _validate_streaming(
         dist_warnings = dist_accumulator.finalize_drift()
 
         if dist_accumulator.needs_outlier_pass():
-            if datasource.format in {"csv", "jsonl"}:
+            if isinstance(datasource, DataSource):
+                if datasource.format in {"csv", "jsonl"}:
+                    dist_warnings += dist_accumulator.count_outliers(
+                        datasource.iter_chunks(chunksize)
+                    )
+            else:
                 dist_warnings += dist_accumulator.count_outliers(
                     datasource.iter_chunks(chunksize)
                 )
@@ -597,7 +659,7 @@ def _validate_streaming(
 
 def _validate_custom_rules_streaming(
     contract: Contract,
-    datasource: DataSource,
+    datasource,
     args,
 ) -> List[str]:
     if not args.plugin:
@@ -617,6 +679,64 @@ def _validate_custom_rules_streaming(
     validator = CustomRuleValidator(contract, sample_df, args.plugin)
     _, errors = validator.validate()
     return errors
+
+
+def _using_db(args) -> bool:
+    return args.db_type is not None
+
+
+def _build_datasource(args):
+    if _using_db(args):
+        config = _build_db_config(args)
+        return DatabaseSource(config)
+
+    format_arg = None if args.format == "auto" else args.format
+    return DataSource(args.data, format=format_arg)
+
+
+def _build_db_config(args) -> DatabaseConfig:
+    if args.db_type is None:
+        raise ValueError("--db-type is required for database sources")
+
+    db_type = args.db_type
+    if db_type == "sqlite":
+        if not args.db_path:
+            raise ValueError("--db-path is required for sqlite")
+    else:
+        if not args.db_host:
+            raise ValueError("--db-host is required for database sources")
+        if not args.db_user:
+            raise ValueError("--db-user is required for database sources")
+        if not args.db_name:
+            raise ValueError("--db-name is required for database sources")
+
+    if not args.db_query and not args.db_table:
+        raise ValueError("--db-table or --db-query is required for database sources")
+
+    default_port = None
+    if db_type == "postgres":
+        default_port = 5432
+    if db_type == "mysql":
+        default_port = 3306
+
+    return DatabaseConfig(
+        db_type=db_type,
+        host=args.db_host,
+        port=args.db_port or default_port,
+        user=args.db_user,
+        password=args.db_password,
+        name=args.db_name,
+        table=args.db_table,
+        query=args.db_query,
+        path=args.db_path,
+        connect_timeout=args.db_connect_timeout,
+    )
+
+
+def _resolve_dataset_name(args) -> str:
+    if _using_db(args):
+        return args.db_table or "query"
+    return Path(args.data).stem
 
 
 def _evaluate_sla(contract: Contract, total_rows: int) -> List[str]:

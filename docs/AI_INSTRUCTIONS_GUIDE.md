@@ -32,3 +32,4 @@ Organize instructions as:
 - Document **custom rule plugins** (`--plugin`, `rules.custom`, `custom_rules`).
 - Document **report sinks** (`--report-sink`, `--report-webhook-url`, `--report-webhook-header`).
 - Document **policy packs** (`policies`, `overrides`).
+- Document **database sources** (`--db-type`, `--db-table`, `--db-query`, `--db-path`).

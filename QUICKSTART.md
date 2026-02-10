@@ -17,6 +17,11 @@ Optional: Install dev tools for linting and type checking
 python3 -m pip install --user black ruff mypy
 ```
 
+Optional: Install database drivers for Postgres/MySQL sources
+```bash
+python3 -m pip install --user "psycopg2-binary>=2.9" "pymysql>=1.1"
+```
+
 ### 3. Verify Installation
 ```bash
 PYTHONPATH=./src python3 -c "from datapact import Contract; print('✓ Ready')"
@@ -34,6 +39,15 @@ export PYTHONPATH="$(pwd)/src"
 python3 src/datapact/cli.py validate \
   --contract tests/fixtures/customer_contract.yaml \
   --data tests/fixtures/valid_customers.csv
+```
+
+### Validate a Database Table
+```bash
+python3 src/datapact/cli.py validate \
+  --contract tests/fixtures/customer_contract.yaml \
+  --db-type sqlite \
+  --db-path ./sample.db \
+  --db-table customers
 ```
 
 ### Infer Contract from Data
@@ -136,6 +150,16 @@ python3 -m pip install --user pytest pytest-cov
 # Run tests
 export PYTHONPATH=./src
 pytest tests/test_validator.py -v
+
+# Run MySQL-backed tests
+export DATAPACT_MYSQL_TESTS=1
+export DATAPACT_MYSQL_PASSWORD=<your-mysql-password>
+export DATAPACT_MYSQL_HOST=127.0.0.1
+export DATAPACT_MYSQL_PORT=3306
+export DATAPACT_MYSQL_USER=root
+export DATAPACT_MYSQL_DB=datapact_test
+export DATAPACT_MYSQL_TABLE=customers
+pytest tests/test_db_source.py -v
 
 # Check total coverage percentage
 datapact-coverage --min 80

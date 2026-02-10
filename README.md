@@ -16,6 +16,7 @@ Validate datasets against YAML-based data contracts to ensure data quality, sche
 - **Policy Packs**: Apply reusable rule bundles by name
 - **Contract Versioning**: Track contract evolution with automatic migration
 - **Multiple Formats**: Support CSV, Parquet, and JSON Lines
+- **Database Sources**: Validate Postgres, MySQL, and SQLite tables
 - **CI/CD Ready**: Exit codes for automation pipelines
 - **Detailed Reporting**: JSON reports with machine-readable errors
 - **Report Sinks**: Send reports to files, stdout, or webhooks
@@ -26,6 +27,12 @@ See [FEATURES.md](FEATURES.md) for a functional feature list with compact exampl
 
 ```bash
 pip install -e .
+```
+
+Optional database drivers:
+
+```bash
+pip install -e ".[db]"
 ```
 
 ## Quick Start
@@ -75,6 +82,20 @@ fields:
 datapact validate --contract customer_contract.yaml --data customers.csv
 ```
 
+Validate a database table:
+
+```bash
+datapact validate \
+  --contract customer_contract.yaml \
+  --db-type postgres \
+  --db-host localhost \
+  --db-port 5432 \
+  --db-user app \
+  --db-password secret \
+  --db-name appdb \
+  --db-table customers
+```
+
 ### Infer Contract from Data
 
 ```bash
@@ -100,6 +121,17 @@ datapact validate --contract <path/to/contract.yaml> --data <path/to/data> [--fo
 - `--data`: Path to data file (required)
 - `--format`: Data format. Default: auto-detect from file extension
 - `--output-dir`: Directory for JSON report. Default: ./reports
+- `--db-type`: Database type (postgres, mysql, sqlite)
+- `--db-host`: Database host (RDBMS only)
+- `--db-port`: Database port
+- `--db-user`: Database user (RDBMS only)
+- `--db-password`: Database password (RDBMS only)
+- `--db-name`: Database name (RDBMS only)
+- `--db-table`: Database table to read
+- `--db-query`: SQL query to read (overrides table)
+- `--db-path`: SQLite database file path
+- `--db-connect-timeout`: DB connection timeout in seconds
+- `--db-chunksize`: Chunk size for DB streaming validation
 - `--report-sink`: Report sink (file, stdout, webhook). Repeatable
 - `--report-webhook-url`: Webhook URL for report sink `webhook`
 - `--report-webhook-header`: Webhook header (Key: Value). Repeatable
@@ -292,6 +324,16 @@ For scenario coverage details, see [Banking & Finance Test Cases](#banking--fina
 ```bash
 # Run tests
 pytest
+
+# Enable MySQL-backed DB source tests
+export DATAPACT_MYSQL_TESTS=1
+export DATAPACT_MYSQL_PASSWORD=<your-mysql-password>
+export DATAPACT_MYSQL_HOST=127.0.0.1
+export DATAPACT_MYSQL_PORT=3306
+export DATAPACT_MYSQL_USER=root
+export DATAPACT_MYSQL_DB=datapact_test
+export DATAPACT_MYSQL_TABLE=customers
+pytest tests/test_db_source.py -v
 
 # With coverage
 pytest --cov=src/datapact

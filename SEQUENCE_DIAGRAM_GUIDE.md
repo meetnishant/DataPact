@@ -60,6 +60,7 @@ Exit Code (0 or 1)
 ✅ **Custom rule plugins** supported via CLI module loading  
 ✅ **Report sinks** supported for file, stdout, or webhook output  
 ✅ **Policy packs** applied during contract parsing  
+✅ **Database sources** supported for Postgres, MySQL, and SQLite  
 ✅ **Report generation** and output demonstrated  
 ✅ **Exit code** shown at the end  
 

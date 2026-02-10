@@ -25,6 +25,7 @@ Data File → DataSource Loader ↓
 
 ### 2. **datasource.py** - Data Loading
 - Loads CSV, Parquet, JSON Lines formats
+- Loads database tables and queries (Postgres, MySQL, SQLite)
 - Auto-detects format from file extension
 - Provides schema inference (column names and inferred types)
 - Supports chunked streaming for large CSV/JSONL files
@@ -138,12 +139,12 @@ sequenceDiagram
     participant Reporter as Report Generator
     participant Output as JSON/Console/Sinks
 
-    User->>+CLI: datapact validate --contract.yaml --data.csv
+    User->>+CLI: datapact validate --contract.yaml --data.csv/--db-*
     CLI->>+Parser: Parse contract YAML
     Parser->>Parser: Apply policy packs
     Parser-->>-CLI: Contract object
     
-    CLI->>+Loader: Load data file
+    CLI->>+Loader: Load data (file or DB)
     Loader-->>-CLI: DataFrame
     
     rect rgb(200, 220, 255)
