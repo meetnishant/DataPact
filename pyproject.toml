@@ -4,13 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "datapact"
-version = "0.1.0"
-description = "Validate datasets against YAML data contracts"
+version = "2.0.0"
+description = "Validate datasets against YAML data contracts with support for Pact API contracts, ODCS schemas, and custom rules"
 readme = "README.md"
 requires-python = ">=3.9"
 authors = [{name = "Nishant Verma", email = "meetnishant@gmail.com"}]
 license = {text = "MIT"}
-keywords = ["data-quality", "data-contract", "validation", "schema"]
+keywords = ["data-quality", "data-contract", "validation", "schema", "pact", "api-contract", "odcs", "open-data-contract", "data-pact"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
