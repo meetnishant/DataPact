@@ -1,6 +1,6 @@
 # DataPact
 
-Validate datasets against YAML-based data contracts to ensure data quality, schema compliance, and distribution health.
+Validate datasets against data contracts to ensure schema compliance, data quality, and distribution health. DataPact supports DataPact YAML, ODCS v3.1.0, and Pact API contracts, with a provider architecture and a CLI designed for CI/CD pipelines.
 
 ## Features
 
@@ -18,8 +18,8 @@ Validate datasets against YAML-based data contracts to ensure data quality, sche
 - **Multiple Formats**: Support CSV, Parquet, and JSON Lines
 - **Database Sources**: Validate Postgres, MySQL, and SQLite tables
 - **ODCS Support**: Validate Open Data Contract Standard v3.1.0 contracts
-- **API Pact Support**: Load and validate API Pact contracts (response schemas)
-- **Contract Providers**: Load DataPact, ODCS, or API Pact contracts via provider dispatch
+- **API Pact Support**: Infer DataPact contracts from Pact API contracts via type inference
+- **Contract Providers**: Load DataPact YAML, ODCS, or Pact JSON contracts via provider dispatch
 - **Normalization Scaffold**: Contract-aware normalization (flatten config; noop unless enabled)
 - **CI/CD Ready**: Exit codes for automation pipelines
 - **Detailed Reporting**: JSON reports with machine-readable errors
@@ -33,7 +33,7 @@ See [FEATURES.md](FEATURES.md) for a functional feature list with compact exampl
 pip install -e .
 ```
 
-Note: `pact-python` is included as a base dependency for API Pact integration.
+Note: `pact-python` is included as a base dependency so DataPact can ingest Pact JSON contracts for schema inference.
 
 Optional database drivers:
 
@@ -43,7 +43,7 @@ pip install -e ".[db]"
 
 ## Quick Start
 
-### Define a Contract
+### Define a Contract (DataPact YAML)
 
 Create `customer_contract.yaml`:
 
@@ -100,7 +100,6 @@ datapact validate \
   --db-password secret \
   --db-name appdb \
   --db-table customers
-
 ```
 
 Validate an ODCS contract:
@@ -112,7 +111,17 @@ datapact validate \
   --odcs-object customers \
   --data customers.csv
 ```
+
+Validate a Pact API contract (schema inferred from Pact JSON):
+
+```bash
+datapact validate \
+  --contract pact_user_api.json \
+  --contract-format pact \
+  --data api_response.json
 ```
+
+Type inference happens automatically. Add quality/distribution rules manually to the inferred contract if needed.
 
 ### Infer Contract from Data
 
@@ -124,6 +133,95 @@ datapact init --contract new_contract.yaml --data data.csv
 
 ```bash
 datapact profile --contract new_profile.yaml --data data.csv
+```
+
+## Pact Integration
+
+DataPact uses Pact contracts as an input format for schema inference. It consumes Pact JSON contracts commonly produced by pact-python, then maps the response body examples to DataPact fields.
+
+### Pact-Python Features Leveraged by DataPact
+
+- **Pact JSON contract format**: Reads Pact JSON files as the source of truth
+- **Consumer/Provider metadata**: Uses `consumer.name` and `provider.name` to build a DataPact contract name
+- **Interactions array**: Requires Pact interactions to locate an API response
+- **Response body examples**: Infers field names and types from `interactions[0].response.body`
+- **Type mapping**: Maps JSON primitives to DataPact types (int → integer, float → float, bool → boolean, str → string)
+
+### Pact-Python Features NOT Leveraged by DataPact
+
+- **Mock server and stubs**: DataPact validates from files, not live servers
+- **Consumer-driven test execution**: DataPact is a validation tool, not a testing framework
+- **Provider verification**: No provider verification against a running service
+- **Pact Broker integration**: Only local Pact JSON files are supported
+- **Matching rules and generators**: Matchers are not evaluated; only example values are used
+- **Message Pacts**: Only REST API response bodies are supported
+- **CLI tooling for Pact**: DataPact does not invoke pact-python CLI helpers
+
+### Example: Pact JSON to DataPact Fields
+
+Pact contract snippet:
+
+```json
+{
+  "consumer": {"name": "web-frontend"},
+  "provider": {"name": "user-api"},
+  "interactions": [
+    {
+      "response": {
+        "status": 200,
+        "body": {
+          "id": 123,
+          "name": "Alice Smith",
+          "email": "alice@example.com",
+          "age": 30,
+          "active": true
+        }
+      }
+    }
+  ]
+}
+```
+
+Inferred DataPact fields:
+
+```yaml
+fields:
+  - name: id
+    type: integer
+    required: false
+  - name: name
+    type: string
+    required: false
+  - name: email
+    type: string
+    required: false
+  - name: age
+    type: integer
+    required: false
+  - name: active
+    type: boolean
+    required: false
+```
+
+### Manual Additions Required for Pact Contracts
+
+Pact does not define quality or distribution rules. Add those rules manually in DataPact YAML:
+
+```yaml
+fields:
+  - name: id
+    type: integer
+    rules:
+      unique: true
+  - name: email
+    type: string
+    rules:
+      regex: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+  - name: age
+    type: integer
+    rules:
+      min: 0
+      max: 150
 ```
 
 ## CLI Usage
@@ -276,6 +374,7 @@ fields:
     type: string
     rules:
       freshness_max_age_hours: 24
+```
 
 ### Chunked Validation and Sampling
 
@@ -310,7 +409,6 @@ datapact validate --contract contract.yaml --data data.csv --plugin mypkg.rules
 ```
 
 Custom rules run on full data; in streaming mode they run only when sampling is enabled.
-```
 
 ## Report Format
 
