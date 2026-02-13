@@ -42,8 +42,10 @@ Welcome to the **DataPact** repository! This file helps you navigate all resourc
 ```
 src/datapact/          Core application
 ├── contracts.py                       YAML parsing & models
+├── providers/                          Contract providers (datapact, odcs)
 ├── odcs_contracts.py                  ODCS parsing & mapping
 ├── datasource.py                      Data loading (CSV/Parquet/JSON)
+├── normalization/                      Normalization scaffold
 ├── profiling.py                       Contract profiling helpers
 ├── cli.py                             Command-line interface
 ├── reporting.py                       Report generation
@@ -65,6 +67,8 @@ tests/                                 Test suite & fixtures
 ├── test_profiling.py                  Profiling tests
 ├── test_odcs_contract.py              ODCS contract tests
 ├── test_db_source.py                 Database source tests
+├── test_contract_providers.py         Provider dispatch tests
+├── test_flatten_normalization.py      Normalization scaffold tests
 └── fixtures/                          Example data & contracts
 
 .github/                               GitHub-specific files
@@ -125,6 +129,8 @@ Full tree: [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)
 
 - **Contract** - YAML file defining validation rules for a dataset
 - **Contract Version** - Semantic version (1.0.0, 1.1.0, 2.0.0) with migration support
+- **Contract Provider** - Format adapter (DataPact YAML or ODCS)
+- **Normalization** - Contract-aware preprocessing (flatten metadata)
 - **Validator** - Python class that checks one aspect (schema, quality, or distribution)
 - **ErrorRecord** - Individual validation finding with severity (ERROR or WARN)
 - **ValidationReport** - Complete validation result (JSON + console summary)
@@ -143,10 +149,10 @@ Full tree: [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)
 
 ## ✨ Project Statistics
 
-- **15** Python source files (~1100+ lines including plugins)
+- **21** Python source files (~1100+ lines including plugins)
 - **18** Documentation files
 - **70** Test fixture files
-- **118** Test cases (21 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling + 4 reporting + 2 policy packs + 42 exhaustive + 4 db source + 5 odcs)
+- **120+** Test cases (includes provider dispatch and normalization scaffold tests)
 - **1** GitHub Actions workflow
 - **100%** Type hints in core modules
 - **66%+** Code coverage achieved

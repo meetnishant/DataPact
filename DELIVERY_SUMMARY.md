@@ -7,7 +7,7 @@ A **production-ready Python data validation framework** called **DataPact** that
 ### Key Deliverables
 
 ✅ **Complete Project Structure** (139 files total)
-- 15 Python source modules (~1100 lines of well-typed code)
+- 21 Python source modules (~1100 lines of well-typed code)
 - Modular validator pipeline (schema → quality → SLA → distribution)
 - Comprehensive test suite with fixtures
 - GitHub Actions CI/CD workflow
@@ -28,6 +28,8 @@ A **production-ready Python data validation framework** called **DataPact** that
 - Policy packs for reusable rule bundles
 - Database sources for Postgres, MySQL, and SQLite
 - ODCS v3.1.0 compatibility for standard data contracts
+- Contract providers for DataPact vs ODCS format dispatch
+- Normalization scaffold with flatten metadata (noop by default)
 
 ✅ **Enterprise-Ready Code**
 - Full type hints throughout
@@ -107,7 +109,7 @@ This enables AI agents (Copilot, Claude, etc.) to be immediately productive with
 
 | Metric | Value |
 |--------|-------|
-| Python Files | 15 |
+| Python Files | 21 |
 | Documentation Files | 18 |
 | Total Lines of Code | ~1100 |
 | Test Coverage | Comprehensive (118 tests) |
@@ -123,10 +125,12 @@ This enables AI agents (Copilot, Claude, etc.) to be immediately productive with
 ```
 src/datapact/
 ├── contracts.py              YAML parsing
+├── providers/                Contract providers
 ├── datasource.py             Data loading
 ├── policies.py               Policy pack registry
 ├── cli.py                    CLI interface
 ├── profiling.py              Contract profiling helpers
+├── normalization/            Normalization scaffold
 ├── reporting.py              Report generation
 ├── versioning.py             Contract versioning
 └── validators/
@@ -153,6 +157,8 @@ tests/
 ├── test_exhaustive_features.py Exhaustive feature tests
 ├── test_db_source.py         Database source tests
 ├── test_odcs_contract.py     ODCS contract tests
+├── test_contract_providers.py Provider dispatch tests
+├── test_flatten_normalization.py Normalization scaffold tests
 └── fixtures/
     ├── customer_contract.yaml
     ├── customer_contract_v1.yaml

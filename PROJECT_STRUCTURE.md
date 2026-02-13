@@ -21,10 +21,19 @@ DataPact/
 │   └── datapact/
 │       ├── __init__.py              # Package entry point
 │       ├── contracts.py             # YAML contract parsing
+│       ├── providers/               # Contract providers (datapact, odcs)
+│       │   ├── __init__.py
+│       │   ├── base.py
+│       │   ├── datapact_provider.py
+│       │   └── odcs_provider.py
 │       ├── odcs_contracts.py         # ODCS parsing & mapping
 │       ├── datasource.py            # Data loading (CSV/Parquet/JSON/DB)
 │       ├── policies.py              # Policy pack registry
 │       ├── profiling.py             # Contract profiling helpers
+│       ├── normalization/           # Normalization scaffolding
+│       │   ├── __init__.py
+│       │   ├── config.py
+│       │   └── normalizer.py
 │       ├── cli.py                   # CLI: validate, init, profile commands
 │       ├── reporting.py             # Report generation
 │       └── validators/
@@ -48,6 +57,8 @@ DataPact/
 │   ├── test_exhaustive_features.py  # Exhaustive feature tests
 │   ├── test_db_source.py            # Database source tests
 │   ├── test_odcs_contract.py         # ODCS contract tests
+│   ├── test_contract_providers.py   # Provider dispatch tests
+│   ├── test_flatten_normalization.py # Normalization scaffold tests
 │   ├── plugins/
 │   │   └── sample_plugin.py          # Custom rule plugin example
 │   └── fixtures/

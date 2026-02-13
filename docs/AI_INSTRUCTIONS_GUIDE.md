@@ -34,3 +34,5 @@ Organize instructions as:
 - Document **policy packs** (`policies`, `overrides`).
 - Document **database sources** (`--db-type`, `--db-table`, `--db-query`, `--db-path`).
 - Document **ODCS compatibility** (`--contract-format odcs`, `--odcs-object`).
+- Document **contract providers** (DataPact vs ODCS provider dispatch).
+- Document **normalization** (`flatten` metadata and noop-by-default behavior).

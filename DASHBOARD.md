@@ -9,10 +9,10 @@ Status: ✅ READY FOR PRODUCTION
 Created: February 8, 2026
 
 📁 Total Files:    139
-💻 Code Files:     15 (Python modules)
+💻 Code Files:     21 (Python modules)
 📚 Docs Files:     18 (markdown + guides)
 ⚙️  Config Files:   4 (toml, yaml, gitignore)
-🧪 Test Files:     13 test modules + 70 fixtures
+🧪 Test Files:     15 test modules + 70 fixtures
 
 📊 Code Statistics:
   Lines of Code:           ~1100+
@@ -23,9 +23,9 @@ Created: February 8, 2026
    Code Coverage:           66%+
 
 🔧 Supported Python:  3.9, 3.10, 3.11, 3.12
-📦 Dependencies:      pandas, pyyaml, pyarrow (+ optional psycopg2-binary, pymysql)
+📦 Dependencies:      pandas, pyyaml, pyarrow, pact-python (+ optional psycopg2-binary, pymysql)
 ✅ CI/CD:            GitHub Actions configured
-✨ Features:         Schema drift + Quality + SLA + Custom rules + Distribution validation + Chunked validation + Profiling + Rule Severity + Versioning with auto-migration + Report sinks + Policy packs + Database sources + ODCS compatibility
+✨ Features:         Schema drift + Quality + SLA + Custom rules + Distribution validation + Chunked validation + Profiling + Rule Severity + Versioning with auto-migration + Report sinks + Policy packs + Database sources + Contract providers + Normalization scaffold + ODCS compatibility
 ```
 
 ## Documentation Structure
@@ -137,8 +137,10 @@ sequenceDiagram
     autonumber
     actor User as User/CLI
     participant CLI as CLI Interface
+    participant Provider as Contract Provider
     participant Parser as Contract Parser
     participant Loader as Data Loader
+    participant Normalizer as Normalizer
     participant Schema as Schema Validator
     participant Quality as Quality Validator
     participant Distribution as Distribution Validator
@@ -146,12 +148,16 @@ sequenceDiagram
     participant Output as JSON/Console/Sinks
 
     User->>+CLI: datapact validate --contract.yaml --data.csv/--db-*
-    CLI->>+Parser: Parse contract YAML
+    CLI->>+Provider: Resolve format and load contract
+    Provider->>Parser: Parse contract YAML
     Parser->>Parser: Apply policy packs
-    Parser-->>-CLI: Contract object
+    Provider-->>-CLI: Contract object
     
     CLI->>+Loader: Load data (file or DB)
     Loader-->>-CLI: DataFrame
+
+    CLI->>+Normalizer: Normalize dataframe (noop by default)
+    Normalizer-->>-CLI: DataFrame
     
     rect rgb(200, 220, 255)
     Note over Schema,Distribution: VALIDATION PIPELINE
@@ -187,10 +193,18 @@ src/datapact/
 │   ├─ Field
 │   ├─ FieldRule
 │   ├─ DistributionRule
-│   └─ Dataset
+│   ├─ Dataset
+│   └─ FlattenConfig
+├── providers/               Contract providers
+│   ├─ base.py
+│   ├─ datapact_provider.py
+│   └─ odcs_provider.py
 ├── policies.py              Policy pack registry
 ├── datasource.py            Data loading & inference
 │   └─ DataSource
+├── normalization/           Normalization scaffold
+│   ├─ config.py
+│   └─ normalizer.py
 ├── cli.py                   CLI interface
 │   ├─ main()
 │   ├─ validate_command()
@@ -224,6 +238,8 @@ src/datapact/
 | Rule Severity | ✅ | contracts.py |
 | Policy Packs | ✅ | policies.py |
 | Custom Rule Plugins | ✅ | validators/custom_rule_validator.py |
+| Contract Providers | ✅ | providers/ |
+| Normalization Scaffold | ✅ | normalization/ |
 | JSON Report Output | ✅ | reporting.py |
 | Console Output | ✅ | reporting.py |
 | CLI: validate | ✅ | cli.py |

@@ -6,6 +6,7 @@
 2. Create a virtual environment: `python -m venv venv`
 3. Activate: `source venv/bin/activate` (macOS/Linux) or `venv\Scripts\activate` (Windows)
 4. Install with dev dependencies: `pip install -e ".[dev]"`
+   - Note: `pact-python` is installed with base dependencies for API Pact integration.
 
 ## Code Standards
 

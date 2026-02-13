@@ -9,14 +9,13 @@ import argparse  # For parsing CLI arguments
 import sys  # For exit codes and script control
 from pathlib import Path  # For file path manipulations
 from datetime import datetime  # For timestamping reports
-from typing import List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import yaml
 
 
 # Project imports
 from datapact.contracts import Contract  # Contract model and parsing
-from datapact.odcs_contracts import OdcsContract, is_odcs_contract
 from datapact.datasource import (
     DataSource,
     DatabaseSource,
@@ -40,10 +39,10 @@ from datapact.reporting import (
     ReportContext,
     write_report_sinks,
 )
-from datapact.versioning import (
-    check_tool_compatibility,
-    check_odcs_compatibility,
-)  # Version compatibility check
+from datapact.providers import DataPactProvider, OdcsProvider
+from datapact.providers.base import ContractProvider
+from datapact.normalization import NormalizationConfig, normalize_dataframe
+from datapact.versioning import check_tool_compatibility  # Version compatibility check
 from datapact.profiling import profile_dataframe  # Profiling utilities
 
 
@@ -284,25 +283,17 @@ def validate_command(args) -> int:
         compatibility_warnings: List[str] = []
         odcs_metadata = None
 
-        if args.contract_format == "odcs" or (
-            args.contract_format == "auto" and is_odcs_contract(contract_data)
-        ):
-            odcs_contract = OdcsContract.from_dict(contract_data)
-            is_compatible, compat_msg = check_odcs_compatibility(
-                odcs_contract.api_version
-            )
-            if not is_compatible:
-                print(f"ERROR: {compat_msg}")
-                return 1
+        provider = _resolve_contract_provider(
+            args.contract_format,
+            contract_data,
+            args.odcs_object,
+        )
+        contract = provider.load_from_dict(contract_data)
 
-            contract, odcs_warnings, odcs_metadata = (
-                odcs_contract.to_datapact_contract(args.odcs_object)
-            )
-            compatibility_warnings.extend(odcs_warnings)
+        if isinstance(provider, OdcsProvider):
+            compatibility_warnings.extend(provider.odcs_warnings)
+            odcs_metadata = provider.odcs_metadata
         else:
-            # Load contract from YAML file (includes version checks/migration)
-            contract = Contract._from_dict(contract_data)
-
             # Check contract version compatibility with tool version
             is_compatible, compat_msg = check_tool_compatibility(
                 tool_version, contract.version
@@ -310,6 +301,8 @@ def validate_command(args) -> int:
             if not is_compatible:
                 print(f"ERROR: {compat_msg}")
                 return 1
+
+            normalization_config = _build_normalization_config(contract)
 
         # Load data file or database source into DataFrame
         datasource = _build_datasource(args)
@@ -330,15 +323,18 @@ def validate_command(args) -> int:
                     datasource,
                     args,
                     severity_overrides,
+                    normalization_config,
                 )
             )
             custom_errors = _validate_custom_rules_streaming(
                 contract,
                 datasource,
                 args,
+                normalization_config,
             )
         else:
             df = datasource.load()
+            df = normalize_dataframe(df, normalization_config)
 
             # Run schema validation (blocking: must pass to continue)
             schema_validator = SchemaValidator(contract, df)
@@ -447,6 +443,36 @@ def validate_command(args) -> int:
         # Print any unexpected errors
         print(f"ERROR: {e}")
         return 1
+
+
+def _resolve_contract_provider(
+    contract_format: str,
+    contract_data: Dict[str, Any],
+    odcs_object: Optional[str],
+) -> ContractProvider:
+    providers = {
+        "datapact": DataPactProvider(),
+        "odcs": OdcsProvider(odcs_object=odcs_object),
+    }
+
+    if contract_format == "auto":
+        for provider in (providers["odcs"], providers["datapact"]):
+            if provider.can_load(contract_data):
+                return provider
+        raise ValueError(
+            "Unable to detect contract format. Use --contract-format to set one."
+        )
+
+    provider = providers.get(contract_format)
+    if provider is None:
+        raise ValueError(
+            f"Unsupported contract format '{contract_format}'."
+        )
+    if not provider.can_load(contract_data):
+        raise ValueError(
+            f"Contract format '{contract_format}' does not match the contract."
+        )
+    return provider
 
 
 
@@ -612,6 +638,7 @@ def _validate_streaming(
     datasource,
     args,
     severity_overrides: dict,
+    normalization_config: NormalizationConfig,
 ) -> Tuple[List[str], List[str], List[str], List[str]]:
     if args.sample_rows is not None and args.sample_rows <= 0:
         raise ValueError("--sample-rows must be > 0")
@@ -633,6 +660,7 @@ def _validate_streaming(
 
     if isinstance(datasource, DataSource) and datasource.format in {"csv", "jsonl"}:
         for chunk in datasource.iter_chunks(chunksize):
+            chunk = normalize_dataframe(chunk, normalization_config)
             total_rows += len(chunk)
 
             schema_validator = SchemaValidator(contract, chunk)
@@ -644,6 +672,7 @@ def _validate_streaming(
                 dist_accumulator.process_chunk(chunk)
     elif isinstance(datasource, DataSource):
         df = datasource.load()
+        df = normalize_dataframe(df, normalization_config)
         total_rows = len(df)
         schema_validator = SchemaValidator(contract, df)
         _, chunk_schema_errors = schema_validator.validate()
@@ -652,6 +681,18 @@ def _validate_streaming(
         if not sample_mode:
             chunked_quality.process_chunk(df)
             dist_accumulator.process_chunk(df)
+    else:
+        for chunk in datasource.iter_chunks(chunksize):
+            chunk = normalize_dataframe(chunk, normalization_config)
+            total_rows += len(chunk)
+
+            schema_validator = SchemaValidator(contract, chunk)
+            _, chunk_schema_errors = schema_validator.validate()
+            schema_errors.update(chunk_schema_errors)
+
+            if not sample_mode:
+                chunked_quality.process_chunk(chunk)
+                dist_accumulator.process_chunk(chunk)
 
     quality_errors: List[str]
     dist_warnings: List[str]
@@ -663,6 +704,7 @@ def _validate_streaming(
             seed=args.sample_seed,
             chunksize=chunksize,
         )
+        sample_df = normalize_dataframe(sample_df, normalization_config)
         quality_validator = QualityValidator(
             contract,
             sample_df,
@@ -696,6 +738,7 @@ def _validate_custom_rules_streaming(
     contract: Contract,
     datasource,
     args,
+    normalization_config: NormalizationConfig,
 ) -> List[str]:
     if not args.plugin:
         return []
@@ -711,9 +754,19 @@ def _validate_custom_rules_streaming(
         seed=args.sample_seed,
         chunksize=args.chunksize or 10000,
     )
+    sample_df = normalize_dataframe(sample_df, normalization_config)
     validator = CustomRuleValidator(contract, sample_df, args.plugin)
     _, errors = validator.validate()
     return errors
+
+
+def _build_normalization_config(contract: Contract) -> NormalizationConfig:
+    if contract.flatten.enabled:
+        return NormalizationConfig(
+            mode="flatten",
+            flatten_separator=contract.flatten.separator,
+        )
+    return NormalizationConfig()
 
 
 def _using_db(args) -> bool:

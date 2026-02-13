@@ -18,6 +18,8 @@ Validate datasets against YAML-based data contracts to ensure data quality, sche
 - **Multiple Formats**: Support CSV, Parquet, and JSON Lines
 - **Database Sources**: Validate Postgres, MySQL, and SQLite tables
 - **ODCS Support**: Validate Open Data Contract Standard v3.1.0 contracts
+- **Contract Providers**: Load DataPact or ODCS contracts via provider dispatch
+- **Normalization Scaffold**: Contract-aware normalization (flatten config; noop unless enabled)
 - **CI/CD Ready**: Exit codes for automation pipelines
 - **Detailed Reporting**: JSON reports with machine-readable errors
 - **Report Sinks**: Send reports to files, stdout, or webhooks
@@ -29,6 +31,8 @@ See [FEATURES.md](FEATURES.md) for a functional feature list with compact exampl
 ```bash
 pip install -e .
 ```
+
+Note: `pact-python` is included as a base dependency for API Pact integration.
 
 Optional database drivers:
 
@@ -233,6 +237,14 @@ rules:
 schema:
   extra_columns:
     severity: WARN
+```
+
+### Normalization (Flatten Metadata)
+
+```yaml
+flatten:
+  enabled: false
+  separator: "."
 ```
 
 ### Policy Packs

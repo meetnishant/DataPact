@@ -198,6 +198,30 @@ custom_rules:
 ## Contract Versioning
 
 ### Versioned contracts with auto-migration
+
+## Contract Providers
+
+### Provider-based contract loading
+DataPact resolves contract formats via providers (DataPact YAML or ODCS).
+
+```bash
+datapact validate --contract contract.yaml --data data.csv
+```
+
+```bash
+datapact validate --contract contract.odcs.yaml --contract-format odcs --data data.csv
+```
+
+## Normalization
+
+### Flatten metadata scaffold (noop by default)
+Define a normalization intent without changing behavior unless enabled.
+
+```yaml
+flatten:
+  enabled: false
+  separator: "."
+```
 Keep contracts compatible as schemas evolve.
 
 ```yaml

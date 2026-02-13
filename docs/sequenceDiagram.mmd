@@ -2,8 +2,10 @@ sequenceDiagram
     autonumber
     actor User as User/CLI
     participant CLI as CLI Interface
+    participant Provider as Contract Provider
     participant Parser as Contract Parser
     participant Loader as Data Loader
+    participant Normalizer as Normalizer
     participant Schema as Schema Validator
     participant Quality as Quality Validator
     participant SLA as SLA Validator
@@ -12,12 +14,16 @@ sequenceDiagram
     participant Output as JSON/Console/Sinks
 
     User->>+CLI: datapact validate --contract.yaml --data.csv/--db-*
-    CLI->>+Parser: Parse contract YAML
+    CLI->>+Provider: Resolve format and load contract
+    Provider->>Parser: Parse contract YAML
     Parser->>Parser: Apply policy packs
-    Parser-->>-CLI: Contract object
+    Provider-->>-CLI: Contract object
     
     CLI->>+Loader: Load data (file or DB)
     Loader-->>-CLI: DataFrame
+
+    CLI->>+Normalizer: Normalize dataframe (noop by default)
+    Normalizer-->>-CLI: DataFrame
     
     rect rgb(200, 220, 255)
     Note over Schema,Distribution: VALIDATION PIPELINE
@@ -49,3 +55,5 @@ sequenceDiagram
     Note over CLI: Chunked validation streams CSV/JSONL with optional sampling
     Note over CLI: Custom rule plugins are loaded via --plugin module paths
     Note over CLI: Database sources use --db-* flags
+    Note over CLI: Provider dispatch resolves DataPact vs ODCS formats
+    Note over CLI: Normalization runs before validation when enabled

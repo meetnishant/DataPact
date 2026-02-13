@@ -14,10 +14,12 @@ DataContracts/
 ├── src/datapact/
 │   ├── __init__.py
 │   ├── contracts.py                ← YAML parsing & contract models
+│   ├── providers/                  ← Contract providers (datapact, odcs)
 │   ├── odcs_contracts.py            ← ODCS parsing & mapping
 │   ├── datasource.py               ← Data loading (CSV/Parquet/JSON)
 │   ├── policies.py                 ← Policy pack registry
 │   ├── profiling.py                ← Contract profiling helpers
+│   ├── normalization/              ← Normalization scaffold
 │   ├── cli.py                      ← CLI entry point
 │   ├── reporting.py                ← Report generation
 │   └── validators/
@@ -40,6 +42,8 @@ DataContracts/
 │   ├── test_exhaustive_features.py ← Exhaustive feature tests
 │   ├── test_db_source.py           ← Database source tests
 │   ├── test_odcs_contract.py        ← ODCS contract tests
+│   ├── test_contract_providers.py  ← Provider dispatch tests
+│   ├── test_flatten_normalization.py ← Normalization scaffold tests
 │   ├── plugins/
 │   │   └── sample_plugin.py         ← Custom rule plugin example
 │   └── fixtures/
@@ -101,6 +105,8 @@ DataContracts/
 ✅ **Policy Packs** - Apply reusable rule bundles by name  
 ✅ **Database Sources** - Validate Postgres, MySQL, and SQLite tables  
 ✅ **ODCS Compatibility** - Validate Open Data Contract Standard v3.1.0 contracts  
+✅ **Contract Providers** - Provider dispatch for DataPact vs ODCS contracts  
+✅ **Normalization Scaffold** - Flatten metadata (noop by default)  
 ✅ **CLI** - Full command-line interface with `validate`, `init`, and `profile` commands  
 
 ### Testing & Quality

@@ -9,7 +9,7 @@ This project is maintained by the open-source community. Contributions are welco
 The DataPact follows a modular pipeline:
 
 ```
-Contract YAML → Contract Parser → Validators → Report → JSON/Console/Sinks
+Contract YAML → Contract Provider → Contract Parser → Validators → Report → JSON/Console/Sinks
 Data File / DB → DataSource Loader ↓
 ```
 
@@ -24,6 +24,11 @@ Data File / DB → DataSource Loader ↓
 - Integrates with versioning module for auto-migration
 - **Responsibility**: Contract validation, deserialization, and version management
 
+### 1.1 **providers/** - Contract Providers
+- Resolves contract format via provider dispatch (DataPact YAML or ODCS)
+- Encapsulates ODCS compatibility checks and mapping
+- **Responsibility**: Format detection and contract loading
+
 ### 2. **datasource.py** - Data Loading
 - Loads CSV, Parquet, JSON Lines formats
 - Loads database tables and queries (Postgres, MySQL, SQLite)
@@ -31,6 +36,11 @@ Data File / DB → DataSource Loader ↓
 - Provides schema inference (column names and inferred types)
 - Supports chunked streaming for large CSV/JSONL files and database queries via `--db-chunksize`
 - **Responsibility**: Data I/O and schema discovery
+
+### 2.1 **normalization/** - Normalization Scaffold
+- Provides a contract-aware normalization step (noop by default)
+- Supports flatten metadata for future schema flattening
+- **Responsibility**: Optional preprocessing before validation
 
 ### 3. **profiling.py** - Rule Profiling
 - Generates contract rules from observed data
@@ -89,17 +99,20 @@ Three specialized validators run sequentially:
 - Handles exit codes (0 = pass, 1 = fail with errors)
 - Supports chunked validation and sampling options for large datasets
 - Supports ODCS input via `--contract-format odcs` and `--odcs-object`
+- Resolves contract format via provider dispatch
+- Applies normalization before validation
 
 ## Validation Semantics
 
 1. **Schema validation** runs first and is blocking
   - If required fields are missing, stop early
   - Type mismatches are recorded as ERRORs
-2. **Quality validation** skips missing columns
-3. **SLA validation** runs after quality checks (non-blocking)
-4. **Custom rule validation** runs after SLA checks (non-blocking)
-5. **Distribution validation** is always non-blocking (WARNings only)
-6. **Exit code** is non-zero if any ERRORs exist (for CI/CD)
+2. **Normalization** runs before validation (noop unless enabled)
+3. **Quality validation** skips missing columns
+4. **SLA validation** runs after quality checks (non-blocking)
+5. **Custom rule validation** runs after SLA checks (non-blocking)
+6. **Distribution validation** is always non-blocking (WARNings only)
+7. **Exit code** is non-zero if any ERRORs exist (for CI/CD)
 
 ## Data Flow Example
 
@@ -133,8 +146,10 @@ sequenceDiagram
     autonumber
     actor User as User/CLI
     participant CLI as CLI Interface
+    participant Provider as Contract Provider
     participant Parser as Contract Parser
     participant Loader as Data Loader
+    participant Normalizer as Normalizer
     participant Schema as Schema Validator
     participant Quality as Quality Validator
     participant Distribution as Distribution Validator
@@ -142,12 +157,16 @@ sequenceDiagram
     participant Output as JSON/Console/Sinks
 
     User->>+CLI: datapact validate --contract.yaml --data.csv/--db-*
-    CLI->>+Parser: Parse contract YAML
+    CLI->>+Provider: Resolve format and load contract
+    Provider->>Parser: Parse contract YAML
     Parser->>Parser: Apply policy packs
-    Parser-->>-CLI: Contract object
+    Provider-->>-CLI: Contract object
     
     CLI->>+Loader: Load data (file or DB)
     Loader-->>-CLI: DataFrame
+
+    CLI->>+Normalizer: Normalize dataframe (noop by default)
+    Normalizer-->>-CLI: DataFrame
     
     rect rgb(200, 220, 255)
     Note over Schema,Distribution: VALIDATION PIPELINE (Sequential)

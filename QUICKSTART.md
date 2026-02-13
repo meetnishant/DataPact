@@ -50,6 +50,8 @@ python3 src/datapact/cli.py validate \
   --data tests/fixtures/valid_customers.csv
 ```
 
+Contract format is auto-detected when not specified.
+
 ### Validate a Database Table
 ```bash
 python3 src/datapact/cli.py validate \
@@ -92,6 +94,13 @@ sla:
   max_rows:
     value: 100000
     severity: WARN
+```
+
+### Add Flatten Metadata (Noop by Default)
+```yaml
+flatten:
+  enabled: false
+  separator: "."
 ```
 
 ### Chunked Validation and Sampling

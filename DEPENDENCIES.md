@@ -10,6 +10,7 @@ This document summarizes the direct dependencies declared in `pyproject.toml`.
 - pandas >= 1.5.0 - DataFrame engine for loading and validating datasets.
 - pyyaml >= 6.0 - YAML parsing for data contracts.
 - pyarrow >= 10.0.0 - Parquet support and Arrow-based I/O.
+- pact-python >= 2.0.0 - External API Pact integration (provider adapter).
 
 ## Development dependencies (optional)
 - pytest >= 7.0 - Test runner.
@@ -37,3 +38,4 @@ This document summarizes the direct dependencies declared in `pyproject.toml`.
 - Policy packs use in-repo configuration (no new dependencies).
 - Database sources use optional drivers for Postgres/MySQL (SQLite uses stdlib).
 - ODCS compatibility relies on existing YAML parsing (no new dependencies).
+- API Pact integration relies on pact-python (external dependency).

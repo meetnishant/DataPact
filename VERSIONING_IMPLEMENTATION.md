@@ -48,7 +48,7 @@ Supports:
 
 **Test Results:**
 ```
-✅ 118 total tests collected (21 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling + 4 reporting + 2 policy packs + 42 exhaustive + 4 db source + 5 odcs)
+✅ 120+ total tests collected (includes provider dispatch and normalization scaffold tests)
 ✅ 66%+ code coverage
 ✅ All validators working correctly with versioning
 ```

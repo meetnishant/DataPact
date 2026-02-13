@@ -26,6 +26,8 @@ Related features:
 - **Policy Packs**: Reuse standard rule bundles across contracts.
 - **Database Sources**: Validate Postgres, MySQL, and SQLite tables.
 - **ODCS Compatibility**: Validate Open Data Contract Standard v3.1.0 contracts.
+- **Contract Providers**: Resolve DataPact vs ODCS formats via provider dispatch.
+- **Normalization Scaffold**: Flatten metadata supported (noop by default).
 
 ## Supported Versions
 

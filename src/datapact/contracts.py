@@ -89,6 +89,14 @@ class SLA:
 
 
 @dataclass
+class FlattenConfig:
+    """Configuration for flatten normalization metadata."""
+
+    enabled: bool = False
+    separator: str = "."
+
+
+@dataclass
 class Contract:
     """
     Root contract object. Contains contract metadata, dataset, and fields.
@@ -100,6 +108,7 @@ class Contract:
     schema_policy: SchemaPolicy = field(default_factory=SchemaPolicy)
     sla: SLA = field(default_factory=SLA)
     custom_rules: List[Dict[str, Any]] = field(default_factory=list)
+    flatten: FlattenConfig = field(default_factory=FlattenConfig)
 
     @classmethod
     def from_yaml(cls, yaml_path: str) -> "Contract":
@@ -159,6 +168,7 @@ class Contract:
         schema_policy = cls._parse_schema_policy(data.get("schema", {}))
         sla = cls._parse_sla(data.get("sla", {}))
         custom_rules = cls._parse_custom_rules(data.get("custom_rules", []))
+        flatten = cls._parse_flatten(data.get("flatten", {}))
         fields_data = data.get("fields", [])
         if not isinstance(fields_data, list):
             raise ValueError("Contract 'fields' must be a list")
@@ -195,6 +205,7 @@ class Contract:
             schema_policy=schema_policy,
             sla=sla,
             custom_rules=custom_rules,
+            flatten=flatten,
         )
 
     @staticmethod
@@ -320,6 +331,21 @@ class Contract:
             min_rows_severity=read_severity("min_rows"),
             max_rows_severity=read_severity("max_rows"),
         )
+
+    @staticmethod
+    def _parse_flatten(flatten_data: Any) -> FlattenConfig:
+        if not flatten_data:
+            return FlattenConfig()
+        if isinstance(flatten_data, bool):
+            return FlattenConfig(enabled=flatten_data)
+        if not isinstance(flatten_data, dict):
+            raise ValueError("flatten must be a mapping or boolean")
+
+        enabled = flatten_data.get("enabled", False)
+        separator = flatten_data.get("separator", ".")
+        if not isinstance(separator, str):
+            raise ValueError("flatten.separator must be a string")
+        return FlattenConfig(enabled=bool(enabled), separator=separator)
 
     @staticmethod
     def _parse_distribution(dist_dict: Dict[str, Any]) -> Optional[DistributionRule]:

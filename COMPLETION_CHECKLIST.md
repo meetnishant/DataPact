@@ -20,6 +20,8 @@ Project: DataPact
 - ✅ Policy packs for reusable rule bundles
 - ✅ Database sources (Postgres, MySQL, SQLite)
 - ✅ ODCS compatibility (Open Data Contract Standard v3.1.0)
+- ✅ Contract providers (DataPact vs ODCS dispatch)
+- ✅ Normalization scaffold (flatten metadata)
 
 ## Code Quality
 - ✅ Type hints throughout
@@ -90,6 +92,8 @@ Project: DataPact
 - ✅ Custom rule definitions (rules.custom, custom_rules)
 - ✅ Policy pack definitions (policies, overrides)
 - ✅ Banking/finance test data contracts and fixtures
+- ✅ Contract provider dispatch tests
+- ✅ Normalization scaffold tests
 
 ## Non-Blocking vs Blocking
 - ✅ Schema validation runs first and is blocking
@@ -121,12 +125,12 @@ Project: DataPact
 
 ```
 Total files created: 139
-├── Python modules: 15 (including policy packs)
-├── Test files: 13 (validator, versioning, banking/finance, concurrency, profiling, chunked, custom, reporting, policy packs, exhaustive, db source, odcs)
+├── Python modules: 21 (including policy packs)
+├── Test files: 15 (validator, versioning, banking/finance, concurrency, profiling, chunked, custom, reporting, policy packs, exhaustive, db source, odcs, providers, normalization)
 ├── Test fixtures: 70 (including multi-table banking/finance data + contracts)
 ├── Documentation: 18
 
-Test cases: 118 (21 core + 17 versioning + 19 banking/finance + 2 concurrency + 2 profiling + 4 reporting + 2 policy packs + 42 exhaustive + 4 db source + 5 odcs)
+Test cases: 120+ (includes provider dispatch and normalization scaffold tests)
 
 Lines of code: ~1100+
 Documentation coverage: Comprehensive

@@ -146,3 +146,525 @@ rWarning: pandas only supports SQLAlchemy connectable (engine/connection) or dat
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
 ======================== 118 passed, 1 warning in 1.01s ========================
 ```
+
+Phase 1 regression gate:
+
+Command:
+
+```
+.venv/bin/python -m pytest tests/test_validator.py tests/test_exhaustive_features.py tests/test_odcs_contract.py -v
+```
+
+Output:
+
+```
+Note: The tool simplified the command to ` .venv/bin/python -m pytest tests/test_validator.py tests/test_exhaustive_features.py tests/test_odcs_contract.py -v`, and this is the output of running that command instead:
+============================= test session starts ==============================
+platform darwin -- Python 3.9.6, pytest-8.4.2, pluggy-1.6.0 -- /Users/meetnishant/Documents/DataContracts/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/meetnishant/Documents/DataContracts
+configfile: pyproject.toml
+plugins: anyio-4.12.1, cov-7.0.0
+collected 63 items
+
+tests/test_validator.py::TestSchemaValidator::test_valid_schema PASSED   [  1%]
+tests/test_validator.py::TestSchemaValidator::test_missing_required_field PASSED [  3%]
+tests/test_validator.py::TestSchemaValidator::test_extra_columns_error_severity PASSED [  4%]
+tests/test_validator.py::TestQualityValidator::test_valid_data PASSED    [  6%]
+tests/test_validator.py::TestQualityValidator::test_invalid_email_regex PASSED [  7%]
+tests/test_validator.py::TestQualityValidator::test_null_constraint PASSED [  9%]
+tests/test_validator.py::TestQualityValidator::test_enum_constraint PASSED [ 11%]
+tests/test_validator.py::TestQualityValidator::test_rule_severity_warn PASSED [ 12%]
+tests/test_validator.py::TestQualityValidator::test_rule_severity_override PASSED [ 14%]
+tests/test_validator.py::TestQualityValidator::test_freshness_max_age_hours PASSED [ 15%]
+tests/test_validator.py::TestDataSource::test_load_csv PASSED            [ 17%]
+tests/test_validator.py::TestDataSource::test_detect_format PASSED       [ 19%]
+tests/test_validator.py::TestDataSource::test_infer_schema PASSED        [ 20%]
+tests/test_validator.py::TestDistributionValidator::test_normal_distribution PASSED [ 22%]
+tests/test_validator.py::TestSLAValidator::test_min_rows_violation PASSED [ 23%]
+tests/test_validator.py::TestSLAValidator::test_max_rows_warn_severity PASSED [ 25%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_valid PASSED [ 26%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_missing_required PASSED [ 28%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_type_mismatch PASSED [ 30%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_extra_columns_warn PASSED [ 31%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_drift_warn PASSED [ 33%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_drift_error PASSED [ 34%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_extra_columns_error PASSED [ 36%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_valid PASSED [ 38%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_nulls PASSED [ 39%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_duplicates PASSED [ 41%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_minmax_boundary PASSED [ 42%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_minmax_fail PASSED [ 44%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_enum_boundary PASSED [ 46%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_enum_fail PASSED [ 47%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_regex_boundary PASSED [ 49%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_regex_fail PASSED [ 50%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_max_null_ratio_boundary PASSED [ 52%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_max_null_ratio_fail PASSED [ 53%]
+tests/test_exhaustive_features.py::TestSeverityExhaustive::test_rule_severity_valid PASSED [ 55%]
+tests/test_exhaustive_features.py::TestSeverityExhaustive::test_rule_severity_warn PASSED [ 57%]
+tests/test_exhaustive_features.py::TestSeverityExhaustive::test_rule_severity_override PASSED [ 58%]
+tests/test_exhaustive_features.py::TestSeverityExhaustive::test_rule_severity_invalid PASSED [ 60%]
+tests/test_exhaustive_features.py::TestSeverityExhaustive::test_invalid_severity_override_format PASSED [ 61%]
+tests/test_exhaustive_features.py::TestDistributionExhaustive::test_distribution_valid PASSED [ 63%]
+tests/test_exhaustive_features.py::TestDistributionExhaustive::test_distribution_drift PASSED [ 65%]
+tests/test_exhaustive_features.py::TestDistributionExhaustive::test_distribution_boundary PASSED [ 66%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_sla_min_boundary PASSED [ 68%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_sla_max_boundary PASSED [ 69%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_sla_min_fail PASSED [ 71%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_sla_max_fail_warn PASSED [ 73%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_freshness_ok PASSED [ 74%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_freshness_boundary PASSED [ 76%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_freshness_fail PASSED [ 77%]
+tests/test_exhaustive_features.py::TestChunkedAndSamplingExhaustive::test_chunked_size_one PASSED [ 79%]
+tests/test_exhaustive_features.py::TestChunkedAndSamplingExhaustive::test_chunked_empty PASSED [ 80%]
+tests/test_exhaustive_features.py::TestChunkedAndSamplingExhaustive::test_sampling_rows_deterministic PASSED [ 82%]
+tests/test_exhaustive_features.py::TestChunkedAndSamplingExhaustive::test_sampling_frac_deterministic PASSED [ 84%]
+tests/test_exhaustive_features.py::TestCustomRulesExhaustive::test_custom_rule_missing PASSED [ 85%]
+tests/test_exhaustive_features.py::TestCustomRulesExhaustive::test_custom_rule_invalid_config PASSED [ 87%]
+tests/test_exhaustive_features.py::TestPolicyPacksExhaustive::test_policy_pack_unknown PASSED [ 88%]
+tests/test_exhaustive_features.py::TestPolicyPacksExhaustive::test_policy_pack_override_conflict PASSED [ 90%]
+tests/test_exhaustive_features.py::TestReportSinksExhaustive::test_webhook_header_invalid PASSED [ 92%]
+tests/test_odcs_contract.py::test_odcs_minimal_mapping PASSED            [ 93%]
+tests/test_odcs_contract.py::test_odcs_requires_object_selection_when_multiple PASSED [ 95%]
+tests/test_odcs_contract.py::test_odcs_invalid_version_rejected PASSED   [ 96%]
+tests/test_odcs_contract.py::test_odcs_quality_sql_custom_warns PASSED   [ 98%]
+tests/test_odcs_contract.py::test_odcs_logical_type_timestamp_warns PASSED [100%]
+
+============================== 63 passed in 1.70s ==============================
+```
+
+Phase 2 regression gate:
+
+Command:
+
+```
+.venv/bin/python -m pytest tests/test_validator.py tests/test_exhaustive_features.py tests/test_odcs_contract.py -v
+```
+
+Output:
+
+```
+Note: The tool simplified the command to ` .venv/bin/python -m pytest tests/test_validator.py tests/test_exhaustive_features.py tests/test_odcs_contract.py -v`, and this is the output of running that command instead:
+============================= test session starts ==============================
+platform darwin -- Python 3.9.6, pytest-8.4.2, pluggy-1.6.0 -- /Users/meetnishant/Documents/DataContracts/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/meetnishant/Documents/DataContracts
+configfile: pyproject.toml
+plugins: anyio-4.12.1, cov-7.0.0
+collected 63 items
+
+tests/test_validator.py::TestSchemaValidator::test_valid_schema PASSED   [  1%]
+tests/test_validator.py::TestSchemaValidator::test_missing_required_field PASSED [  3%]
+tests/test_validator.py::TestSchemaValidator::test_extra_columns_error_severity PASSED [  4%]
+tests/test_validator.py::TestQualityValidator::test_valid_data PASSED    [  6%]
+tests/test_validator.py::TestQualityValidator::test_invalid_email_regex PASSED [  7%]
+tests/test_validator.py::TestQualityValidator::test_null_constraint PASSED [  9%]
+tests/test_validator.py::TestQualityValidator::test_enum_constraint PASSED [ 11%]
+tests/test_validator.py::TestQualityValidator::test_rule_severity_warn PASSED [ 12%]
+tests/test_validator.py::TestQualityValidator::test_rule_severity_override PASSED [ 14%]
+tests/test_validator.py::TestQualityValidator::test_freshness_max_age_hours PASSED [ 15%]
+tests/test_validator.py::TestDataSource::test_load_csv PASSED            [ 17%]
+tests/test_validator.py::TestDataSource::test_detect_format PASSED       [ 19%]
+tests/test_validator.py::TestDataSource::test_infer_schema PASSED        [ 20%]
+tests/test_validator.py::TestDistributionValidator::test_normal_distribution PASSED [ 22%]
+tests/test_validator.py::TestSLAValidator::test_min_rows_violation PASSED [ 23%]
+tests/test_validator.py::TestSLAValidator::test_max_rows_warn_severity PASSED [ 25%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_valid PASSED [ 26%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_missing_required PASSED [ 28%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_type_mismatch PASSED [ 30%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_extra_columns_warn PASSED [ 31%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_drift_warn PASSED [ 33%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_drift_error PASSED [ 34%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_extra_columns_error PASSED [ 36%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_valid PASSED [ 38%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_nulls PASSED [ 39%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_duplicates PASSED [ 41%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_minmax_boundary PASSED [ 42%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_minmax_fail PASSED [ 44%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_enum_boundary PASSED [ 46%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_enum_fail PASSED [ 47%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_regex_boundary PASSED [ 49%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_regex_fail PASSED [ 50%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_max_null_ratio_boundary PASSED [ 52%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_max_null_ratio_fail PASSED [ 53%]
+tests/test_exhaustive_features.py::TestSeverityExhaustive::test_rule_severity_valid PASSED [ 55%]
+tests/test_exhaustive_features.py::TestSeverityExhaustive::test_rule_severity_warn PASSED [ 57%]
+tests/test_exhaustive_features.py::TestSeverityExhaustive::test_rule_severity_override PASSED [ 58%]
+tests/test_exhaustive_features.py::TestSeverityExhaustive::test_rule_severity_invalid PASSED [ 60%]
+tests/test_exhaustive_features.py::TestSeverityExhaustive::test_invalid_severity_override_format PASSED [ 61%]
+tests/test_exhaustive_features.py::TestDistributionExhaustive::test_distribution_valid PASSED [ 63%]
+tests/test_exhaustive_features.py::TestDistributionExhaustive::test_distribution_drift PASSED [ 65%]
+tests/test_exhaustive_features.py::TestDistributionExhaustive::test_distribution_boundary PASSED [ 66%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_sla_min_boundary PASSED [ 68%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_sla_max_boundary PASSED [ 69%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_sla_min_fail PASSED [ 71%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_sla_max_fail_warn PASSED [ 73%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_freshness_ok PASSED [ 74%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_freshness_boundary PASSED [ 76%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_freshness_fail PASSED [ 77%]
+tests/test_exhaustive_features.py::TestChunkedAndSamplingExhaustive::test_chunked_size_one PASSED [ 79%]
+tests/test_exhaustive_features.py::TestChunkedAndSamplingExhaustive::test_chunked_empty PASSED [ 80%]
+tests/test_exhaustive_features.py::TestChunkedAndSamplingExhaustive::test_sampling_rows_deterministic PASSED [ 82%]
+tests/test_exhaustive_features.py::TestChunkedAndSamplingExhaustive::test_sampling_frac_deterministic PASSED [ 84%]
+tests/test_exhaustive_features.py::TestCustomRulesExhaustive::test_custom_rule_missing PASSED [ 85%]
+tests/test_exhaustive_features.py::TestCustomRulesExhaustive::test_custom_rule_invalid_config PASSED [ 87%]
+tests/test_exhaustive_features.py::TestPolicyPacksExhaustive::test_policy_pack_unknown PASSED [ 88%]
+tests/test_exhaustive_features.py::TestPolicyPacksExhaustive::test_policy_pack_override_conflict PASSED [ 90%]
+tests/test_exhaustive_features.py::TestReportSinksExhaustive::test_webhook_header_invalid PASSED [ 92%]
+tests/test_odcs_contract.py::test_odcs_minimal_mapping PASSED            [ 93%]
+tests/test_odcs_contract.py::test_odcs_requires_object_selection_when_multiple PASSED [ 95%]
+tests/test_odcs_contract.py::test_odcs_invalid_version_rejected PASSED   [ 96%]
+tests/test_odcs_contract.py::test_odcs_quality_sql_custom_warns PASSED   [ 98%]
+tests/test_odcs_contract.py::test_odcs_logical_type_timestamp_warns PASSED [100%]
+
+============================== 63 passed in 0.29s ==============================
+```
+
+Phase 3 regression gate:
+
+Command:
+
+```
+.venv/bin/python -m pytest tests/test_validator.py tests/test_exhaustive_features.py tests/test_odcs_contract.py -v
+```
+
+Output:
+
+```
+Note: The tool simplified the command to ` .venv/bin/python -m pytest tests/test_validator.py tests/test_exhaustive_features.py tests/test_odcs_contract.py -v`, and this is the output of running that command instead:
+============================= test session starts ==============================
+platform darwin -- Python 3.9.6, pytest-8.4.2, pluggy-1.6.0 -- /Users/meetnishant/Documents/DataContracts/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/meetnishant/Documents/DataContracts
+configfile: pyproject.toml
+plugins: anyio-4.12.1, cov-7.0.0
+collected 63 items
+
+tests/test_validator.py::TestSchemaValidator::test_valid_schema PASSED   [  1%]
+tests/test_validator.py::TestSchemaValidator::test_missing_required_field PASSED [  3%]
+tests/test_validator.py::TestSchemaValidator::test_extra_columns_error_severity PASSED [  4%]
+tests/test_validator.py::TestQualityValidator::test_valid_data PASSED    [  6%]
+tests/test_validator.py::TestQualityValidator::test_invalid_email_regex PASSED [  7%]
+tests/test_validator.py::TestQualityValidator::test_null_constraint PASSED [  9%]
+tests/test_validator.py::TestQualityValidator::test_enum_constraint PASSED [ 11%]
+tests/test_validator.py::TestQualityValidator::test_rule_severity_warn PASSED [ 12%]
+tests/test_validator.py::TestQualityValidator::test_rule_severity_override PASSED [ 14%]
+tests/test_validator.py::TestQualityValidator::test_freshness_max_age_hours PASSED [ 15%]
+tests/test_validator.py::TestDataSource::test_load_csv PASSED            [ 17%]
+tests/test_validator.py::TestDataSource::test_detect_format PASSED       [ 19%]
+tests/test_validator.py::TestDataSource::test_infer_schema PASSED        [ 20%]
+tests/test_validator.py::TestDistributionValidator::test_normal_distribution PASSED [ 22%]
+tests/test_validator.py::TestSLAValidator::test_min_rows_violation PASSED [ 23%]
+tests/test_validator.py::TestSLAValidator::test_max_rows_warn_severity PASSED [ 25%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_valid PASSED [ 26%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_missing_required PASSED [ 28%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_type_mismatch PASSED [ 30%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_extra_columns_warn PASSED [ 31%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_drift_warn PASSED [ 33%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_drift_error PASSED [ 34%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_extra_columns_error PASSED [ 36%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_valid PASSED [ 38%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_nulls PASSED [ 39%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_duplicates PASSED [ 41%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_minmax_boundary PASSED [ 42%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_minmax_fail PASSED [ 44%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_enum_boundary PASSED [ 46%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_enum_fail PASSED [ 47%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_regex_boundary PASSED [ 49%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_regex_fail PASSED [ 50%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_max_null_ratio_boundary PASSED [ 52%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_max_null_ratio_fail PASSED [ 53%]
+tests/test_exhaustive_features.py::TestSeverityExhaustive::test_rule_severity_valid PASSED [ 55%]
+tests/test_exhaustive_features.py::TestSeverityExhaustive::test_rule_severity_warn PASSED [ 57%]
+tests/test_exhaustive_features.py::TestSeverityExhaustive::test_rule_severity_override PASSED [ 58%]
+tests/test_exhaustive_features.py::TestSeverityExhaustive::test_rule_severity_invalid PASSED [ 60%]
+tests/test_exhaustive_features.py::TestSeverityExhaustive::test_invalid_severity_override_format PASSED [ 61%]
+tests/test_exhaustive_features.py::TestDistributionExhaustive::test_distribution_valid PASSED [ 63%]
+tests/test_exhaustive_features.py::TestDistributionExhaustive::test_distribution_drift PASSED [ 65%]
+tests/test_exhaustive_features.py::TestDistributionExhaustive::test_distribution_boundary PASSED [ 66%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_sla_min_boundary PASSED [ 68%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_sla_max_boundary PASSED [ 69%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_sla_min_fail PASSED [ 71%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_sla_max_fail_warn PASSED [ 73%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_freshness_ok PASSED [ 74%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_freshness_boundary PASSED [ 76%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_freshness_fail PASSED [ 77%]
+tests/test_exhaustive_features.py::TestChunkedAndSamplingExhaustive::test_chunked_size_one PASSED [ 79%]
+tests/test_exhaustive_features.py::TestChunkedAndSamplingExhaustive::test_chunked_empty PASSED [ 80%]
+tests/test_exhaustive_features.py::TestChunkedAndSamplingExhaustive::test_sampling_rows_deterministic PASSED [ 82%]
+tests/test_exhaustive_features.py::TestChunkedAndSamplingExhaustive::test_sampling_frac_deterministic PASSED [ 84%]
+tests/test_exhaustive_features.py::TestCustomRulesExhaustive::test_custom_rule_missing PASSED [ 85%]
+tests/test_exhaustive_features.py::TestCustomRulesExhaustive::test_custom_rule_invalid_config PASSED [ 87%]
+tests/test_exhaustive_features.py::TestPolicyPacksExhaustive::test_policy_pack_unknown PASSED [ 88%]
+tests/test_exhaustive_features.py::TestPolicyPacksExhaustive::test_policy_pack_override_conflict PASSED [ 90%]
+tests/test_exhaustive_features.py::TestReportSinksExhaustive::test_webhook_header_invalid PASSED [ 92%]
+tests/test_odcs_contract.py::test_odcs_minimal_mapping PASSED            [ 93%]
+tests/test_odcs_contract.py::test_odcs_requires_object_selection_when_multiple PASSED [ 95%]
+tests/test_odcs_contract.py::test_odcs_invalid_version_rejected PASSED   [ 96%]
+tests/test_odcs_contract.py::test_odcs_quality_sql_custom_warns PASSED   [ 98%]
+tests/test_odcs_contract.py::test_odcs_logical_type_timestamp_warns PASSED [100%]
+
+============================== 63 passed in 0.31s ==============================
+```
+
+Phase 4 regression gate:
+
+Command:
+
+```
+.venv/bin/python -m pytest tests/test_validator.py tests/test_exhaustive_features.py tests/test_odcs_contract.py -v
+```
+
+Output:
+
+```
+Note: The tool simplified the command to ` .venv/bin/python -m pytest tests/test_validator.py tests/test_exhaustive_features.py tests/test_odcs_contract.py -v`, and this is the output of running that command instead:
+============================= test session starts ==============================
+platform darwin -- Python 3.9.6, pytest-8.4.2, pluggy-1.6.0 -- /Users/meetnishant/Documents/DataContracts/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/meetnishant/Documents/DataContracts
+configfile: pyproject.toml
+plugins: anyio-4.12.1, cov-7.0.0
+collected 63 items
+
+tests/test_validator.py::TestSchemaValidator::test_valid_schema PASSED   [  1%]
+tests/test_validator.py::TestSchemaValidator::test_missing_required_field PASSED [  3%]
+tests/test_validator.py::TestSchemaValidator::test_extra_columns_error_severity PASSED [  4%]
+tests/test_validator.py::TestQualityValidator::test_valid_data PASSED    [  6%]
+tests/test_validator.py::TestQualityValidator::test_invalid_email_regex PASSED [  7%]
+tests/test_validator.py::TestQualityValidator::test_null_constraint PASSED [  9%]
+tests/test_validator.py::TestQualityValidator::test_enum_constraint PASSED [ 11%]
+tests/test_validator.py::TestQualityValidator::test_rule_severity_warn PASSED [ 12%]
+tests/test_validator.py::TestQualityValidator::test_rule_severity_override PASSED [ 14%]
+tests/test_validator.py::TestQualityValidator::test_freshness_max_age_hours PASSED [ 15%]
+tests/test_validator.py::TestDataSource::test_load_csv PASSED            [ 17%]
+tests/test_validator.py::TestDataSource::test_detect_format PASSED       [ 19%]
+tests/test_validator.py::TestDataSource::test_infer_schema PASSED        [ 20%]
+tests/test_validator.py::TestDistributionValidator::test_normal_distribution PASSED [ 22%]
+tests/test_validator.py::TestSLAValidator::test_min_rows_violation PASSED [ 23%]
+tests/test_validator.py::TestSLAValidator::test_max_rows_warn_severity PASSED [ 25%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_valid PASSED [ 26%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_missing_required PASSED [ 28%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_type_mismatch PASSED [ 30%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_extra_columns_warn PASSED [ 31%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_drift_warn PASSED [ 33%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_drift_error PASSED [ 34%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_extra_columns_error PASSED [ 36%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_valid PASSED [ 38%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_nulls PASSED [ 39%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_duplicates PASSED [ 41%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_minmax_boundary PASSED [ 42%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_minmax_fail PASSED [ 44%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_enum_boundary PASSED [ 46%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_enum_fail PASSED [ 47%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_regex_boundary PASSED [ 49%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_regex_fail PASSED [ 50%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_max_null_ratio_boundary PASSED [ 52%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_max_null_ratio_fail PASSED [ 53%]
+tests/test_exhaustive_features.py::TestSeverityExhaustive::test_rule_severity_valid PASSED [ 55%]
+tests/test_exhaustive_features.py::TestSeverityExhaustive::test_rule_severity_warn PASSED [ 57%]
+tests/test_exhaustive_features.py::TestSeverityExhaustive::test_rule_severity_override PASSED [ 58%]
+tests/test_exhaustive_features.py::TestSeverityExhaustive::test_rule_severity_invalid PASSED [ 60%]
+tests/test_exhaustive_features.py::TestSeverityExhaustive::test_invalid_severity_override_format PASSED [ 61%]
+tests/test_exhaustive_features.py::TestDistributionExhaustive::test_distribution_valid PASSED [ 63%]
+tests/test_exhaustive_features.py::TestDistributionExhaustive::test_distribution_drift PASSED [ 65%]
+tests/test_exhaustive_features.py::TestDistributionExhaustive::test_distribution_boundary PASSED [ 66%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_sla_min_boundary PASSED [ 68%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_sla_max_boundary PASSED [ 69%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_sla_min_fail PASSED [ 71%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_sla_max_fail_warn PASSED [ 73%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_freshness_ok PASSED [ 74%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_freshness_boundary PASSED [ 76%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_freshness_fail PASSED [ 77%]
+tests/test_exhaustive_features.py::TestChunkedAndSamplingExhaustive::test_chunked_size_one PASSED [ 79%]
+tests/test_exhaustive_features.py::TestChunkedAndSamplingExhaustive::test_chunked_empty PASSED [ 80%]
+tests/test_exhaustive_features.py::TestChunkedAndSamplingExhaustive::test_sampling_rows_deterministic PASSED [ 82%]
+tests/test_exhaustive_features.py::TestChunkedAndSamplingExhaustive::test_sampling_frac_deterministic PASSED [ 84%]
+tests/test_exhaustive_features.py::TestCustomRulesExhaustive::test_custom_rule_missing PASSED [ 85%]
+tests/test_exhaustive_features.py::TestCustomRulesExhaustive::test_custom_rule_invalid_config PASSED [ 87%]
+tests/test_exhaustive_features.py::TestPolicyPacksExhaustive::test_policy_pack_unknown PASSED [ 88%]
+tests/test_exhaustive_features.py::TestPolicyPacksExhaustive::test_policy_pack_override_conflict PASSED [ 90%]
+tests/test_exhaustive_features.py::TestReportSinksExhaustive::test_webhook_header_invalid PASSED [ 92%]
+tests/test_odcs_contract.py::test_odcs_minimal_mapping PASSED            [ 93%]
+tests/test_odcs_contract.py::test_odcs_requires_object_selection_when_multiple PASSED [ 95%]
+tests/test_odcs_contract.py::test_odcs_invalid_version_rejected PASSED   [ 96%]
+tests/test_odcs_contract.py::test_odcs_quality_sql_custom_warns PASSED   [ 98%]
+tests/test_odcs_contract.py::test_odcs_logical_type_timestamp_warns PASSED [100%]
+
+============================== 63 passed in 0.30s ==============================
+```
+
+Phase 5 regression gate:
+
+Command:
+
+```
+.venv/bin/python -m pytest tests/test_validator.py tests/test_exhaustive_features.py tests/test_odcs_contract.py -v
+```
+
+Output:
+
+```
+Note: The tool simplified the command to ` .venv/bin/python -m pytest tests/test_validator.py tests/test_exhaustive_features.py tests/test_odcs_contract.py -v`, and this is the output of running that command instead:
+============================= test session starts ==============================
+platform darwin -- Python 3.9.6, pytest-8.4.2, pluggy-1.6.0 -- /Users/meetnishant/Documents/DataContracts/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/meetnishant/Documents/DataContracts
+configfile: pyproject.toml
+plugins: anyio-4.12.1, cov-7.0.0
+collected 63 items
+
+tests/test_validator.py::TestSchemaValidator::test_valid_schema PASSED   [  1%]
+tests/test_validator.py::TestSchemaValidator::test_missing_required_field PASSED [  3%]
+tests/test_validator.py::TestSchemaValidator::test_extra_columns_error_severity PASSED [  4%]
+tests/test_validator.py::TestQualityValidator::test_valid_data PASSED    [  6%]
+tests/test_validator.py::TestQualityValidator::test_invalid_email_regex PASSED [  7%]
+tests/test_validator.py::TestQualityValidator::test_null_constraint PASSED [  9%]
+tests/test_validator.py::TestQualityValidator::test_enum_constraint PASSED [ 11%]
+tests/test_validator.py::TestQualityValidator::test_rule_severity_warn PASSED [ 12%]
+tests/test_validator.py::TestQualityValidator::test_rule_severity_override PASSED [ 14%]
+tests/test_validator.py::TestQualityValidator::test_freshness_max_age_hours PASSED [ 15%]
+tests/test_validator.py::TestDataSource::test_load_csv PASSED            [ 17%]
+tests/test_validator.py::TestDataSource::test_detect_format PASSED       [ 19%]
+tests/test_validator.py::TestDataSource::test_infer_schema PASSED        [ 20%]
+tests/test_validator.py::TestDistributionValidator::test_normal_distribution PASSED [ 22%]
+tests/test_validator.py::TestSLAValidator::test_min_rows_violation PASSED [ 23%]
+tests/test_validator.py::TestSLAValidator::test_max_rows_warn_severity PASSED [ 25%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_valid PASSED [ 26%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_missing_required PASSED [ 28%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_type_mismatch PASSED [ 30%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_extra_columns_warn PASSED [ 31%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_drift_warn PASSED [ 33%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_drift_error PASSED [ 34%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_extra_columns_error PASSED [ 36%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_valid PASSED [ 38%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_nulls PASSED [ 39%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_duplicates PASSED [ 41%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_minmax_boundary PASSED [ 42%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_minmax_fail PASSED [ 44%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_enum_boundary PASSED [ 46%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_enum_fail PASSED [ 47%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_regex_boundary PASSED [ 49%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_regex_fail PASSED [ 50%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_max_null_ratio_boundary PASSED [ 52%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_max_null_ratio_fail PASSED [ 53%]
+tests/test_exhaustive_features.py::TestSeverityExhaustive::test_rule_severity_valid PASSED [ 55%]
+tests/test_exhaustive_features.py::TestSeverityExhaustive::test_rule_severity_warn PASSED [ 57%]
+tests/test_exhaustive_features.py::TestSeverityExhaustive::test_rule_severity_override PASSED [ 58%]
+tests/test_exhaustive_features.py::TestSeverityExhaustive::test_rule_severity_invalid PASSED [ 60%]
+tests/test_exhaustive_features.py::TestSeverityExhaustive::test_invalid_severity_override_format PASSED [ 61%]
+tests/test_exhaustive_features.py::TestDistributionExhaustive::test_distribution_valid PASSED [ 63%]
+tests/test_exhaustive_features.py::TestDistributionExhaustive::test_distribution_drift PASSED [ 65%]
+tests/test_exhaustive_features.py::TestDistributionExhaustive::test_distribution_boundary PASSED [ 66%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_sla_min_boundary PASSED [ 68%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_sla_max_boundary PASSED [ 69%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_sla_min_fail PASSED [ 71%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_sla_max_fail_warn PASSED [ 73%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_freshness_ok PASSED [ 74%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_freshness_boundary PASSED [ 76%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_freshness_fail PASSED [ 77%]
+tests/test_exhaustive_features.py::TestChunkedAndSamplingExhaustive::test_chunked_size_one PASSED [ 79%]
+tests/test_exhaustive_features.py::TestChunkedAndSamplingExhaustive::test_chunked_empty PASSED [ 80%]
+tests/test_exhaustive_features.py::TestChunkedAndSamplingExhaustive::test_sampling_rows_deterministic PASSED [ 82%]
+tests/test_exhaustive_features.py::TestChunkedAndSamplingExhaustive::test_sampling_frac_deterministic PASSED [ 84%]
+tests/test_exhaustive_features.py::TestCustomRulesExhaustive::test_custom_rule_missing PASSED [ 85%]
+tests/test_exhaustive_features.py::TestCustomRulesExhaustive::test_custom_rule_invalid_config PASSED [ 87%]
+tests/test_exhaustive_features.py::TestPolicyPacksExhaustive::test_policy_pack_unknown PASSED [ 88%]
+tests/test_exhaustive_features.py::TestPolicyPacksExhaustive::test_policy_pack_override_conflict PASSED [ 90%]
+tests/test_exhaustive_features.py::TestReportSinksExhaustive::test_webhook_header_invalid PASSED [ 92%]
+tests/test_odcs_contract.py::test_odcs_minimal_mapping PASSED            [ 93%]
+tests/test_odcs_contract.py::test_odcs_requires_object_selection_when_multiple PASSED [ 95%]
+tests/test_odcs_contract.py::test_odcs_invalid_version_rejected PASSED   [ 96%]
+tests/test_odcs_contract.py::test_odcs_quality_sql_custom_warns PASSED   [ 98%]
+tests/test_odcs_contract.py::test_odcs_logical_type_timestamp_warns PASSED [100%]
+
+============================== 63 passed in 0.51s ==============================
+```
+
+Phase 6 regression gate:
+
+Command:
+
+```
+.venv/bin/python -m pytest tests/test_validator.py tests/test_exhaustive_features.py tests/test_odcs_contract.py -v
+```
+
+Output:
+
+```
+Note: The tool simplified the command to ` .venv/bin/python -m pytest tests/test_validator.py tests/test_exhaustive_features.py tests/test_odcs_contract.py -v`, and this is the output of running that command instead:
+============================= test session starts ==============================
+platform darwin -- Python 3.9.6, pytest-8.4.2, pluggy-1.6.0 -- /Users/meetnishant/Documents/DataContracts/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/meetnishant/Documents/DataContracts
+configfile: pyproject.toml
+plugins: anyio-4.12.1, cov-7.0.0
+collected 63 items
+
+tests/test_validator.py::TestSchemaValidator::test_valid_schema PASSED   [  1%]
+tests/test_validator.py::TestSchemaValidator::test_missing_required_field PASSED [  3%]
+tests/test_validator.py::TestSchemaValidator::test_extra_columns_error_severity PASSED [  4%]
+tests/test_validator.py::TestQualityValidator::test_valid_data PASSED    [  6%]
+tests/test_validator.py::TestQualityValidator::test_invalid_email_regex PASSED [  7%]
+tests/test_validator.py::TestQualityValidator::test_null_constraint PASSED [  9%]
+tests/test_validator.py::TestQualityValidator::test_enum_constraint PASSED [ 11%]
+tests/test_validator.py::TestQualityValidator::test_rule_severity_warn PASSED [ 12%]
+tests/test_validator.py::TestQualityValidator::test_rule_severity_override PASSED [ 14%]
+tests/test_validator.py::TestQualityValidator::test_freshness_max_age_hours PASSED [ 15%]
+tests/test_validator.py::TestDataSource::test_load_csv PASSED            [ 17%]
+tests/test_validator.py::TestDataSource::test_detect_format PASSED       [ 19%]
+tests/test_validator.py::TestDataSource::test_infer_schema PASSED        [ 20%]
+tests/test_validator.py::TestDistributionValidator::test_normal_distribution PASSED [ 22%]
+tests/test_validator.py::TestSLAValidator::test_min_rows_violation PASSED [ 23%]
+tests/test_validator.py::TestSLAValidator::test_max_rows_warn_severity PASSED [ 25%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_valid PASSED [ 26%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_missing_required PASSED [ 28%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_type_mismatch PASSED [ 30%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_extra_columns_warn PASSED [ 31%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_drift_warn PASSED [ 33%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_drift_error PASSED [ 34%]
+tests/test_exhaustive_features.py::TestSchemaValidationExhaustive::test_schema_extra_columns_error PASSED [ 36%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_valid PASSED [ 38%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_nulls PASSED [ 39%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_duplicates PASSED [ 41%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_minmax_boundary PASSED [ 42%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_minmax_fail PASSED [ 44%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_enum_boundary PASSED [ 46%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_enum_fail PASSED [ 47%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_regex_boundary PASSED [ 49%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_regex_fail PASSED [ 50%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_max_null_ratio_boundary PASSED [ 52%]
+tests/test_exhaustive_features.py::TestQualityRulesExhaustive::test_quality_max_null_ratio_fail PASSED [ 53%]
+tests/test_exhaustive_features.py::TestSeverityExhaustive::test_rule_severity_valid PASSED [ 55%]
+tests/test_exhaustive_features.py::TestSeverityExhaustive::test_rule_severity_warn PASSED [ 57%]
+tests/test_exhaustive_features.py::TestSeverityExhaustive::test_rule_severity_override PASSED [ 58%]
+tests/test_exhaustive_features.py::TestSeverityExhaustive::test_rule_severity_invalid PASSED [ 60%]
+tests/test_exhaustive_features.py::TestSeverityExhaustive::test_invalid_severity_override_format PASSED [ 61%]
+tests/test_exhaustive_features.py::TestDistributionExhaustive::test_distribution_valid PASSED [ 63%]
+tests/test_exhaustive_features.py::TestDistributionExhaustive::test_distribution_drift PASSED [ 65%]
+tests/test_exhaustive_features.py::TestDistributionExhaustive::test_distribution_boundary PASSED [ 66%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_sla_min_boundary PASSED [ 68%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_sla_max_boundary PASSED [ 69%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_sla_min_fail PASSED [ 71%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_sla_max_fail_warn PASSED [ 73%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_freshness_ok PASSED [ 74%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_freshness_boundary PASSED [ 76%]
+tests/test_exhaustive_features.py::TestSLAAndFreshnessExhaustive::test_freshness_fail PASSED [ 77%]
+tests/test_exhaustive_features.py::TestChunkedAndSamplingExhaustive::test_chunked_size_one PASSED [ 79%]
+tests/test_exhaustive_features.py::TestChunkedAndSamplingExhaustive::test_chunked_empty PASSED [ 80%]
+tests/test_exhaustive_features.py::TestChunkedAndSamplingExhaustive::test_sampling_rows_deterministic PASSED [ 82%]
+tests/test_exhaustive_features.py::TestChunkedAndSamplingExhaustive::test_sampling_frac_deterministic PASSED [ 84%]
+tests/test_exhaustive_features.py::TestCustomRulesExhaustive::test_custom_rule_missing PASSED [ 85%]
+tests/test_exhaustive_features.py::TestCustomRulesExhaustive::test_custom_rule_invalid_config PASSED [ 87%]
+tests/test_exhaustive_features.py::TestPolicyPacksExhaustive::test_policy_pack_unknown PASSED [ 88%]
+tests/test_exhaustive_features.py::TestPolicyPacksExhaustive::test_policy_pack_override_conflict PASSED [ 90%]
+tests/test_exhaustive_features.py::TestReportSinksExhaustive::test_webhook_header_invalid PASSED [ 92%]
+tests/test_odcs_contract.py::test_odcs_minimal_mapping PASSED            [ 93%]
+tests/test_odcs_contract.py::test_odcs_requires_object_selection_when_multiple PASSED [ 95%]
+tests/test_odcs_contract.py::test_odcs_invalid_version_rejected PASSED   [ 96%]
+tests/test_odcs_contract.py::test_odcs_quality_sql_custom_warns PASSED   [ 98%]
+tests/test_odcs_contract.py::test_odcs_logical_type_timestamp_warns PASSED [100%]
+
+============================== 63 passed in 0.30s ==============================
+```

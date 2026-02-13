@@ -11,12 +11,17 @@ This guide maps each file to its purpose and shows how they fit together.
 
 ### `src/datapact/contracts.py`
 - **Purpose**: Parse YAML contracts, model validation rules
-- **Classes**: `Contract`, `Field`, `FieldRule`, `DistributionRule`, `Dataset`
+- **Classes**: `Contract`, `Field`, `FieldRule`, `DistributionRule`, `Dataset`, `FlattenConfig`
 - **Key methods**: 
   - `Contract.from_yaml(path)` - Load and parse contract file
   - `Contract._parse_rules()` - Extract field validation rules
   - `Contract._parse_distribution()` - Extract distribution rules
 - **When to modify**: Adding new rule types or contract metadata
+
+### `src/datapact/providers/`
+- **Purpose**: Contract provider dispatch (DataPact and ODCS)
+- **Files**: `base.py`, `datapact_provider.py`, `odcs_provider.py`
+- **When to modify**: Adding new contract formats or provider behavior
 
 ### `src/datapact/odcs_contracts.py`
 - **Purpose**: Parse ODCS v3.1.0 contracts and map to DataPact models
@@ -42,6 +47,11 @@ This guide maps each file to its purpose and shows how they fit together.
   - `_detect_format()` - Auto-detect file format
 - **Database support**: `DatabaseConfig`, `DatabaseSource` for Postgres/MySQL/SQLite
 - **When to modify**: Adding support for new data formats (e.g., Excel) or DB engines
+
+### `src/datapact/normalization/`
+- **Purpose**: Contract-aware normalization scaffold
+- **Files**: `config.py`, `normalizer.py`
+- **When to modify**: Adding flatten or other normalization modes
 
 ### `src/datapact/cli.py`
 - **Purpose**: Command-line interface and orchestration
@@ -266,6 +276,14 @@ This guide maps each file to its purpose and shows how they fit together.
 ### `tests/test_custom_rules.py`
 - **Purpose**: Custom rule plugin tests
 - **When to modify**: Adjusting plugin rule interfaces or examples
+
+### `tests/test_contract_providers.py`
+- **Purpose**: Provider dispatch and ODCS/DataPact provider tests
+- **When to modify**: Adding new providers or provider behavior
+
+### `tests/test_flatten_normalization.py`
+- **Purpose**: Normalization scaffold and config mapping tests
+- **When to modify**: Adding normalization modes or integration behavior
 
 ### `tests/plugins/sample_plugin.py`
 - **Purpose**: Example plugin module for custom rules
