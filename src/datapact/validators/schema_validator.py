@@ -72,7 +72,7 @@ class SchemaValidator:
         type_map = {
             "integer": ["int", "int32", "int64"],
             "float": ["float", "float32", "float64"],
-            "string": ["object", "string"],
+            "string": ["object", "string", "datetime"],
             "boolean": ["bool"],
         }
         expected_types = type_map.get(expected, [])

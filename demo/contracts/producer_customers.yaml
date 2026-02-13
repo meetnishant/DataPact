@@ -1,0 +1,37 @@
+contract:
+  name: producer_customers
+  version: 2.0.0
+dataset:
+  name: customers
+fields:
+  - name: customer_id
+    type: integer
+    required: true
+    rules:
+      not_null: true
+      unique: true
+  - name: customer_name
+    type: string
+    required: true
+    rules:
+      not_null: true
+  - name: segment
+    type: string
+    required: true
+    rules:
+      enum: [commercial, institutional]
+  - name: country_code
+    type: string
+    required: true
+    rules:
+      regex: '^[A-Z]{2}$'
+  - name: kyc_status
+    type: string
+    required: true
+    rules:
+      enum: [verified, pending]
+  - name: created_at
+    type: string
+    required: true
+    rules:
+      regex: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'

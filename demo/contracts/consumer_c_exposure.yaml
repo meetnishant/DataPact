@@ -1,0 +1,29 @@
+contract:
+  name: consumer_c_customer_exposure
+  version: 2.0.0
+dataset:
+  name: customer_exposure
+fields:
+  - name: customer_id
+    type: integer
+    required: true
+    rules:
+      not_null: true
+      unique: true
+  - name: segment
+    type: string
+    required: true
+    rules:
+      enum: [commercial, institutional]
+  - name: total_deposits
+    type: float
+    required: true
+    rules:
+      min: 0
+      not_null: true
+  - name: total_loans
+    type: float
+    required: true
+    rules:
+      min: 0
+      not_null: true

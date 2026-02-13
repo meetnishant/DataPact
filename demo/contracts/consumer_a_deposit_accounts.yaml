@@ -1,0 +1,44 @@
+contract:
+  name: consumer_a_deposit_accounts
+  version: 2.0.0
+dataset:
+  name: deposit_accounts
+fields:
+  - name: account_id
+    type: integer
+    required: true
+    rules:
+      not_null: true
+      unique: true
+  - name: customer_id
+    type: integer
+    required: true
+    rules:
+      not_null: true
+  - name: product_type
+    type: string
+    required: true
+    rules:
+      enum: [checking, savings, treasury]
+  - name: status
+    type: string
+    required: true
+    rules:
+      enum: [active, dormant, closed]
+  - name: currency
+    type: string
+    required: true
+    rules:
+      regex: '^[A-Z]{3}$'
+  - name: balance
+    type: float
+    required: true
+    rules:
+      min: 0
+      max: 20000000.0
+      not_null: true
+  - name: opened_at
+    type: string
+    required: true
+    rules:
+      regex: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'

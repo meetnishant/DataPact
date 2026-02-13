@@ -1,0 +1,39 @@
+contract:
+  name: producer_deposit_transactions
+  version: 2.0.0
+dataset:
+  name: deposit_transactions
+fields:
+  - name: txn_id
+    type: integer
+    required: true
+    rules:
+      not_null: true
+      unique: true
+  - name: account_id
+    type: integer
+    required: true
+    rules:
+      not_null: true
+  - name: txn_type
+    type: string
+    required: true
+    rules:
+      enum: [credit, debit, fee]
+  - name: txn_amount
+    type: float
+    required: true
+    rules:
+      min: 0
+      max: 5000000.0
+      not_null: true
+  - name: txn_ts
+    type: string
+    required: true
+    rules:
+      regex: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
+  - name: channel
+    type: string
+    required: true
+    rules:
+      enum: [branch, online, api]
