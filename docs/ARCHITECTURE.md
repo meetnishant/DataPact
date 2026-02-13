@@ -27,10 +27,16 @@ Data File / DB → DataSource Loader ↓
 ### 1.1 **providers/** - Contract Providers
 - Resolves contract format via provider dispatch (DataPact YAML, ODCS, or API Pact)
 - Encapsulates format-specific compatibility checks and mapping
-- **DataPact Provider**: Loads YAML contracts
-- **ODCS Provider**: Maps ODCS v3.1.0 schemas to DataPact format
-- **Pact Provider**: Infers DataPact fields from Pact API response bodies (type inference only; quality rules must be added manually)
-- **Responsibility**: Format detection and contract loading
+- **DataPact Provider**: Loads YAML contracts in native DataPact format
+- **ODCS Provider**: Maps Open Data Contract Standard v3.1.0 schemas to DataPact format
+- **Pact Provider**: Infers DataPact fields from Pact API contracts via response body type inference
+  - **Type Inference**: Parses Pact JSON contracts and extracts field types from example response bodies
+  - **Automatic Detection**: Uses `--contract-format pact` flag or auto-infers from `.json` extension
+  - **Nested Support**: Schemas can be flattened for nested API responses (e.g., `user.address.city` → `user__address__city`)
+  - **Limitations**: Type inference is automatic, but quality rules (uniqueness, ranges, regex, enums) and distribution rules must be added manually post-inference
+  - **Workflow**: Infer base contract from Pact JSON → Review inferred types → Add custom quality/distribution rules → Validate API responses
+  - **Example Fixture**: See `tests/fixtures/pact_user_api.json` for sample Pact contract with user API schema
+- **Responsibility**: Format detection, contract loading, and type inference
 
 ### 2. **datasource.py** - Data Loading
 - Loads CSV, Parquet, JSON Lines formats
@@ -107,8 +113,18 @@ Three specialized validators run sequentially:
 - Commands: `validate` (run validation), `init` (infer contract), `profile` (infer rules)
 - Handles exit codes (0 = pass, 1 = fail with errors)
 - Supports chunked validation and sampling options for large datasets
-- Supports multiple contract formats: DataPact YAML, ODCS, or API Pact JSON  
-- Resolves contract format via provider dispatch based on `--contract-format` flag
+- **Supports multiple contract formats**: DataPact YAML, ODCS, or API Pact JSON
+- **Format Resolution**:
+  - Auto-detects format from file extension (`.yaml` → DataPact, `.json` → Pact for API contracts)
+  - Explicit format specification via `--contract-format datapack|odcs|pact`
+  - YAML files follow DataPact or ODCS schemas based on structure
+  - `.json` files with Pact contract structure automatically load via Pact provider
+- **Pact CLI Examples**:
+  ```bash
+  datapact validate --contract pact_user_api.json --data api_response.json
+  datapact validate --contract pact_user_api.json --data api_response.json --contract-format pact
+  datapact validate --contract user_contract.yaml --data users.csv
+  ```
 - Applies normalization before validation
 
 ## Validation Semantics

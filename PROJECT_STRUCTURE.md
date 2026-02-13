@@ -85,9 +85,37 @@ DataPact/
 │       ├── odcs_multi_object.yaml             # ODCS multi-object fixture
 │       ├── odcs_invalid_version.yaml          # ODCS invalid version fixture
 │       ├── odcs_quality_sql_custom.yaml       # ODCS quality rule fixture
-│       ├── odcs_logical_type_timestamp.yaml   # ODCS logical type fixture       ├── pact_user_api.json                 # Pact API contract fixture│       └── schema_*/quality_*/sla_*/distribution_* # Exhaustive fixtures
+│       ├── odcs_logical_type_timestamp.yaml   # ODCS logical type fixture
+│       ├── pact_user_api.json                 # Pact API contract fixture
+│       └── schema_*/quality_*/sla_*/distribution_* # Exhaustive fixtures
 └── docs/
     ├── ARCHITECTURE.md              # Design decisions & data flow
     ├── sequenceDiagram.mmd          # Mermaid sequence diagram
     ├── VERSIONING.md                # Versioning guide
     └── AI_INSTRUCTIONS_GUIDE.md     # Guide for writing AI instructions
+
+## Contract Providers Pattern
+
+The `providers/` directory implements a pluggable architecture for resolving contract formats:
+
+### Available Providers
+- **DataPactProvider** (`datapact_provider.py`) - Loads standard DataPact YAML contracts
+- **OdcsProvider** (`odcs_provider.py`) - Maps Open Data Contract Standard v3.1.0 schemas to DataPact format
+- **PactProvider** (`pact_provider.py`) - Infers DataPact fields from Pact API contracts via response body type inference
+
+### Pact Provider Details
+The Pact provider enables validation of REST API responses against Pact contracts:
+- **Type Inference**: Automatically extracts field types from Pact JSON response body examples
+- **Format Resolution**: Automatically detected via `--contract-format pact` flag or inferred from file extension
+- **Usage**: `datapact validate --contract pact_user_api.json --data api_response.json --contract-format pact`
+- **Example**: See `tests/fixtures/pact_user_api.json` for sample Pact contract structure
+- **Limitations**: Quality rules (uniqueness, ranges, patterns) and distribution rules must be added manually post-inference
+- **Schema Flattening**: Supports nested response structures via normalization and flatten metadata
+- **Type Mapping**: JSON types (string, number, boolean, null) → DataPact types (integer, float, string, boolean)
+
+### Adding New Providers
+To extend with a new contract format:
+1. Create `new_provider.py` implementing the `ContractProvider` interface (see `base.py`)
+2. Register in `__init__.py` and CLI dispatch logic
+3. Add test cases in `tests/test_contract_providers.py`
+4. Document format-specific limitations in DEPENDENCIES.md

@@ -26,7 +26,8 @@ Related features:
 - **Policy Packs**: Reuse standard rule bundles across contracts.
 - **Database Sources**: Validate Postgres, MySQL, and SQLite tables.
 - **ODCS Compatibility**: Validate Open Data Contract Standard v3.1.0 contracts.
-- **Contract Providers**: Resolve DataPact vs ODCS formats via provider dispatch.
+- **Pact Provider**: Validate REST API responses against Pact API contracts with automatic type inference.
+- **Contract Providers**: Resolve DataPact YAML, ODCS, or Pact JSON formats via provider dispatch.
 - **Normalization Scaffold**: Flatten metadata supported (noop by default).
 
 ## Supported Versions
@@ -117,6 +118,26 @@ ODCS apiVersion: v3.1.0
 ```
 
 If an unsupported ODCS version is provided, validation stops with an error.
+
+## Pact API Contract Version
+
+Pact contracts represent REST API contracts with versioning metadata. DataPact's Pact provider supports:
+
+- **Pact JSON Format**: Validates Pact consumer-provider contract files (`.json` extension)
+- **Type Inference**: Infers DataPact field types from Pact response body examples
+- **Version Compatibility**: Pact contracts do not require explicit DataPact versioning
+  - Inferred contracts adopt the current tool version (2.0.0)
+  - Quality rules and distribution rules apply DataPact v2.0.0 rules
+  - Type inference is version-agnostic (JSON types → DataPact types)
+- **Best Practice**: Add explicit version to inferred YAML contracts for consistency
+  ```yaml
+  contract:
+    name: user_api
+    version: 2.0.0  # Specify for consistency
+  dataset:
+    name: api_response
+  ```
+- **Limitations**: Pact provider infers types only; quality/distribution rules must be added manually
 
 ## Version in Reports
 
