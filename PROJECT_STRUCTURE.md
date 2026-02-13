@@ -21,11 +21,12 @@ DataPact/
 │   └── datapact/
 │       ├── __init__.py              # Package entry point
 │       ├── contracts.py             # YAML contract parsing
-│       ├── providers/               # Contract providers (datapact, odcs)
-│       │   ├── __init__.py
-│       │   ├── base.py
-│       │   ├── datapact_provider.py
-│       │   └── odcs_provider.py
+       ├── providers/               # Contract providers (datapact, odcs, pact)
+       │   ├── __init__.py
+       │   ├── base.py
+       │   ├── datapact_provider.py
+       │   ├── odcs_provider.py
+       │   └── pact_provider.py
 │       ├── odcs_contracts.py         # ODCS parsing & mapping
 │       ├── datasource.py            # Data loading (CSV/Parquet/JSON/DB)
 │       ├── policies.py              # Policy pack registry
@@ -84,8 +85,7 @@ DataPact/
 │       ├── odcs_multi_object.yaml             # ODCS multi-object fixture
 │       ├── odcs_invalid_version.yaml          # ODCS invalid version fixture
 │       ├── odcs_quality_sql_custom.yaml       # ODCS quality rule fixture
-│       ├── odcs_logical_type_timestamp.yaml   # ODCS logical type fixture
-│       └── schema_*/quality_*/sla_*/distribution_* # Exhaustive fixtures
+│       ├── odcs_logical_type_timestamp.yaml   # ODCS logical type fixture       ├── pact_user_api.json                 # Pact API contract fixture│       └── schema_*/quality_*/sla_*/distribution_* # Exhaustive fixtures
 └── docs/
     ├── ARCHITECTURE.md              # Design decisions & data flow
     ├── sequenceDiagram.mmd          # Mermaid sequence diagram

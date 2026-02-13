@@ -3,7 +3,6 @@ Command-line interface for data contract validation.
 Provides 'validate' and 'init' commands for working with data contracts.
 """
 
-
 # Standard library imports
 import argparse  # For parsing CLI arguments
 import sys  # For exit codes and script control
@@ -44,7 +43,6 @@ from datapact.providers.base import ContractProvider
 from datapact.normalization import NormalizationConfig, normalize_dataframe
 from datapact.versioning import check_tool_compatibility  # Version compatibility check
 from datapact.profiling import profile_dataframe  # Profiling utilities
-
 
 
 def main() -> int:
@@ -263,7 +261,6 @@ def main() -> int:
     return 0
 
 
-
 def validate_command(args) -> int:
     """
     Execute the 'validate' command: validate a dataset against a contract.
@@ -465,15 +462,12 @@ def _resolve_contract_provider(
 
     provider = providers.get(contract_format)
     if provider is None:
-        raise ValueError(
-            f"Unsupported contract format '{contract_format}'."
-        )
+        raise ValueError(f"Unsupported contract format '{contract_format}'.")
     if not provider.can_load(contract_data):
         raise ValueError(
             f"Contract format '{contract_format}' does not match the contract."
         )
     return provider
-
 
 
 def init_command(args) -> int:
@@ -615,9 +609,7 @@ def _build_report_sinks(args, webhook_headers: dict) -> List:
                 )
             )
         else:
-            raise ValueError(
-                "Invalid report sink. Use file, stdout, or webhook."
-            )
+            raise ValueError("Invalid report sink. Use file, stdout, or webhook.")
     return sinks
 
 
@@ -744,9 +736,7 @@ def _validate_custom_rules_streaming(
         return []
 
     if args.sample_rows is None and args.sample_frac is None:
-        return [
-            "WARN: Custom rules skipped in streaming mode without sampling"
-        ]
+        return ["WARN: Custom rules skipped in streaming mode without sampling"]
 
     sample_df = datasource.sample_dataframe(
         sample_rows=args.sample_rows,
@@ -844,7 +834,6 @@ def _evaluate_sla(contract: Contract, total_rows: int) -> List[str]:
         )
 
     return errors
-
 
 
 # Entry point for CLI usage

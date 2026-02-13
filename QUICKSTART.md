@@ -50,6 +50,16 @@ python3 src/datapact/cli.py validate \
   --data tests/fixtures/valid_customers.csv
 ```
 
+### Validate an API Pact Contract
+```bash
+python3 src/datapact/cli.py validate \
+  --contract tests/fixtures/pact_user_api.json \
+  --contract-format pact \
+  --data tests/fixtures/valid_customers.csv
+```
+
+**Note:** Pact contracts infer schema from API response bodies. Quality rules must be added manually if needed.
+
 Contract format is auto-detected when not specified.
 
 ### Validate a Database Table

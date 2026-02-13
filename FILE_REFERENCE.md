@@ -19,9 +19,19 @@ This guide maps each file to its purpose and shows how they fit together.
 - **When to modify**: Adding new rule types or contract metadata
 
 ### `src/datapact/providers/`
-- **Purpose**: Contract provider dispatch (DataPact and ODCS)
-- **Files**: `base.py`, `datapact_provider.py`, `odcs_provider.py`
+- **Purpose**: Contract provider dispatch (DataPact, ODCS, and API Pact)
+- **Files**: `base.py`, `datapact_provider.py`, `odcs_provider.py`, `pact_provider.py`
 - **When to modify**: Adding new contract formats or provider behavior
+
+#### `src/datapact/providers/pact_provider.py`
+- **Purpose**: Load and convert API Pact contracts to DataPact format
+- **Classes**: `PactProvider`
+- **Key methods**:
+  - `load()` - Load Pact JSON file and convert to Contract
+  - `_infer_fields_from_body()` - Extract fields from Pact response body
+  - `_infer_type()` - Map JSON types to DataPact types
+- **Limitations**: Quality/distribution rules not inferred; must be added manually
+- **When to modify**: Changing Pact-to-DataPact field mapping logic
 
 ### `src/datapact/odcs_contracts.py`
 - **Purpose**: Parse ODCS v3.1.0 contracts and map to DataPact models
@@ -65,14 +75,19 @@ This guide maps each file to its purpose and shows how they fit together.
 - **When to modify**: Adjusting inference heuristics or defaults
 
 ### `src/datapact/reporting.py`
-- **Purpose**: Generate validation reports
+- **Purpose**: Generate validation reports with lineage tracking
 - **Classes**: `ErrorRecord`, `ValidationReport`
+- **ErrorRecord fields**:
+  - Core: `field`, `rule`, `severity`, `message`
+  - Lineage (Phase 9): `logical_path` (contract field path), `actual_column` (physical column after normalization)
+  - Timestamps and metadata
 - **Key methods**:
-  - `to_dict()` - Convert to JSON-serializable format with version info
+  - `to_dict()` - Convert to JSON-serializable format; includes lineage fields when present
   - `save_json()` - Write report to `./reports/<timestamp>.json`
-  - `print_summary()` - Print human-readable console output
+  - `print_summary()` - Print human-readable console output; displays lineage info (e.g., "field 'user_id' (path: user.id, column: user__id)" when flattening used)
 - **Report sinks**: `FileReportSink`, `StdoutReportSink`, `WebhookReportSink`
-- **When to modify**: Changing report format or adding new metadata
+- **Lineage tracking**: When contracts include normalization (flatten config), errors automatically populate `logical_path` (contract field name) and `actual_column` (flattened dataframe column) for debugging
+- **When to modify**: Changing report format, adding metadata, or enhancing error attribution
 
 ### `src/datapact/versioning.py`
 - **Purpose**: Contract version management, migration, and compatibility checking
@@ -233,8 +248,8 @@ This guide maps each file to its purpose and shows how they fit together.
 ### `tests/test_versioning.py`
 - **Purpose**: Unit tests for contract versioning, migration, and compatibility
 - **Test classes**: `TestVersionValidation`, `TestToolCompatibility`, `TestVersionMigration`, `TestContractVersionLoading`, `TestVersionInfo`
-- **Total tests**: 17 test cases covering all versioning scenarios
-- **When to modify**: Adding new contract versions or migration logic
+- **Coverage**: 18 test cases including tool 2.0.0 compatibility check
+- **When to modify**: Adding new contract versions, migration logic, or tool versions
 
 ### `tests/test_banking_finance.py`
 - **Purpose**: Multi-table banking/finance validation scenarios with consumer-specific contracts
@@ -250,8 +265,14 @@ This guide maps each file to its purpose and shows how they fit together.
 - **When to modify**: Changing multiprocessing behavior or validation safety checks
 
 ### `tests/test_reporting.py`
-- **Purpose**: Report sink tests (file, stdout, webhook)
-- **When to modify**: Adding new report sinks or output behaviors
+- **Purpose**: Report sink tests and lineage tracking validation
+- **Coverage**:
+  - File, stdout, webhook sinks
+  - `ErrorRecord` fields: `logical_path` (contract field), `actual_column` (physical column)
+  - JSON serialization with lineage (to_dict())
+  - Console output formatting with flattened column names
+  - Lineage display: "field 'email' (path: email, column: email_normalized)"
+- **When to modify**: Adding new report sinks, changing output format, or enhancing lineage features
 
 ### `tests/test_db_source.py`
 - **Purpose**: Database source tests (SQLite, MySQL)

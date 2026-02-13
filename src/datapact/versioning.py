@@ -12,6 +12,7 @@ class VersionInfo:
     """
     Information about a contract version (metadata, deprecation, breaking changes).
     """
+
     version: str
     released: str  # ISO date
     is_deprecated: bool = False
@@ -59,6 +60,7 @@ LATEST_VERSION = "2.0.0"
 TOOL_COMPATIBILITY = {
     "0.1.0": ["1.0.0", "1.1.0"],  # Initial release supports v1.0 and v1.1
     "0.2.0": ["1.0.0", "1.1.0", "2.0.0"],  # Adds v2.0 support
+    "2.0.0": ["1.0.0", "1.1.0", "2.0.0"],  # DataPact 2.0: full backward compatibility
 }
 
 ODCS_SUPPORTED_VERSIONS = ["v3.1.0"]
@@ -66,6 +68,7 @@ ODCS_SUPPORTED_VERSIONS = ["v3.1.0"]
 
 class VersionError(Exception):
     """Raised when a version-related error occurs."""
+
     pass
 
 
@@ -94,9 +97,7 @@ class VersionMigration:
         # Get migration path (ordered list of version steps)
         path = VersionMigration._get_migration_path(from_version, to_version)
         if not path:
-            raise VersionError(
-                f"Cannot migrate from {from_version} to {to_version}"
-            )
+            raise VersionError(f"Cannot migrate from {from_version} to {to_version}")
 
         # Apply migrations step by step
         current = contract_dict.copy()

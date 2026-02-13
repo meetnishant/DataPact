@@ -202,7 +202,7 @@ custom_rules:
 ## Contract Providers
 
 ### Provider-based contract loading
-DataPact resolves contract formats via providers (DataPact YAML or ODCS).
+DataPact resolves contract formats via providers (DataPact YAML, ODCS, or API Pact).
 
 ```bash
 datapact validate --contract contract.yaml --data data.csv
@@ -211,6 +211,12 @@ datapact validate --contract contract.yaml --data data.csv
 ```bash
 datapact validate --contract contract.odcs.yaml --contract-format odcs --data data.csv
 ```
+
+```bash
+datapact validate --contract pact_user_api.json --contract-format pact --data api_response.json
+```
+
+**Note**: Pact provider infers field types from response body but does not infer quality rules. Add quality constraints manually if needed.
 
 ## Normalization
 

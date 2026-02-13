@@ -91,15 +91,19 @@ The migration happens transparently, but you'll see an info message.
 The validator checks if it can handle your contract version:
 
 ```
-Tool v0.2.0 supports:
-  ✓ Contract v1.0.0
-  ✓ Contract v1.1.0
-  ✓ Contract v2.0.0
+Tool v2.0.0 (current) supports:
+  ✓ Contract v1.0.0 (full backward compatibility)
+  ✓ Contract v1.1.0 (full backward compatibility)
+  ✓ Contract v2.0.0 (current release)
 ```
+
+Previous tool versions:
+- Tool v0.1.0 supports: v1.0.0, v1.1.0
+- Tool v0.2.0 supports: v1.0.0, v1.1.0, v2.0.0
 
 If a contract version is unsupported:
 ```
-ERROR: Tool v0.2.0 does not support contract v3.0.0
+ERROR: Tool v2.0.0 does not support contract v3.0.0
 Supported versions: 1.0.0, 1.1.0, 2.0.0
 ```
 
@@ -126,15 +130,15 @@ The JSON report includes version information:
     "version": "2.0.0"
   },
   "metadata": {
-    "tool_version": "0.2.0",
-    "timestamp": "2026-02-08T10:30:45"
+    "tool_version": "2.0.0",
+    "timestamp": "2026-02-13T10:30:45"
   },
   "version_info": {
     "breaking_changes": [
       "Removed support for 'max_null_pct' (use 'max_null_ratio' instead)",
       "Changed distribution rule syntax"
     ],
-    "migration_available": true
+    "migration_available": false
   }
 }
 ```

@@ -25,8 +25,11 @@ Data File / DB → DataSource Loader ↓
 - **Responsibility**: Contract validation, deserialization, and version management
 
 ### 1.1 **providers/** - Contract Providers
-- Resolves contract format via provider dispatch (DataPact YAML or ODCS)
-- Encapsulates ODCS compatibility checks and mapping
+- Resolves contract format via provider dispatch (DataPact YAML, ODCS, or API Pact)
+- Encapsulates format-specific compatibility checks and mapping
+- **DataPact Provider**: Loads YAML contracts
+- **ODCS Provider**: Maps ODCS v3.1.0 schemas to DataPact format
+- **Pact Provider**: Infers DataPact fields from Pact API response bodies (type inference only; quality rules must be added manually)
 - **Responsibility**: Format detection and contract loading
 
 ### 2. **datasource.py** - Data Loading
@@ -78,11 +81,17 @@ Three specialized validators run sequentially:
 - Always produces `WARN` (never blocks validation)
 - **Input**: DataFrame + Distribution rules
 
-### 5. **reporting.py** - Report Generation
+### 5. **reporting.py** - Report Generation & Lineage Tracking
 - Aggregates errors/warnings from all validators
 - Produces machine-readable JSON and human-readable console output
 - Supports report sinks for file, stdout, and webhooks
 - Tracks metadata: timestamp, contract version, tool version, breaking changes
+- **Lineage tracking (Phase 9)**: `ErrorRecord` extends with optional `logical_path` and `actual_column` fields
+  - `logical_path`: Contract field name or path (e.g., "user" or "user.id")
+  - `actual_column`: Physical dataframe column after normalization (e.g., "user__id" if flattened with separator="__")
+  - Enables error attribution when data is flattened or column-mapped
+  - Console output shows lineage: "field 'email' (path: email, column: email_normalized)"
+  - JSON output includes both fields for programmatic access
 - **Output**: `./reports/<timestamp>.json`
 
 ### 6. **versioning.py** - Version Management
@@ -98,8 +107,8 @@ Three specialized validators run sequentially:
 - Commands: `validate` (run validation), `init` (infer contract), `profile` (infer rules)
 - Handles exit codes (0 = pass, 1 = fail with errors)
 - Supports chunked validation and sampling options for large datasets
-- Supports ODCS input via `--contract-format odcs` and `--odcs-object`
-- Resolves contract format via provider dispatch
+- Supports multiple contract formats: DataPact YAML, ODCS, or API Pact JSON  
+- Resolves contract format via provider dispatch based on `--contract-format` flag
 - Applies normalization before validation
 
 ## Validation Semantics

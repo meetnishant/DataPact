@@ -124,7 +124,9 @@ class DataSource:
                     if len(chunk) == 0:
                         continue
                     samples.append(chunk.sample(frac=sample_frac, random_state=seed))
-                return pd.concat(samples, ignore_index=True) if samples else pd.DataFrame()
+                return (
+                    pd.concat(samples, ignore_index=True) if samples else pd.DataFrame()
+                )
 
             if sample_rows is not None:
                 rng = random.Random(seed)
@@ -202,9 +204,7 @@ class DatabaseSource:
             try:
                 import pymysql
             except ImportError as exc:
-                raise ImportError(
-                    "pymysql is required for MySQL support"
-                ) from exc
+                raise ImportError("pymysql is required for MySQL support") from exc
             return pymysql.connect(
                 host=self.config.host,
                 port=self.config.port,

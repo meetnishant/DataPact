@@ -31,10 +31,12 @@ class CustomRuleValidator:
         for field in self.contract.fields:
             if not field.rules or not field.rules.custom:
                 continue
-            if field.name not in self.df.columns:
+            col_name = self.contract.resolve_column_name(field.name)
+            if col_name not in self.df.columns:
                 continue
             for rule_name, config in field.rules.custom.items():
-                self._run_field_rule(field, rule_name, config)
+                column = self.df[col_name]
+                self._run_field_rule(field, rule_name, config, column)
 
         # Dataset-level custom rules
         for rule in self.contract.custom_rules:
@@ -48,7 +50,13 @@ class CustomRuleValidator:
         has_errors = any(err.startswith("ERROR") for err in self.errors)
         return not has_errors, self.errors
 
-    def _run_field_rule(self, field: Field, rule_name: str, config: Any) -> None:
+    def _run_field_rule(
+        self,
+        field: Field,
+        rule_name: str,
+        config: Any,
+        column: pd.Series,
+    ) -> None:
         severity = _normalize_severity(
             config.get("severity") if isinstance(config, dict) else None
         )
@@ -59,7 +67,7 @@ class CustomRuleValidator:
             )
             return
 
-        result = rule(self.df[field.name], config, field, self.df)
+        result = rule(column, config, field, self.df)
         self._record_result(field.name, rule_name, result, severity)
 
     def _run_dataset_rule(self, rule_name: str, config: Any, severity: str) -> None:
@@ -96,9 +104,7 @@ class CustomRuleValidator:
             return
 
         if result is False:
-            self.errors.append(
-                f"{severity}: Custom rule '{rule_name}' failed"
-            )
+            self.errors.append(f"{severity}: Custom rule '{rule_name}' failed")
 
     @staticmethod
     def _load_rules(plugin_modules: List[str]) -> Dict[str, PluginRule]:
@@ -107,9 +113,7 @@ class CustomRuleValidator:
             module = importlib.import_module(module_path)
             module_rules = getattr(module, "RULES", {})
             if not isinstance(module_rules, dict):
-                raise ValueError(
-                    f"Plugin module {module_path} must export RULES dict"
-                )
+                raise ValueError(f"Plugin module {module_path} must export RULES dict")
             rules.update(module_rules)
         return rules
 

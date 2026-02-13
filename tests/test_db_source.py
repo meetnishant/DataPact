@@ -14,12 +14,8 @@ def _create_sqlite_db(tmp_path: Path) -> Path:
     conn = sqlite3.connect(db_path)
     try:
         cursor = conn.cursor()
-        cursor.execute(
-            "CREATE TABLE customers (id INTEGER, email TEXT, age INTEGER)"
-        )
-        rows = [
-            (i, f"user{i}@example.com", 20 + (i % 50)) for i in range(1, 106)
-        ]
+        cursor.execute("CREATE TABLE customers (id INTEGER, email TEXT, age INTEGER)")
+        rows = [(i, f"user{i}@example.com", 20 + (i % 50)) for i in range(1, 106)]
         cursor.executemany(
             "INSERT INTO customers (id, email, age) VALUES (?, ?, ?)",
             rows,

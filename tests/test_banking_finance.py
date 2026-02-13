@@ -137,9 +137,7 @@ class TestDepositsAccountsStrict:
 
 
 class TestDepositsAccountsAggregate:
-    def test_aggregate_consumer_contract(
-        self, deposits_agg_contract, deposits_agg_df
-    ):
+    def test_aggregate_consumer_contract(self, deposits_agg_contract, deposits_agg_df):
         # Aggregate consumer allows limited null/duplicate customer_ids
         passed, errors = SchemaValidator(
             deposits_agg_contract, deposits_agg_df
@@ -160,7 +158,9 @@ class TestDepositsAccountsAggregate:
 
     def test_max_null_ratio_empty_dataset(self, deposits_agg_contract, deposits_agg_df):
         empty_df = deposits_agg_df.iloc[0:0]
-        q_passed, q_errors = QualityValidator(deposits_agg_contract, empty_df).validate()
+        q_passed, q_errors = QualityValidator(
+            deposits_agg_contract, empty_df
+        ).validate()
         assert not q_passed
         assert any(
             "cannot evaluate max_null_ratio" in err for err in q_errors
@@ -224,9 +224,7 @@ class TestLendingLoansStrict:
 
 
 class TestLendingLoansAggregate:
-    def test_aggregate_consumer_contract(
-        self, lending_agg_contract, lending_agg_df
-    ):
+    def test_aggregate_consumer_contract(self, lending_agg_contract, lending_agg_df):
         # Aggregate consumer allows limited null/duplicate customer_ids
         passed, errors = SchemaValidator(
             lending_agg_contract, lending_agg_df
@@ -294,9 +292,8 @@ class TestComplexConsumption:
             ignore_index=True,
         )
         valid_txns["txn_date"] = pd.to_datetime(valid_txns["txn_date"], errors="coerce")
-        valid_txns = (
-            valid_txns.dropna(subset=["txn_date"])
-            .sort_values(["customer_id", "txn_date"])
+        valid_txns = valid_txns.dropna(subset=["txn_date"]).sort_values(
+            ["customer_id", "txn_date"]
         )
 
         rolling = (
@@ -322,9 +319,7 @@ class TestValidationExceptions:
         contract_path.write_text(yaml.safe_dump(contract_data))
 
         contract = Contract.from_yaml(str(contract_path))
-        q_passed, q_errors = QualityValidator(
-            contract, lending_df.iloc[0:5]
-        ).validate()
+        q_passed, q_errors = QualityValidator(contract, lending_df.iloc[0:5]).validate()
         assert not q_passed
         assert any(
             "invalid regex" in err for err in q_errors

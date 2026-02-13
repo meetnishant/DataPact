@@ -61,10 +61,12 @@ class TestSchemaValidator:
 
     def test_missing_required_field(self, customer_contract):
         """Test missing required field fails."""
-        df = pd.DataFrame({
-            "email": ["test@example.com"],
-            "age": [25],
-        })
+        df = pd.DataFrame(
+            {
+                "email": ["test@example.com"],
+                "age": [25],
+            }
+        )
         validator = SchemaValidator(customer_contract, df)
         passed, errors = validator.validate()
         assert not passed
@@ -114,26 +116,36 @@ class TestQualityValidator:
             dataset=None,
             fields=[],
         )
-        df = pd.DataFrame({
-            "required_field": [1, 2, None],
-        })
+        df = pd.DataFrame(
+            {
+                "required_field": [1, 2, None],
+            }
+        )
         # Use lightweight field/rules objects to avoid full YAML parsing
         contract.fields = [
-            type('Field', (), {
-                'name': 'required_field',
-                'type': 'integer',
-                'rules': type('Rules', (), {
-                    'not_null': True,
-                    'unique': False,
-                    'min': None,
-                    'max': None,
-                    'regex': None,
-                    'enum': None,
-                    'max_null_ratio': None,
-                    'freshness_max_age_hours': None,
-                })(),
-                'distribution': None,
-            })(),
+            type(
+                "Field",
+                (),
+                {
+                    "name": "required_field",
+                    "type": "integer",
+                    "rules": type(
+                        "Rules",
+                        (),
+                        {
+                            "not_null": True,
+                            "unique": False,
+                            "min": None,
+                            "max": None,
+                            "regex": None,
+                            "enum": None,
+                            "max_null_ratio": None,
+                            "freshness_max_age_hours": None,
+                        },
+                    )(),
+                    "distribution": None,
+                },
+            )(),
         ]
         validator = QualityValidator(contract, df)
         passed, errors = validator.validate()
@@ -149,26 +161,36 @@ class TestQualityValidator:
             dataset=None,
             fields=[],
         )
-        df = pd.DataFrame({
-            "status": ["active", "inactive", "unknown"],
-        })
+        df = pd.DataFrame(
+            {
+                "status": ["active", "inactive", "unknown"],
+            }
+        )
         # Use lightweight field/rules objects to avoid full YAML parsing
         contract.fields = [
-            type('Field', (), {
-                'name': 'status',
-                'type': 'string',
-                'rules': type('Rules', (), {
-                    'not_null': False,
-                    'unique': False,
-                    'min': None,
-                    'max': None,
-                    'regex': None,
-                    'enum': ["active", "inactive"],
-                    'max_null_ratio': None,
-                    'freshness_max_age_hours': None,
-                })(),
-                'distribution': None,
-            })(),
+            type(
+                "Field",
+                (),
+                {
+                    "name": "status",
+                    "type": "string",
+                    "rules": type(
+                        "Rules",
+                        (),
+                        {
+                            "not_null": False,
+                            "unique": False,
+                            "min": None,
+                            "max": None,
+                            "regex": None,
+                            "enum": ["active", "inactive"],
+                            "max_null_ratio": None,
+                            "freshness_max_age_hours": None,
+                        },
+                    )(),
+                    "distribution": None,
+                },
+            )(),
         ]
         validator = QualityValidator(contract, df)
         passed, errors = validator.validate()
@@ -184,9 +206,7 @@ class TestQualityValidator:
                     "name": "status",
                     "type": "string",
                     "required": True,
-                    "rules": {
-                        "not_null": {"value": True, "severity": "WARN"}
-                    },
+                    "rules": {"not_null": {"value": True, "severity": "WARN"}},
                 }
             ],
         }

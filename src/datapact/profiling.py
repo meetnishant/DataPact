@@ -2,7 +2,7 @@
 Profiling utilities for generating contract rules from data.
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 import re
 
 import pandas as pd

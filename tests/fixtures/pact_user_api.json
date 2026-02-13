@@ -1,0 +1,42 @@
+{
+  "consumer": {
+    "name": "web-frontend"
+  },
+  "provider": {
+    "name": "user-api"
+  },
+  "interactions": [
+    {
+      "description": "a request for user details",
+      "providerState": "user 123 exists",
+      "request": {
+        "method": "GET",
+        "path": "/users/123",
+        "headers": {},
+        "query": {},
+        "body": null
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "id": 123,
+          "name": "Alice Smith",
+          "email": "alice@example.com",
+          "age": 30,
+          "active": true
+        }
+      },
+      "providerStateV3": []
+    }
+  ],
+  "metadata": {
+    "pactSpecification": {
+      "version": "2.0.0"
+    },
+    "pactRust": null,
+    "pactPython": "2.3.3"
+  }
+}

@@ -136,7 +136,9 @@ def _apply_field_policies(
     if override_fields and not isinstance(override_fields, dict):
         raise ValueError("Policy overrides fields must be a mapping")
 
-    field_names = set((policy_fields or {}).keys()) | set((override_fields or {}).keys())
+    field_names = set((policy_fields or {}).keys()) | set(
+        (override_fields or {}).keys()
+    )
     for field_name in field_names:
         if field_name not in field_map:
             continue

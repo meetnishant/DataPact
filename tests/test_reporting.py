@@ -38,7 +38,9 @@ def _sample_report() -> ValidationReport:
 def test_file_report_sink_writes_json(tmp_path):
     report = _sample_report()
     sink = FileReportSink(str(tmp_path))
-    messages = write_report_sinks(report, [sink], ReportContext(output_dir=str(tmp_path)))
+    messages = write_report_sinks(
+        report, [sink], ReportContext(output_dir=str(tmp_path))
+    )
 
     assert len(messages) == 1
     assert messages[0].startswith("JSON report saved to: ")
@@ -50,7 +52,7 @@ def test_stdout_report_sink_prints_json(capsys):
     messages = write_report_sinks(report, [sink])
 
     captured = capsys.readouterr()
-    assert "\"contract\"" in captured.out
+    assert '"contract"' in captured.out
     assert messages == ["Report JSON printed to stdout"]
 
 
@@ -77,3 +79,108 @@ def test_webhook_report_sink_failure():
         messages = write_report_sinks(report, [sink])
 
     assert any("Report sink 'webhook' failed" in msg for msg in messages)
+
+
+def test_error_record_with_logical_path() -> None:
+    """Test ErrorRecord with logical_path and actual_column fields."""
+    err = ErrorRecord(
+        code="QUALITY",
+        field="user_id",
+        message="Field has null values",
+        severity="ERROR",
+        logical_path="user.id",
+        actual_column="user__id",
+    )
+
+    assert err.logical_path == "user.id"
+    assert err.actual_column == "user__id"
+
+
+def test_error_record_to_dict_includes_lineage() -> None:
+    """Test that to_dict includes lineage information."""
+    report = ValidationReport(
+        passed=False,
+        contract_name="customer",
+        contract_version="2.0.0",
+        dataset_name="input",
+        timestamp=datetime.now().isoformat(),
+        tool_version="0.2.0",
+        error_count=1,
+        warning_count=0,
+        errors=[
+            ErrorRecord(
+                code="QUALITY",
+                field="user_id",
+                message="Field has null values",
+                severity="ERROR",
+                logical_path="user.id",
+                actual_column="user__id",
+            )
+        ],
+    )
+
+    report_dict = report.to_dict()
+    err_dict = report_dict["errors"][0]
+
+    assert err_dict["logical_path"] == "user.id"
+    assert err_dict["actual_column"] == "user__id"
+
+
+def test_print_summary_with_flattened_column(capsys) -> None:
+    """Test that print_summary shows flattened column information."""
+    report = ValidationReport(
+        passed=False,
+        contract_name="customer",
+        contract_version="2.0.0",
+        dataset_name="input",
+        timestamp=datetime.now().isoformat(),
+        tool_version="0.2.0",
+        error_count=1,
+        warning_count=0,
+        errors=[
+            ErrorRecord(
+                code="SCHEMA",
+                field="user_id",
+                message="Required field missing",
+                severity="ERROR",
+                logical_path="user.id",
+                actual_column="user__id",
+            )
+        ],
+    )
+
+    report.print_summary()
+    captured = capsys.readouterr()
+
+    # Verify lineage info is shown
+    assert "path: user.id" in captured.out
+    assert "column: user__id" in captured.out
+
+
+def test_print_summary_without_lineage(capsys) -> None:
+    """Test that print_summary works without lineage fields."""
+    report = ValidationReport(
+        passed=False,
+        contract_name="customer",
+        contract_version="2.0.0",
+        dataset_name="input",
+        timestamp=datetime.now().isoformat(),
+        tool_version="0.2.0",
+        error_count=1,
+        warning_count=0,
+        errors=[
+            ErrorRecord(
+                code="QUALITY",
+                field="email",
+                message="Regex validation failed",
+                severity="ERROR",
+            )
+        ],
+    )
+
+    report.print_summary()
+    captured = capsys.readouterr()
+
+    # Verify field is shown without extra lineage info
+    assert "[ERROR] email:" in captured.out
+    assert "path:" not in captured.out

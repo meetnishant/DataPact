@@ -18,7 +18,8 @@ Validate datasets against YAML-based data contracts to ensure data quality, sche
 - **Multiple Formats**: Support CSV, Parquet, and JSON Lines
 - **Database Sources**: Validate Postgres, MySQL, and SQLite tables
 - **ODCS Support**: Validate Open Data Contract Standard v3.1.0 contracts
-- **Contract Providers**: Load DataPact or ODCS contracts via provider dispatch
+- **API Pact Support**: Load and validate API Pact contracts (response schemas)
+- **Contract Providers**: Load DataPact, ODCS, or API Pact contracts via provider dispatch
 - **Normalization Scaffold**: Contract-aware normalization (flatten config; noop unless enabled)
 - **CI/CD Ready**: Exit codes for automation pipelines
 - **Detailed Reporting**: JSON reports with machine-readable errors
@@ -134,8 +135,8 @@ datapact validate --contract <path/to/contract.yaml> --data <path/to/data> [--fo
 ```
 
 **Options:**
-- `--contract`: Path to contract YAML file (required)
-- `--contract-format`: Contract format (auto, datapact, odcs)
+- `--contract`: Path to contract file (required). Supports `.yaml` (DataPact/ODCS) or `.json` (Pact)
+- `--contract-format`: Contract format (auto, datapact, odcs, pact). Default: auto
 - `--odcs-object`: ODCS schema object name or id (required if multiple objects)
 - `--data`: Path to data file (required)
 - `--format`: Data format. Default: auto-detect from file extension
@@ -326,8 +327,8 @@ JSON reports are saved to `./reports/<timestamp>.json`:
     "name": "customers"
   },
   "metadata": {
-    "timestamp": "2026-02-08T10:30:45.123456",
-    "tool_version": "0.2.0"
+    "timestamp": "2026-02-13T10:30:45.123456",
+    "tool_version": "2.0.0"
   },
   "summary": {
     "error_count": 2,
@@ -421,6 +422,13 @@ The validator supports multiple contract versions with automatic migration and c
 - **Breaking Changes**: Tracked and reported in validation output
 
 See [docs/VERSIONING.md](docs/VERSIONING.md) for detailed version history, migration guide, and breaking changes.
+
+## Documentation
+
+- **[docs/EXAMPLES.md](docs/EXAMPLES.md)** — Comprehensive examples for all providers and features (YAML, ODCS, API Pact, quality rules, distributions, custom rules, report sinks, etc.)
+- **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** — System architecture and design patterns
+- **[FEATURES.md](FEATURES.md)** — Feature checklist with compact examples
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** — Developer guide including provider pattern
 
 ## License
 

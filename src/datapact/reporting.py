@@ -24,11 +24,16 @@ class ErrorRecord:
     field: field name (if applicable)
     message: error/warning message
     severity: "ERROR" or "WARN"
+    logical_path: logical field path for nested/flattened fields (e.g., "user.id")
+    actual_column: actual dataframe column name after normalization (e.g., "user__id")
     """
+
     code: str
     field: str
     message: str
     severity: str  # "ERROR" or "WARN"
+    logical_path: Optional[str] = None
+    actual_column: Optional[str] = None
 
 
 @dataclass
@@ -37,6 +42,7 @@ class ValidationReport:
     Complete validation report for a validation run.
     Includes summary, errors, warnings, and compatibility info.
     """
+
     passed: bool
     contract_name: str
     contract_version: str
@@ -138,7 +144,16 @@ class ValidationReport:
         if self.errors:
             print("\nDetails:")
             for err in self.errors:
-                print(f"  [{err.severity}] {err.field}: {err.message}")
+                # Show logical path if available (for flattened fields)
+                field_info = err.field
+                if err.logical_path and err.logical_path != err.field:
+                    field_info = f"{err.field} (path: {err.logical_path}"
+                    if err.actual_column:
+                        field_info += f", column: {err.actual_column}"
+                    field_info += ")"
+                elif err.actual_column and err.actual_column != err.field:
+                    field_info = f"{err.field} (column: {err.actual_column})"
+                print(f"  [{err.severity}] {field_info}: {err.message}")
         print(f"{'='*60}\n")
 
 
@@ -147,6 +162,7 @@ class ReportContext:
     """
     Context for report sinks (output paths, webhook config, etc.).
     """
+
     output_dir: str = "./reports"
     webhook_url: Optional[str] = None
     webhook_headers: Optional[Dict[str, str]] = None
@@ -157,6 +173,7 @@ class ReportSink:
     """
     Base class for report sinks.
     """
+
     name = "base"
 
     def write(self, report: ValidationReport, context: ReportContext) -> Optional[str]:
@@ -167,6 +184,7 @@ class FileReportSink(ReportSink):
     """
     Write report JSON to a local file.
     """
+
     name = "file"
 
     def __init__(self, output_dir: str):
@@ -181,6 +199,7 @@ class StdoutReportSink(ReportSink):
     """
     Print report JSON to stdout.
     """
+
     name = "stdout"
 
     def write(self, report: ValidationReport, context: ReportContext) -> Optional[str]:
@@ -192,9 +211,12 @@ class WebhookReportSink(ReportSink):
     """
     Send report JSON to a webhook endpoint.
     """
+
     name = "webhook"
 
-    def __init__(self, url: str, headers: Optional[Dict[str, str]] = None, timeout: int = 5):
+    def __init__(
+        self, url: str, headers: Optional[Dict[str, str]] = None, timeout: int = 5
+    ):
         self.url = url
         self.headers = headers or {}
         self.timeout = timeout

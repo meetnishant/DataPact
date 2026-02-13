@@ -24,6 +24,7 @@ class FieldRule:
     Represents validation rules for a field (quality constraints).
     Example: not_null, unique, min/max, regex, enum, max_null_ratio.
     """
+
     not_null: bool = False
     unique: bool = False
     min: Optional[float] = None
@@ -42,6 +43,7 @@ class DistributionRule:
     Distribution-level validation rules for drift/outlier detection.
     Example: mean, std, max_drift_pct, max_z_score.
     """
+
     mean: Optional[float] = None
     std: Optional[float] = None
     max_drift_pct: Optional[float] = None
@@ -54,6 +56,7 @@ class Field:
     Represents a field in the contract schema.
     Includes name, type, required, rules, and distribution.
     """
+
     name: str
     type: str
     required: bool = False
@@ -66,6 +69,7 @@ class Dataset:
     """
     Dataset metadata in the contract (e.g., source system name).
     """
+
     name: str
 
 
@@ -74,6 +78,7 @@ class SchemaPolicy:
     """
     Schema drift handling configuration.
     """
+
     extra_columns_severity: str = "WARN"
 
 
@@ -82,6 +87,7 @@ class SLA:
     """
     Service-level agreement checks for datasets.
     """
+
     min_rows: Optional[int] = None
     max_rows: Optional[int] = None
     min_rows_severity: str = "ERROR"
@@ -101,6 +107,7 @@ class Contract:
     """
     Root contract object. Contains contract metadata, dataset, and fields.
     """
+
     name: str
     version: str
     dataset: Dataset
@@ -177,9 +184,7 @@ class Contract:
         fields: List[Field] = []
         for idx, field_data in enumerate(fields_data):
             if not isinstance(field_data, dict):
-                raise ValueError(
-                    f"Field entry at index {idx} must be a mapping"
-                )
+                raise ValueError(f"Field entry at index {idx} must be a mapping")
             if "name" not in field_data or "type" not in field_data:
                 raise ValueError(
                     f"Field entry at index {idx} must include 'name' and 'type'"
@@ -207,6 +212,18 @@ class Contract:
             custom_rules=custom_rules,
             flatten=flatten,
         )
+
+    def resolve_column_name(self, field_name: str) -> str:
+        """
+        Resolve the expected dataframe column name for a contract field.
+        """
+        flatten = self.flatten
+        if not flatten or not flatten.enabled:
+            return field_name
+        separator = flatten.separator or "."
+        if separator == ".":
+            return field_name
+        return field_name.replace(".", separator)
 
     @staticmethod
     def _parse_rules(rules_dict: Dict[str, Any]) -> Optional[FieldRule]:
@@ -239,9 +256,7 @@ class Contract:
                 return None
             normalized = str(value).upper()
             if normalized not in {"ERROR", "WARN"}:
-                raise ValueError(
-                    f"Unsupported severity '{value}'. Use ERROR or WARN."
-                )
+                raise ValueError(f"Unsupported severity '{value}'. Use ERROR or WARN.")
             return normalized
 
         custom_rules = rules_dict.get("custom", {})
@@ -269,9 +284,7 @@ class Contract:
             raise ValueError("custom_rules must be a list")
         for idx, rule in enumerate(custom_rules):
             if not isinstance(rule, dict):
-                raise ValueError(
-                    f"custom_rules entry at index {idx} must be a mapping"
-                )
+                raise ValueError(f"custom_rules entry at index {idx} must be a mapping")
             if "name" not in rule:
                 raise ValueError(
                     f"custom_rules entry at index {idx} must include 'name'"

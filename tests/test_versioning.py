@@ -82,6 +82,13 @@ class TestToolCompatibility:
         assert not is_compat
         assert "unknown" in msg.lower()
 
+    def test_tool_2_0_0_compatibility(self):
+        """Test DataPact 2.0.0 tool supports all contract versions."""
+        # DataPact 2.0.0 (current release) should support all contract versions
+        assert check_tool_compatibility("2.0.0", "1.0.0")[0]
+        assert check_tool_compatibility("2.0.0", "1.1.0")[0]
+        assert check_tool_compatibility("2.0.0", "2.0.0")[0]
+
 
 class TestVersionMigration:
     """Tests for contract migration between versions."""
@@ -180,17 +187,13 @@ class TestContractVersionLoading:
     def test_load_v1_contract(self):
         """Test loading a v1.0.0 contract."""
         # Loader should auto-migrate to latest version
-        contract = Contract.from_yaml(
-            str(FIXTURES_DIR / "customer_contract_v1.yaml")
-        )
+        contract = Contract.from_yaml(str(FIXTURES_DIR / "customer_contract_v1.yaml"))
         # Should auto-migrate to latest
         assert contract.version == "2.0.0"
 
     def test_load_v2_contract(self):
         """Test loading a v2.0.0 contract."""
-        contract = Contract.from_yaml(
-            str(FIXTURES_DIR / "customer_contract_v2.yaml")
-        )
+        contract = Contract.from_yaml(str(FIXTURES_DIR / "customer_contract_v2.yaml"))
         assert contract.version == "2.0.0"
 
     def test_load_contract_without_version(self):

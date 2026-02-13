@@ -241,9 +241,7 @@ def _parse_schema_object(data: Dict[str, Any]) -> OdcsSchemaObject:
         raise ValueError("ODCS schema object must be a mapping")
 
     name = _require_str(data, "name")
-    properties = [
-        _parse_schema_property(prop) for prop in _list(data, "properties")
-    ]
+    properties = [_parse_schema_property(prop) for prop in _list(data, "properties")]
     quality = [_parse_quality_rule(rule) for rule in _list(data, "quality")]
 
     return OdcsSchemaObject(
@@ -293,9 +291,7 @@ def _parse_quality_rule(data: Dict[str, Any]) -> OdcsQualityRule:
     if not isinstance(data, dict):
         raise ValueError("ODCS quality rule must be a mapping")
 
-    operators = {
-        key: value for key, value in data.items() if key.startswith("must")
-    }
+    operators = {key: value for key, value in data.items() if key.startswith("must")}
 
     return OdcsQualityRule(
         rule_id=_optional_str(data, "id"),
@@ -353,9 +349,7 @@ def _map_logical_type(logical_type: Optional[str]) -> Tuple[str, List[str]]:
         "time": "string",
     }
     if normalized in {"date", "time", "timestamp"}:
-        return "string", [
-            f"WARN: ODCS logicalType '{logical_type}' mapped to string"
-        ]
+        return "string", [f"WARN: ODCS logicalType '{logical_type}' mapped to string"]
     if normalized in mapping:
         return mapping[normalized], []
     return "string", [f"WARN: ODCS logicalType '{logical_type}' mapped to string"]
@@ -404,9 +398,7 @@ def _map_quality_rules(
                 f"WARN: ODCS metric '{metric}' not mapped to DataPact field rules"
             )
         elif rule.metric:
-            warnings.append(
-                f"WARN: ODCS metric '{rule.metric}' not mapped to DataPact"
-            )
+            warnings.append(f"WARN: ODCS metric '{rule.metric}' not mapped to DataPact")
 
     return field_rules, warnings
 
@@ -477,9 +469,7 @@ def _merge_rules(base: FieldRule, extra: FieldRule) -> FieldRule:
     base.regex = base.regex or extra.regex
     base.enum = base.enum or extra.enum
     base.max_null_ratio = (
-        base.max_null_ratio
-        if base.max_null_ratio is not None
-        else extra.max_null_ratio
+        base.max_null_ratio if base.max_null_ratio is not None else extra.max_null_ratio
     )
     base.freshness_max_age_hours = (
         base.freshness_max_age_hours
@@ -507,7 +497,9 @@ def _has_rules(rules: FieldRule) -> bool:
     )
 
 
-def _operator_to_ratio(operators: Dict[str, Any], unit: Optional[str]) -> Optional[float]:
+def _operator_to_ratio(
+    operators: Dict[str, Any], unit: Optional[str]
+) -> Optional[float]:
     if "mustBe" in operators:
         return _ratio_from_value(operators["mustBe"], unit)
     if "mustBeLessThan" in operators:
@@ -531,9 +523,7 @@ def _ratio_from_value(value: Any, unit: Optional[str]) -> Optional[float]:
 
 
 def _is_zero_operator(operators: Dict[str, Any]) -> bool:
-    return any(
-        operators.get(key) == 0 for key in ("mustBe", "mustBeLessThanOrEqualTo")
-    )
+    return any(operators.get(key) == 0 for key in ("mustBe", "mustBeLessThanOrEqualTo"))
 
 
 def _metadata_warnings(raw: Dict[str, Any]) -> List[str]:

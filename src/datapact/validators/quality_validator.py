@@ -66,10 +66,11 @@ class QualityValidator:
         self.errors = []
 
         for field in self.contract.fields:
-            if field.name not in self.df.columns:
+            col_name = self.contract.resolve_column_name(field.name)
+            if col_name not in self.df.columns:
                 continue
 
-            column = self.df[field.name]
+            column = self.df[col_name]
             if field.rules:
                 self._validate_field_rules(field, column)
 
@@ -244,10 +245,12 @@ class ChunkedQualityValidator:
         self.enum_invalid: Dict[str, bool] = {}
         self.enum_sets: Dict[str, set] = {}
         self.seen_values: Dict[str, set] = {}
+        self.column_map: Dict[str, str] = {}
 
         for field in contract.fields:
             if not field.rules:
                 continue
+            self.column_map[field.name] = contract.resolve_column_name(field.name)
             self.stats[field.name] = {
                 "total": 0,
                 "nulls": 0,
@@ -269,7 +272,10 @@ class ChunkedQualityValidator:
 
     def process_chunk(self, df: pd.DataFrame) -> None:
         for field in self.contract.fields:
-            if field.name not in df.columns or not field.rules:
+            if not field.rules:
+                continue
+            col_name = self.column_map.get(field.name, field.name)
+            if col_name not in df.columns:
                 continue
 
             rules = field.rules
@@ -277,7 +283,7 @@ class ChunkedQualityValidator:
             if stats is None:
                 continue
 
-            column = df[field.name]
+            column = df[col_name]
             stats["total"] += len(column)
             stats["nulls"] += column.isna().sum()
 
@@ -303,8 +309,8 @@ class ChunkedQualityValidator:
             if rules.regex:
                 if field.name not in self.invalid_regex:
                     try:
-                        matches = non_null.astype(str).str.strip().str.fullmatch(
-                            rules.regex
+                        matches = (
+                            non_null.astype(str).str.strip().str.fullmatch(rules.regex)
                         )
                         stats["regex_violations"] += (~matches).sum()
                     except re.error as exc:
@@ -453,16 +459,15 @@ class ChunkedQualityValidator:
                     )
                 else:
                     now = pd.Timestamp.utcnow()
-                    age_hours = (
-                        now - stats.get("max_ts")
-                    ).total_seconds() / 3600
+                    age_hours = (now - stats.get("max_ts")).total_seconds() / 3600
                     if age_hours > rules.freshness_max_age_hours:
+                        error_msg = (
+                            f"Field '{field.name}' freshness age {age_hours:.2f}h "
+                            f"exceeds max_age_hours={rules.freshness_max_age_hours}"
+                        )
                         errors.append(
                             self._format(
-                                field.name,
-                                "freshness_max_age_hours",
-                                f"Field '{field.name}' freshness age {age_hours:.2f}h "
-                                f"exceeds max_age_hours={rules.freshness_max_age_hours}",
+                                field.name, "freshness_max_age_hours", error_msg
                             )
                         )
 

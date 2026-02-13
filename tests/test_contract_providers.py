@@ -9,6 +9,7 @@ from datapact.cli import _resolve_contract_provider
 from datapact.contracts import Contract
 from datapact.providers.datapact_provider import DataPactProvider
 from datapact.providers.odcs_provider import OdcsProvider
+from datapact.providers.pact_provider import PactProvider
 
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
@@ -138,3 +139,80 @@ def test_contract_parses_flatten_config() -> None:
 
     assert contract.flatten.enabled is True
     assert contract.flatten.separator == "__"
+
+
+def test_pact_provider_loads_pact_contract() -> None:
+    provider = PactProvider()
+    path = FIXTURES_DIR / "pact_user_api.json"
+
+    contract = provider.load(str(path))
+
+    assert contract.name == "web_frontend_user_api"
+    assert contract.dataset.name == "user-api-api"
+    assert len(contract.fields) == 5  # id, name, email, age, active
+
+
+def test_pact_provider_infers_field_types() -> None:
+    provider = PactProvider()
+    path = FIXTURES_DIR / "pact_user_api.json"
+
+    contract = provider.load(str(path))
+
+    # Verify type inference
+    fields_by_name = {f.name: f for f in contract.fields}
+    assert fields_by_name["id"].type == "integer"
+    assert fields_by_name["name"].type == "string"
+    assert fields_by_name["email"].type == "string"
+    assert fields_by_name["age"].type == "integer"
+    assert fields_by_name["active"].type == "boolean"
+
+
+def test_pact_provider_marks_fields_as_optional() -> None:
+    provider = PactProvider()
+    path = FIXTURES_DIR / "pact_user_api.json"
+
+    contract = provider.load(str(path))
+
+    # Pact doesn't define required fields, so all should be optional
+    for field in contract.fields:
+        assert field.required is False
+
+
+def test_pact_provider_rejects_missing_response_body() -> None:
+    provider = PactProvider()
+    data = {
+        "consumer": {"name": "test-consumer"},
+        "provider": {"name": "test-provider"},
+        "interactions": [
+            {
+                "description": "a request",
+                "response": {
+                    "status": 200,
+                    "body": None,  # Invalid: no body
+                },
+            }
+        ],
+    }
+
+    with pytest.raises(ValueError, match="response body must be a JSON object"):
+        provider._from_pact_dict(data, "test.json")
+
+
+def test_pact_provider_rejects_non_object_response_body() -> None:
+    provider = PactProvider()
+    data = {
+        "consumer": {"name": "test-consumer"},
+        "provider": {"name": "test-provider"},
+        "interactions": [
+            {
+                "description": "a request",
+                "response": {
+                    "status": 200,
+                    "body": [{"id": 1}],  # Invalid: array instead of object
+                },
+            }
+        ],
+    }
+
+    with pytest.raises(ValueError, match="response body must be a JSON object"):
+        provider._from_pact_dict(data, "test.json")

@@ -582,6 +582,53 @@ tests/test_odcs_contract.py::test_odcs_logical_type_timestamp_warns PASSED [100%
 ============================== 63 passed in 0.51s ==============================
 ```
 
+Phase 7 regression gate:
+
+Command:
+
+```
+.venv/bin/pytest tests/ -v --tb=short
+```
+
+Summary:
+
+- **Status**: PASSED ✓
+- **Tests Passed**: 138
+- **Tests Skipped**: 1
+- **Failures**: 0
+- **Duration**: 1.11s
+
+**Rationale**: Phase 7 adds flatten-aware column name resolution to all validators.
+- Added `Contract.resolve_column_name()` helper that maps contract field names to flattened dataframe column names (e.g., "user.id" → "user__id" with separator="__").
+- Updated `SchemaValidator`, `QualityValidator`, `DistributionValidator`, and `CustomRuleValidator` to use resolved column names.
+- Added `tests/test_flattened_field_resolution.py` with 4 tests covering all validators.
+- Fixed `tests/__init__.py` and `tests/plugins/__init__.py` package initialization.
+- All tests pass without regression.
+
+Phase 8 regression gate:
+
+Command:
+
+```
+.venv/bin/pytest tests/ -v --tb=short
+```
+
+Summary:
+
+- **Status**: PASSED ✓
+- **Tests Passed**: 143
+- **Tests Skipped**: 1
+- **Failures**: 0
+- **Duration**: 1.13s
+
+**Rationale**: Phase 8 adds API Pact contract provider support.
+- Implemented `src/datapact/providers/pact_provider.py` with Pact-to-DataPact conversion.
+- Maps Pact interaction response body fields to DataPact contract fields with automatic type inference.
+- Added 5 Pact provider tests in `tests/test_contract_providers.py` (can_load, loads contract, infers types, marks fields optional, validates errors).
+- Created test fixture: `tests/fixtures/pact_user_api.json` (Pact contract example).
+- Added warnings for unsupported Pact features (quality rules, distribution, custom rules not inferred).
+- All tests pass without regression (+5 new tests).
+
 Phase 6 regression gate:
 
 Command:

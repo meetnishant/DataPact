@@ -6,7 +6,7 @@ Checks for mean/std drift and outliers using contract distribution rules.
 from typing import Dict, List, Tuple
 import pandas as pd
 import numpy as np
-from datapact.contracts import Contract, Field
+from datapact.contracts import Contract, Field, DistributionRule
 
 
 class DistributionValidator:
@@ -28,13 +28,14 @@ class DistributionValidator:
         self.warnings = []
 
         for field in self.contract.fields:
-            if field.name not in self.df.columns:
+            col_name = self.contract.resolve_column_name(field.name)
+            if col_name not in self.df.columns:
                 continue
 
             if not field.distribution:
                 continue
 
-            column = self.df[field.name].dropna()
+            column = self.df[col_name].dropna()
             if len(column) == 0:
                 continue
 
@@ -105,10 +106,12 @@ class DistributionAccumulator:
         self.contract = contract
         self.stats: Dict[str, dict] = {}
         self.rules: Dict[str, DistributionRule] = {}
+        self.column_map: Dict[str, str] = {}
 
         for field in contract.fields:
             if field.distribution:
                 self.rules[field.name] = field.distribution
+                self.column_map[field.name] = contract.resolve_column_name(field.name)
                 self.stats[field.name] = {
                     "count": 0,
                     "mean": 0.0,
@@ -117,10 +120,11 @@ class DistributionAccumulator:
 
     def process_chunk(self, df: pd.DataFrame) -> None:
         for field_name, dist in self.rules.items():
-            if field_name not in df.columns:
+            col_name = self.column_map.get(field_name, field_name)
+            if col_name not in df.columns:
                 continue
 
-            column = df[field_name].dropna()
+            column = df[col_name].dropna()
             if len(column) == 0:
                 continue
 
@@ -171,10 +175,7 @@ class DistributionAccumulator:
         return warnings
 
     def needs_outlier_pass(self) -> bool:
-        return any(
-            dist.max_z_score is not None
-            for dist in self.rules.values()
-        )
+        return any(dist.max_z_score is not None for dist in self.rules.values())
 
     def count_outliers(self, df_iter) -> List[str]:
         warnings: List[str] = []
@@ -194,9 +195,10 @@ class DistributionAccumulator:
 
             outliers = 0
             for chunk in df_iter:
-                if field_name not in chunk.columns:
+                col_name = self.column_map.get(field_name, field_name)
+                if col_name not in chunk.columns:
                     continue
-                column = chunk[field_name].dropna()
+                column = chunk[col_name].dropna()
                 if len(column) == 0:
                     continue
                 try:

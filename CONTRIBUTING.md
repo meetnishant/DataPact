@@ -37,6 +37,47 @@
 4. Export from `validators/__init__.py`
 5. Integrate into `cli.py`
 
+## Adding Support for New Contract Providers
+
+DataPact supports multiple contract formats via provider abstraction. To add a new provider:
+
+1. Create `src/datapact/providers/your_format_provider.py` implementing `ContractProvider` interface:
+   ```python
+   from datapact.providers import ContractProvider
+   from datapact.contracts import Contract
+   
+   class YourFormatProvider(ContractProvider):
+       def can_load(self, file_path: str) -> bool:
+           """Return True if this provider can load the file."""
+           return file_path.endswith('.your_format')
+       
+       def load(self, file_path: str, *args, **kwargs) -> Contract:
+           """Load contract and return Contract object."""
+           # Parse your format → Contract dataclass
+           pass
+   ```
+
+2. Export from `src/datapact/providers/__init__.py`:
+   ```python
+   from datapact.providers.your_format_provider import YourFormatProvider
+   ```
+
+3. Register in provider dispatch (auto-discoverable via `can_load()`)
+
+4. Add fixtures in `tests/fixtures/your_format_sample.*`
+
+5. Add tests in `tests/test_contract_providers.py`:
+   - Test `can_load()` detection
+   - Test `load()` with valid and invalid inputs
+   - Test field inference (type mapping)
+   - Test error handling
+
+6. Update `README.md` and `docs/EXAMPLES.md` with usage examples
+
+**Example**: See `src/datapact/providers/odcs_provider.py` and `pact_provider.py` for reference implementations.
+
+---
+
 ## Adding Support for New Data Formats
 
 1. Update `DataSource._detect_format()` with new file extension
