@@ -4,9 +4,9 @@
 
 ```
 Project: DataPact
-Version: 0.2.0
-Status: ✅ READY FOR PRODUCTION
-Created: February 8, 2026
+Version: 2.0.0
+Status: ✅ PRODUCTION RELEASED (DataPact2.0 tag)
+Created: February 8, 2026 | Updated: February 13, 2026
 
 📁 Total Files:    139
 💻 Code Files:     21 (Python modules)
@@ -195,10 +195,11 @@ src/datapact/
 │   ├─ DistributionRule
 │   ├─ Dataset
 │   └─ FlattenConfig
-├── providers/               Contract providers
-│   ├─ base.py
-│   ├─ datapact_provider.py
-│   └─ odcs_provider.py
+├── providers/               Contract providers (format dispatch)
+│   ├─ base.py               Abstract provider interface
+│   ├─ datapact_provider.py  YAML contract loader
+│   ├─ odcs_provider.py      ODCS v3.1.0 schema mapper
+│   └─ pact_provider.py      Pact API contract type inference
 ├── policies.py              Policy pack registry
 ├── datasource.py            Data loading & inference
 │   └─ DataSource
@@ -239,6 +240,8 @@ src/datapact/
 | Policy Packs | ✅ | policies.py |
 | Custom Rule Plugins | ✅ | validators/custom_rule_validator.py |
 | Contract Providers | ✅ | providers/ |
+| Pact API Contracts | ✅ | providers/pact_provider.py |
+| ODCS Compatibility | ✅ | providers/odcs_provider.py |
 | Normalization Scaffold | ✅ | normalization/ |
 | JSON Report Output | ✅ | reporting.py |
 | Console Output | ✅ | reporting.py |
@@ -409,6 +412,7 @@ mypy src/
 
 ---
 
-**Repository**: `/path/to/DataPact`  
-**Status**: ✅ Production Ready  
-**Last Updated**: February 8, 2026
+**Repository**: GitHub - meetnishant/DataPact  
+**Status**: ✅ Production Ready (v2.0.0)  
+**Release Tag**: DataPact2.0  
+**Last Updated**: February 13, 2026
