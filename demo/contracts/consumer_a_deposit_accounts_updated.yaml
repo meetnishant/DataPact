@@ -1,3 +1,27 @@
+# ============================================================================
+# CONSUMER A CONTRACT: Deposit Accounts - UPDATED (Deposits Operations Team)
+# ============================================================================
+# Scenario: Scenario 3 - Recovery After Breaking Change (PASS)
+# Consumer: Deposits Operations Team (Consumer A)
+# Strictness: STRICT - Updated to accept new 'suspended' status
+#
+# Business Purpose:
+#   - Updated contract after producer introduced 'suspended' status
+#   - Deposits Operations team reviewed the breaking change and agreed to accept it
+#   - Updated their downstream systems to handle 'suspended' accounts
+#   - All other rules remain strict (no nulls, exact enums, balance limits)
+#
+# Demo Flow:
+#   - Scenario 2: Original contract FAILED due to 'suspended' status
+#   - Scenario 3: This updated contract now PASSES (includes 'suspended' in enum)
+#   - Demonstrates contract evolution and breaking change resolution
+#
+# Key Rules:
+#   - Status enum NOW includes: [active, dormant, closed, suspended]
+#   - All other rules identical to original consumer_a_deposit_accounts contract
+#   - Still strict: all fields required, not_null=true, unique where applicable
+# ============================================================================
+
 contract:
   name: consumer_a_deposit_accounts_updated
   version: 2.0.0

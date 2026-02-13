@@ -1,3 +1,29 @@
+# ============================================================================
+# CONSUMER B CONTRACT: Deposit Accounts - Aggregate Analytics (Finance Analytics Team)
+# ============================================================================
+# Scenario: Scenario 1 - Baseline Validation (PASS)
+# Consumer: Finance Analytics Team (Consumer B)
+# Strictness: RELAXED / AGGREGATE-TOLERANT - Allows some nulls for analytics use case
+#
+# Business Purpose:
+#   - Finance Analytics team uses this data for aggregated reporting and dashboards
+#   - Can tolerate some missing data (nulls) because they aggregate large datasets
+#   - Uses max_null_ratio rules instead of strict not_null requirements
+#   - Focuses on trends and patterns rather than operational precision
+#
+# Demo Flow:
+#   - Scenario 1: Validates successfully against baseline producer data (PASS)
+#   - Not affected by 'suspended' status breaking change because status is optional
+#
+# Key Differences from Producer/Consumer A:
+#   - customer_id: required=false, max_null_ratio=0.02 (allows 2% nulls for orphaned records)
+#   - status: required=false, max_null_ratio=0.05 (allows 5% nulls for data quality issues)
+#   - account_id: Still required for join keys, but NOT unique (aggregate tolerance)
+#   - balance: Still strict (not_null, 0-20M range) for financial accuracy
+#
+# This demonstrates how different consumers can have different tolerance levels for the same dataset.
+# ============================================================================
+
 contract:
   name: consumer_b_accounts_aggregate
   version: 2.0.0

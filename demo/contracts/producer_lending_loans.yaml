@@ -1,3 +1,27 @@
+# ============================================================================
+# PRODUCER CONTRACT: Lending Loans
+# ============================================================================
+# Scenario: Commercial & Institutional Banking Data Product (NatWest-style)
+# Owner: Data Product Team (Producer)
+# Strictness: STRICT - Authoritative loan portfolio data
+#
+# Business Purpose:
+#   - Master registry of all commercial and institutional loans
+#   - Enforces strict loan type classification, balance limits, and interest rate bounds
+#   - All fields required with no nulls for credit risk integrity
+#   - Used by Lending Operations, Finance Analytics, and Risk/Exposure teams
+#
+# Key Rules:
+#   - loan_id: unique loan identifier
+#   - customer_id: foreign key to customers table (must exist)
+#   - product_type: term or revolver only (loan classification)
+#   - status: active, delinquent, or closed
+#   - currency: ISO 4217 3-letter code (e.g., GBP, USD, EUR)
+#   - principal_balance: 0 to 20M range (large commercial loans)
+#   - interest_rate: 0% to 25% (0.0 to 0.25 float)
+#   - opened_at: datetime in YYYY-MM-DD HH:MM:SS format
+# ============================================================================
+
 contract:
   name: producer_lending_loans
   version: 2.0.0

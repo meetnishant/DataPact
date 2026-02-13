@@ -1,3 +1,24 @@
+# ============================================================================
+# PRODUCER CONTRACT: Loan Payments
+# ============================================================================
+# Scenario: Commercial & Institutional Banking Data Product (NatWest-style)
+# Owner: Data Product Team (Producer)
+# Strictness: STRICT - Authoritative payment history
+#
+# Business Purpose:
+#   - Complete payment history for all commercial and institutional loans
+#   - Enforces strict payment amount limits and status tracking
+#   - All fields required with no nulls for financial reporting integrity
+#   - Used by Lending Operations for cash flow and delinquency tracking
+#
+# Key Rules:
+#   - payment_id: unique payment identifier
+#   - loan_id: foreign key to lending_loans (must exist)
+#   - payment_amount: 0 to 5M range (large commercial payments)
+#   - payment_ts: payment timestamp in YYYY-MM-DD HH:MM:SS format
+#   - payment_status: posted, pending, or failed (processing status)
+# ============================================================================
+
 contract:
   name: producer_loan_payments
   version: 2.0.0

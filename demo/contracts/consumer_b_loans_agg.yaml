@@ -1,3 +1,30 @@
+# ============================================================================
+# CONSUMER B CONTRACT: Lending Loans - Aggregate Analytics (Finance Analytics Team)
+# ============================================================================
+# Scenario: Scenario 1 - Baseline Validation (PASS)
+# Consumer: Finance Analytics Team (Consumer B)
+# Strictness: RELAXED / AGGREGATE-TOLERANT - Allows some nulls for analytics use case
+#
+# Business Purpose:
+#   - Finance Analytics team uses loan data for portfolio analysis and reporting
+#   - Can tolerate some missing data (nulls) because they aggregate large datasets
+#   - Uses max_null_ratio rules instead of strict not_null requirements
+#   - Focuses on portfolio trends, interest rate analysis, and balance distributions
+#
+# Demo Flow:
+#   - Scenario 1: Validates successfully against baseline producer data (PASS)
+#   - Not affected by deposit_accounts breaking change (different table)
+#
+# Key Differences from Producer:
+#   - customer_id: required=false, max_null_ratio=0.02 (allows 2% nulls for orphaned loans)
+#   - status: required=false, max_null_ratio=0.05 (allows 5% nulls for data quality issues)
+#   - loan_id: Still required for join keys, but NOT unique (aggregate tolerance)
+#   - principal_balance: Still strict (not_null, 0-20M range) for financial accuracy
+#   - interest_rate: Still strict (not_null, 0-25% range) for risk analysis
+#
+# This demonstrates how analytics consumers can have relaxed rules compared to operational consumers.
+# ============================================================================
+
 contract:
   name: consumer_b_loans_aggregate
   version: 2.0.0

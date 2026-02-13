@@ -1,3 +1,26 @@
+# ============================================================================
+# CONSUMER A CONTRACT: Deposit Transactions (Deposits Operations Team)
+# ============================================================================
+# Scenario: Scenario 1 - Baseline Validation (PASS)
+# Consumer: Deposits Operations Team (Consumer A)
+# Strictness: STRICT - Exact match with producer contract for operational integrity
+#
+# Business Purpose:
+#   - Deposits Operations team relies on this data for transaction reconciliation
+#   - Requires strict validation because this feeds into financial reporting systems
+#   - All fields must be present with no nulls (audit trail requirement)
+#   - Transaction type and channel classification is critical for operations
+#
+# Demo Flow:
+#   - Scenario 1: Validates successfully against baseline producer data (PASS)
+#   - Not affected by 'suspended' status breaking change (different table)
+#
+# Key Rules:
+#   - Identical to producer contract (strict consumer)
+#   - All fields required: not_null=true, unique for txn_id
+#   - Amount range 0 to 5M enforced
+# ============================================================================
+
 contract:
   name: consumer_a_deposit_transactions
   version: 2.0.0

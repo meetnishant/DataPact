@@ -1,3 +1,26 @@
+# ============================================================================
+# PRODUCER CONTRACT: Deposit Accounts
+# ============================================================================
+# Scenario: Commercial & Institutional Banking Data Product (NatWest-style)
+# Owner: Data Product Team (Producer)
+# Strictness: STRICT - Authoritative source for deposit account data
+#
+# Business Purpose:
+#   - Master registry of all deposit accounts (checking, savings, treasury)
+#   - Enforces strict balance limits, currency codes, and status constraints
+#   - All fields required with no nulls allowed for operational integrity
+#   - Used by Deposits Operations, Finance Analytics, and Risk teams
+#
+# Key Rules:
+#   - account_id: unique identifier per account
+#   - customer_id: foreign key to customers table (must exist)
+#   - product_type: checking, savings, or treasury only
+#   - status: active, dormant, or closed (baseline - breaking change demo adds 'suspended')
+#   - currency: ISO 4217 3-letter code (e.g., GBP, USD, EUR)
+#   - balance: 0 to 20M range enforced (large commercial accounts)
+#   - opened_at: datetime in YYYY-MM-DD HH:MM:SS format
+# ============================================================================
+
 contract:
   name: producer_deposit_accounts
   version: 2.0.0

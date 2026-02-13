@@ -1,3 +1,25 @@
+# ============================================================================
+# PRODUCER CONTRACT: Deposit Transactions
+# ============================================================================
+# Scenario: Commercial & Institutional Banking Data Product (NatWest-style)
+# Owner: Data Product Team (Producer)
+# Strictness: STRICT - Authoritative transaction history
+#
+# Business Purpose:
+#   - Complete transaction history for all deposit accounts
+#   - Enforces strict transaction type classification and amount limits
+#   - All fields required with no nulls for audit trail integrity
+#   - Used by Deposits Operations for reconciliation and reporting
+#
+# Key Rules:
+#   - txn_id: unique transaction identifier
+#   - account_id: foreign key to deposit_accounts (must exist)
+#   - txn_type: credit, debit, or fee only (strict classification)
+#   - txn_amount: 0 to 5M range (large commercial transactions)
+#   - txn_ts: transaction timestamp in YYYY-MM-DD HH:MM:SS format
+#   - channel: branch, online, or api (source tracking)
+# ============================================================================
+
 contract:
   name: producer_deposit_transactions
   version: 2.0.0

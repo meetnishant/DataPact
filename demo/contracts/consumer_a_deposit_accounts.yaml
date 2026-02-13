@@ -1,3 +1,27 @@
+# ============================================================================
+# CONSUMER A CONTRACT: Deposit Accounts (Deposits Operations Team)
+# ============================================================================
+# Scenario: Scenario 1 - Baseline Validation (PASS) / Scenario 2 - Breaking Change (FAIL)
+# Consumer: Deposits Operations Team (Consumer A)
+# Strictness: STRICT - Exact match with producer contract for operational integrity
+#
+# Business Purpose:
+#   - Deposits Operations team relies on this data for daily account management
+#   - Requires strict validation because this feeds into regulatory reporting systems
+#   - All fields must be present with no nulls (operational requirement)
+#   - Status enum is critical: only 'active', 'dormant', 'closed' allowed initially
+#
+# Demo Flow:
+#   - Scenario 1: Validates successfully against baseline producer data (PASS)
+#   - Scenario 2: Producer adds 'suspended' status → this contract FAILS (breaking change)
+#   - Scenario 3: Updated contract (consumer_a_deposit_accounts_updated.yaml) accepts 'suspended'
+#
+# Key Rules:
+#   - Identical to producer contract initially (strict consumer)
+#   - Status enum does NOT include 'suspended' (causes Scenario 2 failure)
+#   - All fields required: not_null=true, unique where applicable
+# ============================================================================
+
 contract:
   name: consumer_a_deposit_accounts
   version: 2.0.0

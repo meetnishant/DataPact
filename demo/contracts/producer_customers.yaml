@@ -1,3 +1,24 @@
+# ============================================================================
+# PRODUCER CONTRACT: Customer Master Table
+# ============================================================================
+# Scenario: Commercial & Institutional Banking Data Product (NatWest-style)
+# Owner: Data Product Team (Producer)
+# Strictness: STRICT - This is the authoritative source of truth for all customer data
+#
+# Business Purpose:
+#   - Master customer registry for commercial and institutional banking clients
+#   - Enforces strict KYC compliance and data quality standards
+#   - All fields are required and must pass validation (no nulls, strict enums)
+#   - Used by downstream consumers for deposits, lending, and risk exposure analysis
+#
+# Key Rules:
+#   - customer_id: unique identifier, must be unique and not null
+#   - segment: only 'commercial' or 'institutional' allowed
+#   - country_code: ISO 3166-1 alpha-2 format (e.g., GB, US, FR)
+#   - kyc_status: verified or pending (strict compliance requirement)
+#   - created_at: datetime in YYYY-MM-DD HH:MM:SS format
+# ============================================================================
+
 contract:
   name: producer_customers
   version: 2.0.0

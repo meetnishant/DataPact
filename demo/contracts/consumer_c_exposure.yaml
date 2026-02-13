@@ -1,3 +1,32 @@
+# ============================================================================
+# CONSUMER C CONTRACT: Customer Exposure View (Risk Management Team)
+# ============================================================================
+# Scenario: Scenario 1 - Baseline Validation (PASS)
+# Consumer: Risk Management Team (Consumer C)
+# Strictness: STRICT - Cross-product aggregated view for credit risk analysis
+#
+# Business Purpose:
+#   - Risk Management team uses this for total customer exposure calculations
+#   - Aggregates deposits and lending data to assess overall customer risk
+#   - Requires strict validation because this feeds into regulatory capital requirements
+#   - All fields must be present with no nulls (regulatory compliance)
+#   - Uses a pre-aggregated view (customer_exposure) rather than raw tables
+#
+# Demo Flow:
+#   - Scenario 1: Validates successfully against aggregated exposure view (PASS)
+#   - Not affected by deposit_accounts breaking change (uses aggregated view)
+#
+# Key Rules:
+#   - customer_id: unique identifier per customer (risk view is customer-level)
+#   - segment: commercial or institutional (risk segmentation)
+#   - total_deposits: sum of all deposit account balances per customer (min 0)
+#   - total_loans: sum of all loan principal balances per customer (min 0)
+#   - All fields required: not_null=true for regulatory reporting accuracy
+#
+# This demonstrates how consumers can define contracts for derived/aggregated datasets
+# rather than just raw producer tables. The risk team needs a different view of the data.
+# ============================================================================
+
 contract:
   name: consumer_c_customer_exposure
   version: 2.0.0
