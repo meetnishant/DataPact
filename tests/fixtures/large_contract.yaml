@@ -1,0 +1,808 @@
+
+contract:
+  name: large_contract
+  version: 2.0.0
+dataset:
+  name: synthetic_large
+fields:
+  # 100 integer fields, all required, unique, min/max, matching the generated data
+  - name: field1
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field2
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field3
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field4
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field5
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field6
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field7
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field8
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field9
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field10
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field11
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field12
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field13
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field14
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field15
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field16
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field17
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field18
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field19
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field20
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field21
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field22
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field23
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field24
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field25
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field26
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field27
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field28
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field29
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field30
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field31
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field32
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field33
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field34
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field35
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field36
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field37
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field38
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field39
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field40
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field41
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field42
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field43
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field44
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field45
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field46
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field47
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field48
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field49
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field50
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field51
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field52
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field53
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field54
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field55
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field56
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field57
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field58
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field59
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field60
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field61
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field62
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field63
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field64
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field65
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field66
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field67
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field68
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field69
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field70
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field71
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field72
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field73
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field74
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field75
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field76
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field77
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field78
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field79
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field80
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field81
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field82
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field83
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field84
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field85
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field86
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field87
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field88
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field89
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field90
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field91
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field92
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field93
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field94
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field95
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field96
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field97
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field98
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field99
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999
+  - name: field100
+    type: integer
+    required: true
+    rules:
+      unique: true
+      not_null: true
+      min: 0
+      max: 9999

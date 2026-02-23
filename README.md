@@ -447,7 +447,28 @@ JSON reports are saved to `./reports/<timestamp>.json`:
 
 For scenario coverage details, see [Banking & Finance Test Cases](#banking--finance-test-cases).
 
+
+
+### Performance & NFR Tests
+
+Automated performance and non-functional requirements (NFR) tests ensure DataPact is robust and efficient at scale. These tests cover:
+- Large dataset validation time (1M+ rows)
+- Contract parsing speed (large YAML contracts)
+- CLI startup time
+- Memory usage for large files
+- Batch/concurrent validation throughput
+- Performance degradation with increasing data size
+
+See [PERFORMANCE_NFR_SUMMARY.md](PERFORMANCE_NFR_SUMMARY.md) for the latest results, coverage, and CI integration instructions.
+
+Performance/NFR tests are run automatically in CI (see `.github/workflows/ci.yml`). Reports are uploaded as artifacts for every push and pull request.
+
+To run locally:
 ```bash
+PYTHONPATH=src python3 -m pytest tests/test_performance.py tests/test_performance_extra.py --durations=10 --tb=short --junitxml=performance_report.xml
+```
+This generates a JUnit XML report with timing and pass/fail status for each scenario.
+
 # Run tests
 pytest
 

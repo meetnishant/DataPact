@@ -2,7 +2,10 @@
 
 ## Maintainers & Contributions
 
+
 This project is maintained by the open-source community. Contributions are welcome via pull requests and issues. Please follow the code style and add tests for new features.
+
+See [PERFORMANCE_NFR_SUMMARY.md](../PERFORMANCE_NFR_SUMMARY.md) for performance/NFR test coverage and CI automation details.
 
 ## Overview
 

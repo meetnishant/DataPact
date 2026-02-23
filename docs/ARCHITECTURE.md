@@ -1,3 +1,28 @@
+## Performance & NFR Testing
+
+
+The project includes a suite of automated performance and non-functional requirements (NFR) tests to ensure DataPact remains robust, efficient, and production-ready at scale. These tests are located in `tests/test_performance.py` and `tests/test_performance_extra.py`.
+
+See [PERFORMANCE_NFR_SUMMARY.md](../PERFORMANCE_NFR_SUMMARY.md) for the latest results, coverage, and CI integration details. Performance/NFR tests are run automatically in CI and reports are uploaded as artifacts.
+
+### What is covered?
+- **Large dataset validation time:** Validates 1M+ row CSVs and asserts runtime is within SLA.
+- **Contract parsing speed:** Measures time to parse large contracts (100+ fields, 50+ rules each).
+- **CLI startup time:** Ensures CLI responds quickly for small contracts.
+- **Memory usage:** Checks RAM usage when loading and validating large files.
+- **Batch and concurrent validation:** Runs many validations in sequence and in parallel to test throughput and scalability.
+- **Performance degradation:** Measures how validation time scales with increasing data size.
+
+### How to run
+```bash
+PYTHONPATH=src python3 -m pytest tests/test_performance.py tests/test_performance_extra.py --durations=10 --tb=short --maxfail=2 --junitxml=performance_report.xml
+```
+This will generate a JUnit XML report (`performance_report.xml`) with timing and pass/fail status for each scenario.
+
+### Adding new NFR tests
+- Add new scenarios to the performance test files.
+- Use realistic data and contracts for benchmarking.
+- Document any new NFRs in this section.
 # Architecture
 
 ## Maintainers & Contributions
