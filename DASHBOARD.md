@@ -402,6 +402,29 @@ ruff check src/ tests/
 mypy src/
 ```
 
+
+## Performance & NFR Tests
+
+Automated performance and non-functional requirements (NFR) tests ensure DataPact is robust and efficient at scale. These tests cover:
+
+- Large CSV validation time
+- Contract parsing speed
+- CLI startup time
+- Memory usage for large files
+- Batch validation throughput
+- Concurrent validation throughput
+- Performance degradation (scaling)
+
+See [PERFORMANCE_NFR_SUMMARY.md](PERFORMANCE_NFR_SUMMARY.md) for the latest results, coverage, and CI integration instructions.
+
+Performance/NFR tests are run automatically in CI (see `.github/workflows/ci.yml`). Reports are uploaded as artifacts for every push and pull request.
+
+To run locally:
+```bash
+PYTHONPATH=src python3 -m pytest tests/test_performance.py tests/test_performance_extra.py --durations=10 --tb=short --junitxml=performance_report.xml
+```
+
+---
 ## Next Actions
 
 1. ✅ **Setup** - Follow [QUICKSTART.md](QUICKSTART.md)
