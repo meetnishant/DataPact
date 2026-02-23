@@ -4,7 +4,10 @@ BLACK = $(PYTHON) -m black
 RUFF = $(PYTHON) -m ruff
 MYPY = $(PYTHON) -m mypy
 
-.PHONY: test test-quick test-core test-versioning test-banking test-concurrency coverage lint format typecheck clean
+.PHONY: test test-quick test-core test-versioning test-banking test-concurrency performance coverage lint format typecheck clean
+# Run performance & NFR tests and generate JUnit XML report
+performance:
+	$(PYTEST) tests/test_performance.py tests/test_performance_extra.py --durations=10 --tb=short --junitxml=performance_report.xml
 
 # Run full test suite in parallel with coverage
 test:
