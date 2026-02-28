@@ -2,9 +2,12 @@
 
 from typing import Any, Dict, List
 import json
+import logging
 
 from datapact.providers.base import ContractProvider
 from datapact.contracts import Contract, Field, Dataset
+
+logger = logging.getLogger(__name__)
 
 
 class PactProvider(ContractProvider):
@@ -156,15 +159,15 @@ class PactProvider(ContractProvider):
     @staticmethod
     def _log_pact_limitations() -> None:
         """Log warnings about unsupported Pact features in DataPact."""
-        print(
-            "WARN: Pact provider: quality rules (not_null, unique, etc.) "
+        logger.warning(
+            "Pact provider: quality rules (not_null, unique, etc.) "
             "are NOT inferred from Pact contracts."
         )
-        print(
-            "WARN: Pact provider: distribution rules (mean, std, drift) "
+        logger.warning(
+            "Pact provider: distribution rules (mean, std, drift) "
             "are NOT supported."
         )
-        print(
-            "WARN: Pact provider: custom rules are NOT supported. "
+        logger.warning(
+            "Pact provider: custom rules are NOT supported. "
             "Add them manually to the DataPact contract if needed."
         )

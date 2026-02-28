@@ -42,6 +42,7 @@ from datapact.providers import DataPactProvider, OdcsProvider
 from datapact.providers.base import ContractProvider
 from datapact.normalization import NormalizationConfig, normalize_dataframe
 from datapact.versioning import check_tool_compatibility  # Version compatibility check
+from datapact import __version__ as TOOL_VERSION
 from datapact.profiling import profile_dataframe  # Profiling utilities
 
 
@@ -276,7 +277,7 @@ def validate_command(args) -> int:
 
     try:
         contract_data = yaml.safe_load(Path(args.contract).read_text())
-        tool_version = "0.2.0"  # Update as needed for tool releases
+        tool_version = TOOL_VERSION
         compatibility_warnings: List[str] = []
         odcs_metadata = None
 

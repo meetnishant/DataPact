@@ -230,9 +230,18 @@ class WebhookReportSink(ReportSink):
             headers=headers,
             method="POST",
         )
-        with urllib.request.urlopen(request, timeout=self.timeout) as response:
-            status = response.getcode()
-        return f"Webhook report sent (status {status})"
+        try:
+            with urllib.request.urlopen(request, timeout=self.timeout) as response:
+                status = response.getcode()
+            return f"Webhook report sent (status {status})"
+        except urllib.error.HTTPError as exc:
+            raise RuntimeError(
+                f"Webhook endpoint returned HTTP {exc.code}: {exc.reason}"
+            ) from exc
+        except urllib.error.URLError as exc:
+            raise RuntimeError(
+                f"Webhook connection failed: {exc.reason}"
+            ) from exc
 
 
 def write_report_sinks(

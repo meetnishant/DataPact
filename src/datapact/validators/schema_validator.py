@@ -67,13 +67,16 @@ class SchemaValidator:
     def _type_matches(actual: str, expected: str) -> bool:
         """
         Check if actual pandas dtype matches contract type
-        (integer, float, string, boolean).
+        (integer, float, string, boolean, datetime).
+        Uses startswith matching to avoid false positives from substring overlap
+        (e.g. "int" must not match "datetime64[ns]").
         """
         type_map = {
-            "integer": ["int", "int32", "int64"],
-            "float": ["float", "float32", "float64"],
-            "string": ["object", "string", "datetime"],
+            "integer": ["int", "uint"],
+            "float": ["float"],
+            "string": ["object", "string"],
             "boolean": ["bool"],
+            "datetime": ["datetime"],
         }
         expected_types = type_map.get(expected, [])
-        return any(t in actual for t in expected_types)
+        return any(actual.startswith(t) for t in expected_types)

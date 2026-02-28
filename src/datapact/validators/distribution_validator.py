@@ -65,8 +65,11 @@ class DistributionValidator:
         if dist.mean is not None and dist.max_drift_pct is not None:
             if dist.mean != 0:
                 drift_pct = abs(current_mean - dist.mean) / abs(dist.mean) * 100
+            elif current_mean != 0:
+                # Baseline is zero but current is non-zero: always flag as drifted
+                drift_pct = 100.0
             else:
-                drift_pct = 0
+                drift_pct = 0.0
             if drift_pct > dist.max_drift_pct:
                 self.warnings.append(
                     f"WARN: Field '{field.name}' mean drift {drift_pct:.2f}% "
@@ -77,8 +80,11 @@ class DistributionValidator:
         if dist.std is not None and dist.max_drift_pct is not None:
             if dist.std != 0:
                 drift_pct = abs(current_std - dist.std) / abs(dist.std) * 100
+            elif current_std != 0:
+                # Baseline is zero but current is non-zero: always flag as drifted
+                drift_pct = 100.0
             else:
-                drift_pct = 0
+                drift_pct = 0.0
             if drift_pct > dist.max_drift_pct:
                 self.warnings.append(
                     f"WARN: Field '{field.name}' std drift {drift_pct:.2f}% "
@@ -153,9 +159,12 @@ class DistributionAccumulator:
             current_std = (stats["m2"] / count) ** 0.5 if count > 0 else 0.0
 
             if dist.mean is not None and dist.max_drift_pct is not None:
-                drift_pct = 0.0
                 if dist.mean != 0:
                     drift_pct = abs(current_mean - dist.mean) / abs(dist.mean) * 100
+                elif current_mean != 0:
+                    drift_pct = 100.0
+                else:
+                    drift_pct = 0.0
                 if drift_pct > dist.max_drift_pct:
                     warnings.append(
                         f"WARN: Field '{field_name}' mean drift {drift_pct:.2f}% "
@@ -163,9 +172,12 @@ class DistributionAccumulator:
                     )
 
             if dist.std is not None and dist.max_drift_pct is not None:
-                drift_pct = 0.0
                 if dist.std != 0:
                     drift_pct = abs(current_std - dist.std) / abs(dist.std) * 100
+                elif current_std != 0:
+                    drift_pct = 100.0
+                else:
+                    drift_pct = 0.0
                 if drift_pct > dist.max_drift_pct:
                     warnings.append(
                         f"WARN: Field '{field_name}' std drift {drift_pct:.2f}% "

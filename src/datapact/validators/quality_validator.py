@@ -156,9 +156,6 @@ class QualityValidator:
             # Use fullmatch for full-string regex validation
             pattern = rules.regex
             non_null = column.dropna().astype(str).str.strip()
-            # Debug: print actual values being checked for regex
-            if field.name in ("date", "origination_date"):
-                print(f"[DEBUG] Regex check for field '{field.name}':", list(non_null))
             try:
                 violations = (~non_null.str.fullmatch(pattern)).sum()
             except re.error as exc:
