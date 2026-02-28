@@ -26,6 +26,8 @@ from datapact.validators import (
     DistributionValidator,  # Validates distribution/drift rules
     SLAValidator,  # Validates SLA checks (row count thresholds)
     CustomRuleValidator,  # Validates custom plugin rules
+    StreamingValidator,
+    KafkaStreamingEngine,
 )
 from datapact.validators.quality_validator import ChunkedQualityValidator
 from datapact.validators.distribution_validator import DistributionAccumulator
@@ -57,7 +59,7 @@ def main() -> int:
     # Add subcommands and arguments
     parser.add_argument(
         "command",
-        choices=["validate", "init", "profile"],
+        choices=["validate", "stream-validate", "init", "profile"],
         help="Command to execute",
     )
     parser.add_argument(
@@ -77,6 +79,11 @@ def main() -> int:
     parser.add_argument(
         "--contract-name",
         help="Contract name for init/profile output",
+    )
+    parser.add_argument(
+        "--include-streaming",
+        action="store_true",
+        help="Include a streaming section in init/profile output",
     )
     parser.add_argument(
         "--data",
@@ -146,7 +153,18 @@ def main() -> int:
         "--report-sink",
         action="append",
         default=None,
-        help="Report sink (file, stdout, webhook). Repeatable.",
+        help="Report sink (file, stdout, webhook, dashboard). Repeatable.",
+    )
+    parser.add_argument(
+        "--dashboard",
+        action="store_true",
+        help="Enable real-time metrics dashboard (FastAPI server)",
+    )
+    parser.add_argument(
+        "--dashboard-port",
+        type=int,
+        default=8088,
+        help="Port for dashboard server (default: 8088)",
     )
     parser.add_argument(
         "--report-webhook-url",
@@ -163,6 +181,34 @@ def main() -> int:
         type=int,
         default=5,
         help="Webhook timeout in seconds (default: 5)",
+    )
+    parser.add_argument(
+        "--bootstrap-servers",
+        help="Kafka bootstrap servers (stream-validate)",
+    )
+    parser.add_argument(
+        "--topic",
+        help="Kafka topic (stream-validate)",
+    )
+    parser.add_argument(
+        "--group-id",
+        help="Kafka consumer group id (stream-validate)",
+    )
+    parser.add_argument(
+        "--from-beginning",
+        action="store_true",
+        help="Start consuming from earliest offset (stream-validate)",
+    )
+    parser.add_argument(
+        "--max-messages",
+        type=int,
+        help="Max messages to consume before exiting (stream-validate)",
+    )
+    parser.add_argument(
+        "--mode",
+        choices=["microbatch", "continuous"],
+        default="microbatch",
+        help="Streaming mode: microbatch (default) or continuous",
     )
     parser.add_argument(
         "--chunksize",
@@ -254,6 +300,8 @@ def main() -> int:
     # Dispatch to the correct command handler
     if args.command == "validate":
         return validate_command(args)
+    elif args.command == "stream-validate":
+        return stream_validate_command(args)
     elif args.command == "init":
         return init_command(args)
     elif args.command == "profile":
@@ -443,6 +491,165 @@ def validate_command(args) -> int:
         return 1
 
 
+def stream_validate_command(args) -> int:
+    """
+    Execute the 'stream-validate' command: validate streaming data against a contract.
+    Returns exit code 0 if no errors are observed, 1 otherwise.
+    """
+    if not args.contract:
+        print("ERROR: --contract is required for stream-validate command")
+        return 1
+
+    try:
+        contract_data = yaml.safe_load(Path(args.contract).read_text())
+        tool_version = "0.2.0"  # Update as needed for tool releases
+        compatibility_warnings: List[str] = []
+        odcs_metadata = None
+
+        provider = _resolve_contract_provider(
+            args.contract_format,
+            contract_data,
+            args.odcs_object,
+        )
+        contract = provider.load_from_dict(contract_data)
+
+        if isinstance(provider, OdcsProvider):
+            compatibility_warnings.extend(provider.odcs_warnings)
+            odcs_metadata = provider.odcs_metadata
+        else:
+            is_compatible, compat_msg = check_tool_compatibility(
+                tool_version, contract.version
+            )
+            if not is_compatible:
+                print(f"ERROR: {compat_msg}")
+                return 1
+
+        if contract.streaming is None:
+            print("ERROR: Contract does not include a streaming section")
+            return 1
+
+        streaming_config = contract.streaming
+        engine = streaming_config.engine
+        if engine == "auto":
+            engine = "kafka"
+        if engine != "kafka":
+            raise ValueError(
+                "Only kafka streaming is supported. "
+                "Install extras for flink/spark when available."
+            )
+
+        bootstrap_servers = args.bootstrap_servers
+        topic = args.topic or streaming_config.topic
+        group_id = args.group_id or streaming_config.consumer_group
+
+        if not bootstrap_servers:
+            print("ERROR: --bootstrap-servers is required for stream-validate")
+            return 1
+        if not topic:
+            print("ERROR: --topic is required for stream-validate")
+            return 1
+        if not group_id:
+            print("ERROR: --group-id is required for stream-validate")
+            return 1
+
+        normalization_config = _build_normalization_config(contract)
+        severity_overrides = _parse_severity_overrides(args.severity_override)
+
+        engine_instance = KafkaStreamingEngine(
+            bootstrap_servers=bootstrap_servers,
+            topic=topic,
+            group_id=group_id,
+            from_beginning=args.from_beginning,
+            dlq_config={
+                "enabled": streaming_config.dlq.enabled,
+                "topic": streaming_config.dlq.topic,
+                "reason_field": streaming_config.dlq.reason_field,
+            },
+        )
+        validator = StreamingValidator(
+            contract=contract,
+            engine=engine_instance,
+            config=streaming_config,
+            severity_overrides=severity_overrides,
+            plugin_modules=args.plugin,
+            normalization_config=normalization_config,
+            warn_on_empty_window=True,
+        )
+
+        webhook_headers = _parse_webhook_headers(args.report_webhook_header)
+        sinks = _build_report_sinks(args, webhook_headers)
+        context = ReportContext(
+            output_dir=args.output_dir,
+            webhook_url=args.report_webhook_url,
+            webhook_headers=webhook_headers,
+            webhook_timeout=args.report_webhook_timeout,
+        )
+
+        any_errors = False
+        try:
+            for result in validator.run(
+                mode=args.mode,
+                max_messages=args.max_messages,
+            ):
+                window_errors = []
+                for err in result.errors:
+                    severity = "ERROR" if err.startswith("ERROR") else "WARN"
+                    msg = err.replace("ERROR: ", "").replace("WARN: ", "")
+                    window_errors.append(
+                        ErrorRecord(
+                            code="STREAM",
+                            field="",
+                            message=msg,
+                            severity=severity,
+                        )
+                    )
+
+                for warn in result.warnings:
+                    msg = warn.replace("WARN: ", "")
+                    window_errors.append(
+                        ErrorRecord(
+                            code="STREAM",
+                            field="",
+                            message=msg,
+                            severity="WARN",
+                        )
+                    )
+
+                error_count = sum(1 for e in window_errors if e.severity == "ERROR")
+                warning_count = sum(1 for e in window_errors if e.severity == "WARN")
+                passed = error_count == 0
+                any_errors = any_errors or not passed
+
+                report = ValidationReport(
+                    passed=passed,
+                    contract_name=contract.name,
+                    contract_version=contract.version,
+                    dataset_name=contract.dataset.name,
+                    timestamp=datetime.now().isoformat(),
+                    tool_version=tool_version,
+                    error_count=error_count,
+                    warning_count=warning_count,
+                    errors=window_errors,
+                    compatibility_warnings=compatibility_warnings,
+                    odcs_metadata=odcs_metadata,
+                    odcs_warnings=compatibility_warnings if odcs_metadata else None,
+                )
+
+                report.print_summary()
+                for message in write_report_sinks(report, sinks, context):
+                    print(message)
+        except KeyboardInterrupt:
+            print("INFO: Streaming validation interrupted")
+        finally:
+            engine_instance.close()
+
+        return 1 if any_errors else 0
+
+    except Exception as e:
+        print(f"ERROR: {e}")
+        return 1
+
+
 def _resolve_contract_provider(
     contract_format: str,
     contract_data: Dict[str, Any],
@@ -508,6 +715,8 @@ def init_command(args) -> int:
                 }
             )
 
+        _maybe_add_streaming_section(contract_data, args)
+
         _write_contract_yaml(contract_data, args.contract)
 
         return 0
@@ -549,6 +758,8 @@ def profile_command(args) -> int:
             infer_date_regex=not args.no_date_regex,
         )
 
+        _maybe_add_streaming_section(contract_data, args)
+
         _write_contract_yaml(contract_data, args.contract)
         return 0
 
@@ -565,6 +776,36 @@ def _write_contract_yaml(contract_data, output_path: str) -> None:
         return
 
     print(yaml_text)
+
+
+def _maybe_add_streaming_section(contract_data: Dict[str, Any], args) -> None:
+    if not args.include_streaming:
+        return
+    dataset = contract_data.get("dataset", {})
+    dataset_name = dataset.get("name") or "dataset"
+    topic = f"{dataset_name}.events.v1"
+
+    contract_data["streaming"] = {
+        "engine": "kafka",
+        "topic": topic,
+        "consumer_group": "datapact-validator",
+        "window": {
+            "type": "tumbling",
+            "duration_seconds": 300,
+        },
+        "metrics": [
+            "row_rate",
+            "mean",
+            "std",
+            "drift_pct",
+            "freshness_max_age_seconds",
+        ],
+        "dlq": {
+            "enabled": True,
+            "topic": f"{topic}.dlq",
+            "reason_field": "_datapact_violation",
+        },
+    }
 
 
 def _parse_severity_overrides(overrides) -> dict:
@@ -593,6 +834,9 @@ def _parse_webhook_headers(headers: List[str]) -> dict:
 def _build_report_sinks(args, webhook_headers: dict) -> List:
     sinks = []
     sink_names = args.report_sink or ["file"]
+    # If --dashboard is set, add dashboard sink unless already present
+    if getattr(args, "dashboard", False) and "dashboard" not in [n.strip().lower() for n in sink_names]:
+        sink_names.append("dashboard")
     for raw in sink_names:
         name = raw.strip().lower()
         if name == "file":
@@ -609,8 +853,13 @@ def _build_report_sinks(args, webhook_headers: dict) -> List:
                     timeout=args.report_webhook_timeout,
                 )
             )
+        elif name == "dashboard":
+            from datapact.reporting_dashboard_sink import DashboardReportSink
+            dashboard_sink = DashboardReportSink(port=getattr(args, "dashboard_port", 8088))
+            dashboard_sink.start()
+            sinks.append(dashboard_sink)
         else:
-            raise ValueError("Invalid report sink. Use file, stdout, or webhook.")
+            raise ValueError("Invalid report sink. Use file, stdout, webhook, or dashboard.")
     return sinks
 
 

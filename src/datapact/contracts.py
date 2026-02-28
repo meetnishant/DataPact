@@ -103,6 +103,36 @@ class FlattenConfig:
 
 
 @dataclass
+class StreamingWindow:
+    """Windowing configuration for streaming validation."""
+
+    type: str = "tumbling"
+    duration_seconds: int = 300
+    slide_seconds: Optional[int] = None
+
+
+@dataclass
+class StreamingDlq:
+    """Dead-letter queue configuration for streaming validation."""
+
+    enabled: bool = False
+    topic: Optional[str] = None
+    reason_field: str = "_datapact_violation"
+
+
+@dataclass
+class StreamingConfig:
+    """Streaming configuration for real-time validation."""
+
+    engine: str = "auto"
+    topic: str = ""
+    consumer_group: Optional[str] = None
+    window: StreamingWindow = field(default_factory=StreamingWindow)
+    metrics: List[str] = field(default_factory=list)
+    dlq: StreamingDlq = field(default_factory=StreamingDlq)
+
+
+@dataclass
 class Contract:
     """
     Root contract object. Contains contract metadata, dataset, and fields.
@@ -116,6 +146,7 @@ class Contract:
     sla: SLA = field(default_factory=SLA)
     custom_rules: List[Dict[str, Any]] = field(default_factory=list)
     flatten: FlattenConfig = field(default_factory=FlattenConfig)
+    streaming: Optional[StreamingConfig] = None
 
     @classmethod
     def from_yaml(cls, yaml_path: str) -> "Contract":
@@ -176,6 +207,7 @@ class Contract:
         sla = cls._parse_sla(data.get("sla", {}))
         custom_rules = cls._parse_custom_rules(data.get("custom_rules", []))
         flatten = cls._parse_flatten(data.get("flatten", {}))
+        streaming = cls._parse_streaming(data.get("streaming"))
         fields_data = data.get("fields", [])
         if not isinstance(fields_data, list):
             raise ValueError("Contract 'fields' must be a list")
@@ -211,6 +243,7 @@ class Contract:
             sla=sla,
             custom_rules=custom_rules,
             flatten=flatten,
+            streaming=streaming,
         )
 
     def resolve_column_name(self, field_name: str) -> str:
@@ -372,4 +405,91 @@ class Contract:
             std=dist_dict.get("std"),
             max_drift_pct=dist_dict.get("max_drift_pct"),
             max_z_score=dist_dict.get("max_z_score"),
+        )
+
+    @staticmethod
+    def _parse_streaming(streaming_data: Any) -> Optional[StreamingConfig]:
+        if not streaming_data:
+            return None
+        if not isinstance(streaming_data, dict):
+            raise ValueError("streaming must be a mapping")
+
+        engine = str(streaming_data.get("engine", "auto")).lower()
+        if engine not in {"auto", "kafka", "flink", "spark"}:
+            raise ValueError(
+                "streaming.engine must be one of: auto, kafka, flink, spark"
+            )
+
+        topic = streaming_data.get("topic")
+        if not topic:
+            raise ValueError("streaming.topic is required when streaming is set")
+        if not isinstance(topic, str):
+            raise ValueError("streaming.topic must be a string")
+
+        consumer_group = streaming_data.get("consumer_group")
+        if consumer_group is not None and not isinstance(consumer_group, str):
+            raise ValueError("streaming.consumer_group must be a string")
+
+        window_data = streaming_data.get("window", {})
+        if window_data and not isinstance(window_data, dict):
+            raise ValueError("streaming.window must be a mapping")
+        window_type = str(window_data.get("type", "tumbling")).lower()
+        if window_type not in {"tumbling", "sliding", "session"}:
+            raise ValueError(
+                "streaming.window.type must be one of: tumbling, sliding, session"
+            )
+
+        duration_seconds = window_data.get("duration_seconds", 300)
+        if not isinstance(duration_seconds, int) or duration_seconds <= 0:
+            raise ValueError("streaming.window.duration_seconds must be > 0")
+
+        slide_seconds = window_data.get("slide_seconds")
+        if window_type == "sliding":
+            if slide_seconds is None:
+                raise ValueError(
+                    "streaming.window.slide_seconds is required for sliding windows"
+                )
+            if not isinstance(slide_seconds, int) or slide_seconds <= 0:
+                raise ValueError("streaming.window.slide_seconds must be > 0")
+        else:
+            if slide_seconds is not None:
+                if not isinstance(slide_seconds, int) or slide_seconds <= 0:
+                    raise ValueError("streaming.window.slide_seconds must be > 0")
+
+        metrics = streaming_data.get("metrics", [])
+        if metrics and not isinstance(metrics, list):
+            raise ValueError("streaming.metrics must be a list")
+        for metric in metrics:
+            if not isinstance(metric, str):
+                raise ValueError("streaming.metrics entries must be strings")
+
+        dlq_data = streaming_data.get("dlq", {})
+        if dlq_data and not isinstance(dlq_data, dict):
+            raise ValueError("streaming.dlq must be a mapping")
+        dlq_enabled = bool(dlq_data.get("enabled", False))
+        dlq_topic = dlq_data.get("topic")
+        if dlq_enabled:
+            if not dlq_topic:
+                raise ValueError("streaming.dlq.topic is required when enabled")
+            if not isinstance(dlq_topic, str):
+                raise ValueError("streaming.dlq.topic must be a string")
+        reason_field = dlq_data.get("reason_field", "_datapact_violation")
+        if not isinstance(reason_field, str):
+            raise ValueError("streaming.dlq.reason_field must be a string")
+
+        return StreamingConfig(
+            engine=engine,
+            topic=topic,
+            consumer_group=consumer_group,
+            window=StreamingWindow(
+                type=window_type,
+                duration_seconds=duration_seconds,
+                slide_seconds=slide_seconds,
+            ),
+            metrics=metrics,
+            dlq=StreamingDlq(
+                enabled=dlq_enabled,
+                topic=dlq_topic,
+                reason_field=reason_field,
+            ),
         )

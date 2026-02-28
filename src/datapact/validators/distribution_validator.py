@@ -140,12 +140,17 @@ class DistributionAccumulator:
                 continue
 
             stats = self.stats[field_name]
-            for value in numeric_col:
-                stats["count"] += 1
-                delta = value - stats["mean"]
-                stats["mean"] += delta / stats["count"]
-                delta2 = value - stats["mean"]
-                stats["m2"] += delta * delta2
+            # Parallel (Chan's) algorithm for combining mean and M2 across chunks
+            chunk_count = len(numeric_col)
+            chunk_mean = float(numeric_col.mean())
+            chunk_m2 = float(numeric_col.var(ddof=0)) * chunk_count
+
+            prev_count = stats["count"]
+            new_count = prev_count + chunk_count
+            delta = chunk_mean - stats["mean"]
+            stats["mean"] += delta * chunk_count / new_count
+            stats["m2"] += chunk_m2 + delta ** 2 * prev_count * chunk_count / new_count
+            stats["count"] = new_count
 
     def finalize_drift(self) -> List[str]:
         warnings: List[str] = []

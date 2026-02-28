@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DataPact Streaming Dashboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2em; background: #f7f7fa; }
+    h1 { color: #2a3b4c; }
+    .metrics, .errors { margin-top: 2em; }
+    table { border-collapse: collapse; width: 100%; background: #fff; }
+    th, td { border: 1px solid #ddd; padding: 8px; }
+    th { background: #e3e8ee; }
+    tr:nth-child(even) { background: #f2f2f2; }
+    .error { color: #b30000; }
+    .warn { color: #b36b00; }
+    .ok { color: #228b22; }
+  </style>
+</head>
+<body>
+  <h1>DataPact Streaming Metrics Dashboard</h1>
+  <div class="metrics">
+    <h2>Recent Metrics</h2>
+    <table id="metrics-table">
+      <thead>
+        <tr><th>Timestamp</th><th>Contract</th><th>Dataset</th><th>Status</th><th>Errors</th><th>Warnings</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <div class="errors">
+    <h2>Recent Errors</h2>
+    <table id="errors-table">
+      <thead>
+        <tr><th>Timestamp</th><th>Contract</th><th>Dataset</th><th>Field</th><th>Severity</th><th>Message</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <script>
+    async function fetchAndRender() {
+      const metricsRes = await fetch('/metrics');
+      const metrics = await metricsRes.json();
+      const metricsTbody = document.querySelector('#metrics-table tbody');
+      metricsTbody.innerHTML = '';
+      metrics.slice().reverse().forEach(m => {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td>${m.timestamp}</td><td>${m.contract}</td><td>${m.dataset}</td><td class="${m.passed ? 'ok' : 'error'}">${m.passed ? 'PASS' : 'FAIL'}</td><td>${m.error_count}</td><td>${m.warning_count}</td>`;
+        metricsTbody.appendChild(row);
+      });
+      const errorsRes = await fetch('/errors');
+      const errors = await errorsRes.json();
+      const errorsTbody = document.querySelector('#errors-table tbody');
+      errorsTbody.innerHTML = '';
+      errors.slice().reverse().forEach(e => {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td>${e.timestamp}</td><td>${e.contract}</td><td>${e.dataset}</td><td>${e.field}</td><td class="${e.severity === 'ERROR' ? 'error' : 'warn'}">${e.severity}</td><td>${e.message}</td>`;
+        errorsTbody.appendChild(row);
+      });
+    }
+    setInterval(fetchAndRender, 2000);
+    fetchAndRender();
+  </script>
+</body>
+</html>

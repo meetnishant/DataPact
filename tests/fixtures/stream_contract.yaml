@@ -1,0 +1,30 @@
+contract:
+  name: stream_contract_demo
+  version: 2.0.0
+dataset:
+  name: events
+fields:
+  - name: id
+    type: integer
+    required: true
+    rules:
+      unique: true
+  - name: value
+    type: float
+    required: false
+    rules: {}
+streaming:
+  engine: kafka
+  topic: datapact-events
+  consumer_group: datapact-dashboard-demo
+  window:
+    type: tumbling
+    duration_seconds: 10
+  metrics:
+    - row_rate
+    - mean
+    - std
+  dlq:
+    enabled: true
+    topic: datapact-events.dlq
+    reason_field: _datapact_violation

@@ -11,6 +11,7 @@ from datapact.validators.quality_validator import (
 from datapact.validators.distribution_validator import DistributionValidator
 from datapact.validators.sla_validator import SLAValidator
 from datapact.validators.custom_rule_validator import CustomRuleValidator
+from datapact.validators.streaming import StreamingValidator, KafkaStreamingEngine
 
 # Explicit public exports for validator classes
 __all__ = [
@@ -20,4 +21,6 @@ __all__ = [
     "DistributionValidator",
     "SLAValidator",
     "CustomRuleValidator",
+    "StreamingValidator",
+    "KafkaStreamingEngine",
 ]

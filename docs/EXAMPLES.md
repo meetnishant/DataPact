@@ -572,6 +572,42 @@ datapact validate --contract contract.yaml --data large_events.csv \
 
 **Memory efficiency**: Chunked validation processes file sequentially, ideal for datasets > 1GB.
 
+### Streaming Validation
+
+Validate Kafka streams using the same contract format with an optional
+`streaming` section. Streaming runs validations on each window and sends
+ERROR violations to the DLQ with injected metadata.
+
+**Contract streaming section:**
+```yaml
+streaming:
+  engine: kafka
+  topic: "customer.events.v1"
+  consumer_group: "datapact-validator"
+  window:
+    type: tumbling
+    duration_seconds: 300
+  metrics:
+    - row_rate
+    - mean
+    - std
+    - drift_pct
+    - freshness_max_age_seconds
+  dlq:
+    enabled: true
+    topic: "customer.events.v1.dlq"
+    reason_field: "_datapact_violation"
+```
+
+**Stream validation:**
+```bash
+datapact stream-validate \
+  --contract customer_contract.yaml \
+  --bootstrap-servers localhost:9092 \
+  --topic customer.events.v1 \
+  --group-id datapact-validator
+```
+
 ### Version Migration
 
 Automatically upgrade older contracts to latest schema.

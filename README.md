@@ -447,6 +447,47 @@ JSON reports are saved to `./reports/<timestamp>.json`:
 
 For scenario coverage details, see [Banking & Finance Test Cases](#banking--finance-test-cases).
 
+## Streaming Validation
+
+DataPact can validate real-time or micro-batch streams using the same contract
+format. Install streaming dependencies:
+
+```bash
+pip install -e ".[streaming]"
+```
+
+**Example contract (streaming section):**
+```yaml
+streaming:
+  engine: kafka
+  topic: "customer.events.v1"
+  consumer_group: "datapact-validator"
+  window:
+    type: tumbling
+    duration_seconds: 300
+  metrics:
+    - row_rate
+    - mean
+    - std
+    - drift_pct
+    - freshness_max_age_seconds
+  dlq:
+    enabled: true
+    topic: "customer.events.v1.dlq"
+    reason_field: "_datapact_violation"
+```
+
+**Run streaming validation:**
+```bash
+datapact stream-validate \
+  --contract customer_contract.yaml \
+  --bootstrap-servers localhost:9092 \
+  --topic customer.events.v1 \
+  --group-id datapact-validator \
+  --mode microbatch \
+  --max-messages 10000
+```
+
 
 
 ### Performance & NFR Tests
