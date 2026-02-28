@@ -1,5 +1,6 @@
-## Performance & NFR Testing
+# Architecture
 
+## Performance & NFR Testing
 
 The project includes a suite of automated performance and non-functional requirements (NFR) tests to ensure DataPact remains robust, efficient, and production-ready at scale. These tests are located in `tests/test_performance.py` and `tests/test_performance_extra.py`.
 
@@ -23,11 +24,6 @@ This will generate a JUnit XML report (`performance_report.xml`) with timing and
 - Add new scenarios to the performance test files.
 - Use realistic data and contracts for benchmarking.
 - Document any new NFRs in this section.
-# Architecture
-
-## Maintainers & Contributions
-
-This project is maintained by the open-source community. Contributions are welcome via pull requests and issues. Please follow the code style and add tests for new features.
 
 ## High-Level Design
 
@@ -202,6 +198,8 @@ sequenceDiagram
     participant Normalizer as Normalizer
     participant Schema as Schema Validator
     participant Quality as Quality Validator
+    participant SLA as SLA Validator
+    participant Custom as Custom Rule Validator
     participant Distribution as Distribution Validator
     participant Reporter as Report Generator
     participant Output as JSON/Console/Sinks
@@ -222,10 +220,16 @@ sequenceDiagram
     Note over Schema,Distribution: VALIDATION PIPELINE (Sequential)
     CLI->>+Schema: Validate schema
     Schema-->>-CLI: Errors/OK
-    
+
     CLI->>+Quality: Validate quality rules
     Quality-->>-CLI: Errors & warnings (non-blocking)
-    
+
+    CLI->>+SLA: Validate SLA thresholds
+    SLA-->>-CLI: Errors & warnings (non-blocking)
+
+    CLI->>+Custom: Run custom rule plugins
+    Custom-->>-CLI: Errors & warnings (non-blocking)
+
     CLI->>+Distribution: Check distributions
     Distribution-->>-CLI: Warnings only (never blocks)
     end
@@ -278,15 +282,15 @@ See [docs/VERSIONING.md](VERSIONING.md) for detailed migration guide.
 
 ## Error Aggregation
 
-All validators return `(bool, List[str])`:
+All validators return `(bool, List[ErrorRecord])`:
 - `bool`: Overall pass/fail
-- `List[str]`: Detailed error messages
-
-Messages are parsed to extract:
-- Error code (SCHEMA, QUALITY, DISTRIBUTION)
-- Severity (ERROR vs WARN)
-- Field name
-- Human-readable message
+- `List[ErrorRecord]`: Structured error records, each containing:
+  - `code`: Error category (SCHEMA, QUALITY, SLA, CUSTOM, DISTRIBUTION)
+  - `severity`: `ERROR` or `WARN`
+  - `field`: Field name where the violation occurred
+  - `message`: Human-readable description
+  - `logical_path` *(optional)*: Contract field name or path (e.g., `"user.id"`) — populated when lineage tracking is enabled
+  - `actual_column` *(optional)*: Physical DataFrame column after normalization (e.g., `"user__id"`) — populated when data is flattened or column-mapped
 
 Version information added to reports:
 - Current contract version
@@ -298,15 +302,15 @@ Version information added to reports:
 
 To add a new validator:
 1. Implement in `validators/new_validator.py` with `validate() -> Tuple[bool, List[str]]`
+2. Import in `cli.py`
+3. Call after appropriate validators in pipeline
+4. Errors are automatically aggregated into report
 
 To add a new contract version:
 1. Add to `VERSION_REGISTRY` in `versioning.py`
 2. Implement migration path in `VersionMigration` class
 3. Add test fixtures and tests
 4. Update `docs/VERSIONING.md` with breaking changes
-2. Import in `cli.py`
-3. Call after appropriate validators in pipeline
-4. Errors are automatically aggregated into report
 
 To add new contract rules:
 1. Add field to `FieldRule` or `DistributionRule` dataclass
