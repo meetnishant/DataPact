@@ -62,6 +62,26 @@ python3 src/datapact/cli.py validate \
 
 Contract format is auto-detected when not specified.
 
+### Validate an Excel File
+```bash
+python3 src/datapact/cli.py validate \
+  --contract tests/fixtures/customer_contract.yaml \
+  --data tests/fixtures/valid_customers.xlsx
+```
+
+Load a specific sheet by name or index:
+```bash
+python3 src/datapact/cli.py validate \
+  --contract tests/fixtures/customer_contract.yaml \
+  --data sales_data.xlsx \
+  --sheet "Q1 Sales"  # by sheet name
+
+python3 src/datapact/cli.py validate \
+  --contract tests/fixtures/customer_contract.yaml \
+  --data sales_data.xlsx \
+  --sheet 1  # by 0-indexed position (sheet 1 = second sheet)
+```
+
 ### Validate a Database Table
 ```bash
 python3 src/datapact/cli.py validate \

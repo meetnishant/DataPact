@@ -16,6 +16,8 @@ This document summarizes the direct dependencies declared in `pyproject.toml`.
   - **Type Inference**: Automatically infers DataPact field types from Pact response body examples.
   - **Limitations**: Quality rules (not_null, unique, regex, etc.) and distribution rules must be added manually to the inferred contract.
   - **Compatibility**: Works with Pact JSON contracts; schema flattening supported for nested API responses.
+- openpyxl >= 3.8.0 - Excel XLSX file support.
+- xlrd >= 2.0.0 - Excel XLS file support (legacy Excel formats).
 
 ## Development dependencies (optional)
 - pytest >= 7.0 - Test runner.

@@ -273,8 +273,105 @@ class TestDataSource:
         assert schema["customer_id"] == "integer"
         assert schema["email"] == "string"
 
+    def test_load_excel_xlsx(self):
+        """Test Excel (.xlsx) file loading."""
+        excel_file = FIXTURES_DIR / "valid_customers.xlsx"
+        if not excel_file.exists():
+            pytest.skip("valid_customers.xlsx not found")
+        
+        ds = DataSource(str(excel_file))
+        df = ds.load()
+        assert len(df) == 5
+        assert "customer_id" in df.columns
+        assert "email" in df.columns
+
+    def test_detect_format_excel(self):
+        """Test Excel format auto-detection."""
+        excel_file = FIXTURES_DIR / "valid_customers.xlsx"
+        if not excel_file.exists():
+            pytest.skip("valid_customers.xlsx not found")
+        
+        ds = DataSource(str(excel_file))
+        assert ds.format == "excel"
+
+    def test_infer_schema_excel(self):
+        """Test schema inference from Excel files."""
+        excel_file = FIXTURES_DIR / "valid_customers.xlsx"
+        if not excel_file.exists():
+            pytest.skip("valid_customers.xlsx not found")
+        
+        ds = DataSource(str(excel_file))
+        schema = ds.infer_schema()
+        assert "customer_id" in schema
+        assert schema["customer_id"] == "integer"
+        assert schema["email"] == "string"
+
+    def test_excel_sheet_selection_default(self):
+        """Test Excel sheet selection (default to first sheet)."""
+        excel_file = FIXTURES_DIR / "valid_customers.xlsx"
+        if not excel_file.exists():
+            pytest.skip("valid_customers.xlsx not found")
+        
+        # Default sheet_name=0 (first sheet)
+        ds = DataSource(str(excel_file), sheet_name=0)
+        df = ds.load()
+        assert len(df) == 5  # valid_customers.xlsx has 5 rows
+
+    def test_excel_chunking_not_supported(self):
+        """Test that Excel format does not support chunking."""
+        excel_file = FIXTURES_DIR / "valid_customers.xlsx"
+        if not excel_file.exists():
+            pytest.skip("valid_customers.xlsx not found")
+        
+        ds = DataSource(str(excel_file))
+        with pytest.raises(ValueError, match="not supported for excel"):
+            list(ds.iter_chunks(chunksize=1000))
+
+
+class TestExcelValidationIntegration:
+    """Integration tests for Excel file validation."""
+
+    def test_full_validation_with_excel(self):
+        """Test full validation pipeline (schema + quality) with Excel file."""
+        excel_file = FIXTURES_DIR / "valid_customers.xlsx"
+        if not excel_file.exists():
+            pytest.skip("valid_customers.xlsx not found")
+        
+        # Load contract and Excel data
+        contract = Contract.from_yaml(str(FIXTURES_DIR / "customer_contract.yaml"))
+        ds = DataSource(str(excel_file))
+        df = ds.load()
+        
+        # Run schema validation
+        schema_validator = SchemaValidator(contract, df)
+        schema_passed, schema_errors = schema_validator.validate()
+        assert schema_passed, f"Schema validation failed: {schema_errors}"
+        
+        # Run quality validation
+        severity_overrides = {}
+        quality_validator = QualityValidator(contract, df, severity_overrides)
+        quality_passed, quality_errors = quality_validator.validate()
+        assert quality_passed, f"Quality validation failed: {quality_errors}"
+
+    def test_invalid_excel_schema_validation(self):
+        """Test validation fails on schema errors in Excel file."""
+        excel_file = FIXTURES_DIR / "schema_missing_required.xlsx"
+        if not excel_file.exists():
+            pytest.skip("schema_missing_required.xlsx not found")
+        
+        contract = Contract.from_yaml(str(FIXTURES_DIR / "schema_contract.yaml"))
+        ds = DataSource(str(excel_file))
+        df = ds.load()
+        
+        # Schema validation should fail
+        schema_validator = SchemaValidator(contract, df)
+        schema_passed, schema_errors = schema_validator.validate()
+        assert not schema_passed
+        assert len(schema_errors) > 0
+
 
 class TestDistributionValidator:
+
     """Tests for distribution validation."""
 
     def test_normal_distribution(self, customer_contract, valid_df):

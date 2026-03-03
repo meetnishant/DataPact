@@ -28,7 +28,7 @@ DataPact/
        │   ├── odcs_provider.py
        │   └── pact_provider.py
 │       ├── odcs_contracts.py         # ODCS parsing & mapping
-│       ├── datasource.py            # Data loading (CSV/Parquet/JSON/DB)
+│       ├── datasource.py            # Data loading (CSV/Parquet/JSON/Excel/DB)
 │       ├── policies.py              # Policy pack registry
 │       ├── profiling.py             # Contract profiling helpers
 │       ├── normalization/           # Normalization scaffolding

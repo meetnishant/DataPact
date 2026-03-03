@@ -60,9 +60,13 @@ Data File / DB → DataSource Loader ↓
 - **Responsibility**: Format detection, contract loading, and type inference
 
 ### 2. **datasource.py** - Data Loading
-- Loads CSV, Parquet, JSON Lines formats
+- Loads CSV, Parquet, JSON Lines, and Excel (XLSX/XLS) formats
 - Loads database tables and queries (Postgres, MySQL, SQLite)
-- Auto-detects format from file extension
+- Auto-detects format from file extension (`.csv`, `.parquet`, `.jsonl`, `.xlsx`, `.xls`)
+- Excel support:
+  - Loads Excel files via pandas `read_excel()`
+  - Optional sheet selection via `sheet_name` parameter (name as string, or 0-indexed position as int; defaults to 0)
+  - Full-file load only (no chunking support due to Excel format characteristics)
 - Provides schema inference (column names and inferred types)
 - Supports chunked streaming for large CSV/JSONL files and database queries via `--db-chunksize`
 - **Responsibility**: Data I/O and schema discovery

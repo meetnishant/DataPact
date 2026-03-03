@@ -2,6 +2,33 @@
 
 This document lists the functional capabilities provided by DataPact with compact, practical examples.
 
+## Data Format Support
+
+### Multiple file formats and data sources
+Validate data from CSV, Parquet, JSON Lines, Excel files, and databases.
+
+```bash
+# CSV file
+datapact validate --contract c.yaml --data customers.csv
+
+# Parquet file
+datapact validate --contract c.yaml --data customers.parquet
+
+# JSON Lines file
+datapact validate --contract c.yaml --data customers.jsonl
+
+# Excel file (XLSX or XLS)
+datapact validate --contract c.yaml --data customers.xlsx
+
+# Excel with sheet selection
+datapact validate --contract c.yaml --data sales.xlsx --sheet "Q1 Data"
+
+# Database table
+datapact validate --contract c.yaml --db-type postgres --db-host localhost --db-user app --db-name mydb --db-table customers
+```
+
+Format is auto-detected from file extension (`.csv`, `.parquet`, `.xlsx`, `.xls`, `.jsonl`). Use `--format` to override.
+
 ## Core Validation
 
 ### Validate schema, quality, and distribution

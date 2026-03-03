@@ -71,6 +71,20 @@ datapact validate --contract customer_contract.yaml --data customers.csv
 datapact validate --contract customer_contract.yaml --data customers.parquet
 ```
 
+**Validate Excel data** (XLSX or XLS):
+```bash
+datapact validate --contract customer_contract.yaml --data customers.xlsx
+```
+
+**Validate Excel with sheet selection**:
+```bash
+# Load specific sheet by name
+datapact validate --contract customer_contract.yaml --data sales_data.xlsx --sheet "Q1 Sales"
+
+# Load specific sheet by index (0 = first sheet, 1 = second sheet, etc.)
+datapact validate --contract customer_contract.yaml --data sales_data.xlsx --sheet 1
+```
+
 **Validate database table**:
 ```bash
 datapact validate --contract customer_contract.yaml \

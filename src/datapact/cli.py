@@ -87,7 +87,11 @@ def main() -> int:
     )
     parser.add_argument(
         "--data",
-        help="Path to data file (CSV, Parquet, JSON)",
+        help="Path to data file (CSV, Parquet, JSON, Excel)",
+    )
+    parser.add_argument(
+        "--sheet",
+        help="For Excel files, specify sheet name or 0-indexed position (default: 0 for first sheet)",
     )
     parser.add_argument(
         "--db-type",
@@ -140,9 +144,9 @@ def main() -> int:
     )
     parser.add_argument(
         "--format",
-        choices=["csv", "parquet", "jsonl", "auto"],
+        choices=["csv", "parquet", "jsonl", "excel", "auto"],
         default="auto",
-        help="Data format (default: auto-detect)",
+        help="Data format (default: auto-detect). Excel full-file load only, no streaming.",
     )
     parser.add_argument(
         "--output-dir",
@@ -1019,7 +1023,17 @@ def _build_datasource(args):
         return DatabaseSource(config)
 
     format_arg = None if args.format == "auto" else args.format
-    return DataSource(args.data, format=format_arg)
+    sheet_name = None
+    
+    # Parse sheet_name for Excel files
+    if hasattr(args, 'sheet') and args.sheet is not None:
+        # Try to convert to int, otherwise use as string (sheet name)
+        try:
+            sheet_name = int(args.sheet)
+        except ValueError:
+            sheet_name = args.sheet
+    
+    return DataSource(args.data, format=format_arg, sheet_name=sheet_name)
 
 
 def _build_db_config(args) -> DatabaseConfig:

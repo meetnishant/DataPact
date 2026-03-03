@@ -48,15 +48,22 @@ This guide maps each file to its purpose and shows how they fit together.
 
 ### `src/datapact/datasource.py`
 - **Purpose**: Load datasets in multiple formats
-- **Classes**: `DataSource`
+- **Classes**: `DataSource`, `DatabaseSource`, `DatabaseConfig`
+- **Supported file formats**: CSV, Parquet, JSON Lines (.jsonl), Excel (XLSX, XLS)
 - **Key methods**:
   - `load()` - Load data into DataFrame
   - `infer_schema()` - Discover column types
-  - `iter_chunks()` - Stream CSV/JSONL in chunks
+  - `iter_chunks()` - Stream CSV/JSONL in chunks (not supported for Excel/Parquet)
   - `sample_dataframe()` - Sample rows for large datasets
-  - `_detect_format()` - Auto-detect file format
+  - `_detect_format()` - Auto-detect file format from extension
+- **Excel support**:
+  - Auto-detection of `.xlsx` and `.xls` files
+  - Optional `sheet_name` parameter for sheet selection (defaults to 0 for first sheet)
+  - Full-file load only (no chunking) due to Excel format limitations
+  - Sheet can be specified by name (string) or index (integer)
 - **Database support**: `DatabaseConfig`, `DatabaseSource` for Postgres/MySQL/SQLite
-- **When to modify**: Adding support for new data formats (e.g., Excel) or DB engines
+- **Type inference**: Maps pandas dtypes to DataPact types (integer, float, string, boolean)
+- **When to modify**: Adding support for new data formats or DB engines
 
 ### `src/datapact/normalization/`
 - **Purpose**: Contract-aware normalization scaffold
@@ -67,7 +74,15 @@ This guide maps each file to its purpose and shows how they fit together.
 - **Purpose**: Command-line interface and orchestration
 - **Functions**: `main()`, `validate_command()`, `init_command()`, `profile_command()`
 - **Commands**: `validate`, `init`, `profile`
-- **When to modify**: Adding new CLI commands or options
+- **Data source parameters**:
+  - `--data` - Path to data file (CSV, Parquet, JSON Lines, Excel)
+  - `--format` - Override auto-detection (csv, parquet, jsonl, excel, auto)
+  - `--sheet` - For Excel files, specify sheet name or 0-indexed position (defaults to 0)
+- **Database parameters**: `--db-type`, `--db-host`, `--db-port`, `--db-user`, `--db-password`, `--db-name`, `--db-table`, `--db-query`
+- **Limitations**: 
+  - `--chunksize` not supported with Excel (auto-rejected with error message)
+  - Excel is always fully loaded into memory
+- **When to modify**: Adding new CLI commands, options, or data source types
 
 ### `src/datapact/profiling.py`
 - **Purpose**: Profile data to infer rules for new contracts

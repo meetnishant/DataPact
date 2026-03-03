@@ -1,6 +1,6 @@
 """
 Data source loading and schema inference.
-Handles loading CSV, Parquet, JSONL files and database sources.
+Handles loading CSV, Parquet, JSONL, Excel files and database sources.
 """
 
 from dataclasses import dataclass
@@ -48,21 +48,23 @@ class DataSource:
     Provides methods for loading data and inferring contract field types.
     """
 
-    def __init__(self, filepath: str, format: Optional[str] = None):
+    def __init__(self, filepath: str, format: Optional[str] = None, sheet_name: Optional[str] = None):
         """
         Initialize datasource.
         Args:
-            filepath: Path to data file (CSV, Parquet, JSON)
-            format: Data format ('csv', 'parquet', 'jsonl'). Auto-detected if None.
+            filepath: Path to data file (CSV, Parquet, JSON, Excel)
+            format: Data format ('csv', 'parquet', 'jsonl', 'excel'). Auto-detected if None.
+            sheet_name: For Excel files, the sheet to load (name or 0-indexed int). Default is 0 (first sheet).
         """
         self.filepath = Path(filepath)
         self.format = format or self._detect_format()
+        self.sheet_name = sheet_name if sheet_name is not None else 0
         self.df: Optional[pd.DataFrame] = None
 
     def _detect_format(self) -> str:
         """
         Auto-detect data format from file extension.
-        Returns 'csv', 'parquet', or 'jsonl'.
+        Returns 'csv', 'parquet', 'jsonl', or 'excel'.
         """
         suffix = self.filepath.suffix.lower()
         format_map = {
@@ -71,6 +73,8 @@ class DataSource:
             ".pq": "parquet",
             ".jsonl": "jsonl",
             ".ndjson": "jsonl",
+            ".xlsx": "excel",
+            ".xls": "excel",
         }
         return format_map.get(suffix, "csv")
 
@@ -89,6 +93,14 @@ class DataSource:
             self.df = pd.read_parquet(self.filepath)
         elif self.format == "jsonl":
             self.df = pd.read_json(self.filepath, lines=True)
+        elif self.format == "excel":
+            try:
+                self.df = pd.read_excel(self.filepath, sheet_name=self.sheet_name)
+            except ImportError as e:
+                raise ImportError(
+                    "Excel format requires openpyxl (for .xlsx) or xlrd (for .xls). "
+                    "Install with: pip install openpyxl xlrd"
+                ) from e
         else:
             raise ValueError(f"Unsupported format: {self.format}")
 
@@ -96,13 +108,17 @@ class DataSource:
 
     def iter_chunks(self, chunksize: int) -> Iterator[pd.DataFrame]:
         """
-        Stream data in chunks for supported formats.
+        Stream data in chunks for supported formats (CSV and JSONL only).
+        Excel and Parquet formats do not support chunking.
         """
         if self.format == "csv":
             return pd.read_csv(self.filepath, chunksize=chunksize)
         if self.format == "jsonl":
             return pd.read_json(self.filepath, lines=True, chunksize=chunksize)
-        raise ValueError("Chunked loading is supported for CSV and JSONL only")
+        raise ValueError(
+            f"Chunked loading is not supported for {self.format} format. "
+            "Chunking is available for CSV and JSONL only."
+        )
 
     def sample_dataframe(
         self,

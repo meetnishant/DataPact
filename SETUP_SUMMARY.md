@@ -16,7 +16,7 @@ DataContracts/
 │   ├── contracts.py                ← YAML parsing & contract models
 │   ├── providers/                  ← Contract providers (datapact, odcs)
 │   ├── odcs_contracts.py            ← ODCS parsing & mapping
-│   ├── datasource.py               ← Data loading (CSV/Parquet/JSON)
+│   ├── datasource.py               ← Data loading (CSV/Parquet/JSON/Excel)
 │   ├── policies.py                 ← Policy pack registry
 │   ├── profiling.py                ← Contract profiling helpers
 │   ├── normalization/              ← Normalization scaffold
@@ -51,7 +51,9 @@ DataContracts/
 │       ├── customer_contract_v1.yaml
 │       ├── customer_contract_v2.yaml
 │       ├── valid_customers.csv
+│       ├── valid_customers.xlsx
 │       ├── invalid_customers.csv
+│       ├── invalid_customers.xlsx
 │       ├── deposits_contract.yaml
 │       ├── lending_contract.yaml
 │       ├── deposits_data.csv
@@ -90,7 +92,7 @@ DataContracts/
 
 ### Core Functionality
 ✅ **Contract Parser** - Parse YAML contracts into typed Python models  
-✅ **Data Loader** - Support CSV, Parquet, JSON with auto-detection  
+✅ **Data Loader** - Support CSV, Parquet, JSON, and Excel (XLSX/XLS) with auto-detection  
 ✅ **Schema Validator** - Check columns, types, required fields  
 ✅ **Quality Validator** - Nulls, uniqueness, ranges, regex, enums  
 ✅ **Distribution Validator** - Mean/std drift detection  
@@ -107,7 +109,7 @@ DataContracts/
 ✅ **ODCS Compatibility** - Validate Open Data Contract Standard v3.1.0 contracts  
 ✅ **Contract Providers** - Provider dispatch for DataPact vs ODCS contracts  
 ✅ **Normalization Scaffold** - Flatten metadata (noop by default)  
-✅ **CLI** - Full command-line interface with `validate`, `init`, and `profile` commands  
+✅ **CLI** - Full command-line interface with `validate`, `init`, and `profile` commands
 
 ### Testing & Quality
 ✅ **Test Suite** - Pytest with versioning, banking/finance, and concurrency coverage  

@@ -15,7 +15,7 @@ Validate datasets against data contracts to ensure schema compliance, data quali
 - **Custom Rule Plugins**: Load rule logic from plugin modules
 - **Policy Packs**: Apply reusable rule bundles by name
 - **Contract Versioning**: Track contract evolution with automatic migration
-- **Multiple Formats**: Support CSV, Parquet, and JSON Lines
+- **Multiple Formats**: Support CSV, Parquet, JSON Lines, and Excel (XLSX/XLS)
 - **Database Sources**: Validate Postgres, MySQL, and SQLite tables
 - **ODCS Support**: Validate Open Data Contract Standard v3.1.0 contracts
 - **API Pact Support**: Infer DataPact contracts from Pact API contracts via type inference
