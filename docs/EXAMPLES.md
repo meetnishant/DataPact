@@ -19,6 +19,7 @@ Comprehensive examples covering all DataPact features including contract provide
   - [Flatten & Normalization](#flatten--normalization)
   - [Report Sinks](#report-sinks)
   - [Chunked Validation](#chunked-validation)
+  - [PII Detection](#pii-detection)
   - [Version Migration](#version-migration)
 
 ---
@@ -621,6 +622,101 @@ datapact stream-validate \
   --topic customer.events.v1 \
   --group-id datapact-validator
 ```
+
+### PII Detection
+
+Tag sensitive fields in the contract and let DataPact flag unmasked data. Undeclared columns are also auto-scanned.
+
+**Contract with declared PII fields** (`customer_pii_contract.yaml`):
+```yaml
+contract:
+  name: customer_pii
+  version: 2.0.0
+dataset:
+  name: customers
+
+pii_scan: true    # default; set to false to disable auto-detection
+
+fields:
+  - name: customer_id
+    type: integer
+    required: true
+    rules:
+      unique: true
+
+  - name: email
+    type: string
+    pii:
+      category: email
+      masked: false     # unmasked → WARN (or ERROR if severity: ERROR)
+      severity: WARN
+
+  - name: phone
+    type: string
+    pii:
+      category: phone
+      masked: false
+
+  - name: ssn
+    type: string
+    pii:
+      category: ssn
+      masked: true      # pre-redacted; no alert emitted
+
+  - name: full_name
+    type: string
+    pii: true           # shorthand: generic PII, severity=WARN
+```
+
+**Validate data with PII checks**:
+```bash
+datapact validate --contract customer_pii_contract.yaml --data customers.csv
+```
+
+**Example report output** (`code: PII` entries):
+```json
+{
+  "passed": true,
+  "summary": { "error_count": 0, "warning_count": 3 },
+  "errors": [
+    {
+      "code": "PII", "severity": "WARN",
+      "message": "Field 'email' is declared as PII (category=email) and contains unmasked data"
+    },
+    {
+      "code": "PII", "severity": "WARN",
+      "message": "Field 'phone' is declared as PII (category=phone) and contains unmasked data"
+    },
+    {
+      "code": "PII", "severity": "WARN",
+      "message": "Column 'user_address' appears to contain PII (category=address, detected by column name) but is not declared in the contract"
+    }
+  ]
+}
+```
+
+**Block the pipeline on unmasked PII** (use `severity: ERROR`):
+```yaml
+  - name: ssn
+    type: string
+    pii:
+      category: ssn
+      masked: false
+      severity: ERROR   # fails validation if data is unmasked
+```
+
+**Disable auto-detection** (keep declared-field checks only):
+```yaml
+pii_scan: false
+```
+
+**Supported PII categories**: `email`, `phone`, `ssn`, `credit_card`, `name`, `address`, `ip_address`, `dob`
+
+**Auto-detection methods**:
+- Column-name keyword matching (26 keywords; e.g. `email`, `ssn`, `mobile`, `date_of_birth`, `zip`, `passport`)
+- Regex value-pattern matching on a 500-row sample at 20% hit threshold (email, SSN, credit card, phone, IPv4)
+
+---
 
 ### Version Migration
 

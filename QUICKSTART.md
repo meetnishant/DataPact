@@ -113,6 +113,27 @@ python3 src/datapact/cli.py validate \
   --severity-override status.not_null=warn
 ```
 
+### Declare PII Fields
+```yaml
+fields:
+  - name: email
+    type: string
+    pii:
+      category: email
+      masked: false     # unmasked data → emits WARN
+      severity: WARN    # WARN (default) or ERROR
+
+  - name: ssn
+    type: string
+    pii:
+      category: ssn
+      masked: true      # pre-redacted; no alert
+
+pii_scan: true          # auto-detect undeclared PII columns (default)
+```
+
+PII findings appear in the report with `"code": "PII"`. Set `pii_scan: false` to suppress auto-detection.
+
 ### Add SLA and Schema Drift Policy
 ```yaml
 schema:

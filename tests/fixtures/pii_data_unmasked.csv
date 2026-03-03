@@ -1,0 +1,4 @@
+user_id,email,phone_number,ssn
+1,alice@example.com,+1-555-0100,***-**-****
+2,bob@example.com,+1-555-0200,***-**-****
+3,carol@example.com,+1-555-0300,***-**-****

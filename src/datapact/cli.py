@@ -28,6 +28,7 @@ from datapact.validators import (
     CustomRuleValidator,  # Validates custom plugin rules
     StreamingValidator,
     KafkaStreamingEngine,
+    PIIValidator,  # Detects PII fields (declared and auto-detected)
 )
 from datapact.validators.quality_validator import ChunkedQualityValidator
 from datapact.validators.distribution_validator import DistributionAccumulator
@@ -365,6 +366,7 @@ def validate_command(args) -> int:
         sla_errors: List[str]
 
         custom_errors: List[str] = []
+        pii_errors: List[str] = []
 
         if _use_streaming(args):
             schema_errors, quality_errors, dist_warnings, sla_errors = (
@@ -414,6 +416,10 @@ def validate_command(args) -> int:
             )
             _, custom_errors = custom_validator.validate()
 
+            # Run PII validation (non-blocking: declared + auto-detection)
+            pii_validator = PIIValidator(contract, df)
+            _, pii_errors = pii_validator.validate()
+
         # Collect all errors and warnings as ErrorRecord objects
         all_errors = []
         for err in schema_errors:
@@ -450,6 +456,13 @@ def validate_command(args) -> int:
             msg = err.replace("ERROR: ", "").replace("WARN: ", "")
             all_errors.append(
                 ErrorRecord(code="CUSTOM", field="", message=msg, severity=severity)
+            )
+
+        for err in pii_errors:
+            severity = "ERROR" if err.startswith("ERROR") else "WARN"
+            msg = err.replace("ERROR: ", "").replace("WARN: ", "")
+            all_errors.append(
+                ErrorRecord(code="PII", field="", message=msg, severity=severity)
             )
 
         # Count errors and warnings for reporting

@@ -50,11 +50,31 @@ class DistributionRule:
     max_z_score: Optional[float] = None
 
 
+VALID_PII_CATEGORIES = frozenset({
+    "email", "phone", "ssn", "credit_card", "name",
+    "address", "ip_address", "dob",
+})
+
+
+@dataclass
+class PIIConfig:
+    """
+    PII metadata declared on a contract field.
+    category: semantic hint (email, phone, ssn, etc.) or None for generic PII.
+    masked: True means data is pre-redacted — no alert emitted.
+    severity: WARN (default) or ERROR.
+    """
+
+    category: Optional[str] = None
+    masked: bool = False
+    severity: str = "WARN"
+
+
 @dataclass
 class Field:
     """
     Represents a field in the contract schema.
-    Includes name, type, required, rules, and distribution.
+    Includes name, type, required, rules, distribution, and pii metadata.
     """
 
     name: str
@@ -62,6 +82,7 @@ class Field:
     required: bool = False
     rules: Optional[FieldRule] = None
     distribution: Optional[DistributionRule] = None
+    pii: Optional[PIIConfig] = None
 
 
 @dataclass
@@ -147,6 +168,7 @@ class Contract:
     custom_rules: List[Dict[str, Any]] = field(default_factory=list)
     flatten: FlattenConfig = field(default_factory=FlattenConfig)
     streaming: Optional[StreamingConfig] = None
+    pii_scan: bool = True
 
     @classmethod
     def from_yaml(cls, yaml_path: str) -> "Contract":
@@ -231,6 +253,7 @@ class Contract:
                     distribution=cls._parse_distribution(
                         field_data.get("distribution", {})
                     ),
+                    pii=cls._parse_pii(field_data.get("pii")),
                 )
             )
 
@@ -244,6 +267,7 @@ class Contract:
             custom_rules=custom_rules,
             flatten=flatten,
             streaming=streaming,
+            pii_scan=bool(data.get("pii_scan", True)),
         )
 
     def resolve_column_name(self, field_name: str) -> str:
@@ -492,4 +516,38 @@ class Contract:
                 topic=dlq_topic,
                 reason_field=reason_field,
             ),
+        )
+
+    @staticmethod
+    def _parse_pii(pii_data: Any) -> Optional[PIIConfig]:
+        """
+        Parse pii section from field dict to PIIConfig dataclass.
+        Accepts:
+          pii: true               (boolean shorthand — generic PII, WARN severity)
+          pii:
+            category: email
+            masked: false
+            severity: WARN
+        """
+        if pii_data is None:
+            return None
+        if isinstance(pii_data, bool):
+            return PIIConfig() if pii_data else None
+        if not isinstance(pii_data, dict):
+            raise ValueError("Field 'pii' must be a boolean or a mapping")
+        category = pii_data.get("category")
+        if category is not None and category not in VALID_PII_CATEGORIES:
+            raise ValueError(
+                f"Unsupported PII category '{category}'. "
+                f"Valid values: {sorted(VALID_PII_CATEGORIES)}"
+            )
+        raw_severity = str(pii_data.get("severity", "WARN")).upper()
+        if raw_severity not in {"ERROR", "WARN"}:
+            raise ValueError(
+                f"Unsupported PII severity '{raw_severity}'. Use ERROR or WARN."
+            )
+        return PIIConfig(
+            category=category,
+            masked=bool(pii_data.get("masked", False)),
+            severity=raw_severity,
         )

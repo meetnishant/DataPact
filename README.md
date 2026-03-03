@@ -9,6 +9,7 @@ Validate datasets against data contracts to ensure schema compliance, data quali
 - **Rule Severity**: Mark rules as WARN or ERROR, with CLI overrides
 - **Schema Drift**: Control extra column handling with WARN/ERROR policies
 - **Distribution Monitoring**: Detect drift in numeric column statistics
+- **PII Detection**: Declare PII fields in contracts and auto-detect sensitive data across all columns
 - **Profiling**: Auto-generate rule baselines from data
 - **SLA Checks**: Enforce row count and freshness constraints
 - **Big Data Support**: Chunked validation with optional sampling
@@ -346,6 +347,30 @@ flatten:
   separator: "."
 ```
 
+### PII Detection
+
+Tag fields as PII in the contract and let DataPact flag unmasked sensitive data. Auto-detection also scans undeclared columns by name and value patterns.
+
+```yaml
+fields:
+  - name: email
+    type: string
+    pii:
+      category: email   # email | phone | ssn | credit_card | name | address | ip_address | dob
+      masked: false     # true = data is already redacted, no alert
+      severity: WARN    # WARN (default) or ERROR to block the pipeline
+
+  - name: ssn
+    type: string
+    pii:
+      category: ssn
+      masked: true      # pre-redacted field — no alert emitted
+
+pii_scan: true          # false = disable auto-detection of undeclared columns
+```
+
+PII findings appear in the report with `"code": "PII"`. Declared-field severity is configurable per field; auto-detected columns always emit `WARN`.
+
 ### Policy Packs
 
 ```yaml
@@ -435,13 +460,27 @@ JSON reports are saved to `./reports/<timestamp>.json`:
   "errors": [
     {
       "code": "QUALITY",
-      "field": "email",
-      "message": "has 1 values not matching regex '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'",
+      "field": "",
+      "message": "Field 'email' has 1 values not matching regex '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'",
       "severity": "ERROR"
+    },
+    {
+      "code": "PII",
+      "field": "",
+      "message": "Field 'email' is declared as PII (category=email) and contains unmasked data",
+      "severity": "WARN"
+    },
+    {
+      "code": "PII",
+      "field": "",
+      "message": "Column 'phone_number' appears to contain PII (category=phone, detected by column name) but is not declared in the contract",
+      "severity": "WARN"
     }
   ]
 }
 ```
+
+Error codes: `SCHEMA`, `QUALITY`, `DISTRIBUTION`, `SLA`, `CUSTOM`, `PII`.
 
 ## Testing
 
@@ -562,7 +601,8 @@ src/datapact/
     ├── __init__.py
     ├── schema_validator.py      # Column/type/required checks
     ├── quality_validator.py     # Null/unique/range/regex/enum checks
-    └── distribution_validator.py # Mean/std drift detection
+    ├── distribution_validator.py # Mean/std drift detection
+    └── pii_validator.py         # PII declaration and auto-detection
 tests/
 ├── test_validator.py     # Core validator tests
 ├── test_versioning.py    # Version feature tests

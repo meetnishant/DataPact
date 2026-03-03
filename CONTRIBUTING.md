@@ -33,9 +33,18 @@
 
 1. Create `src/datapact/validators/your_validator.py`
 2. Implement validator class with `validate()` method returning `(bool, List[str])`
-3. Add tests in `tests/test_validator.py`
+3. Add tests in `tests/test_your_validator.py`
 4. Export from `validators/__init__.py`
-5. Integrate into `cli.py`
+5. Integrate into `cli.py` (run after `CustomRuleValidator`, convert output to `ErrorRecord` with a new `code`)
+
+**Example**: See `src/datapact/validators/pii_validator.py` for a reference implementation of a non-blocking validator with contract-declared metadata (`PIIConfig`) and auto-detection logic.
+
+## Extending PII Detection
+
+To add new PII categories or detection patterns:
+- **New category**: add to `VALID_PII_CATEGORIES` in `contracts.py` and add a regex to `_VALUE_PATTERNS` in `pii_validator.py`
+- **New column-name keywords**: add entries to `_NAME_KEYWORDS` in `pii_validator.py`
+- **Detection threshold**: adjust `_MATCH_THRESHOLD` (default 0.20 = 20% of sampled values must match)
 
 ## Adding Support for New Contract Providers
 

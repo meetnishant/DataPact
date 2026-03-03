@@ -138,6 +138,46 @@ fields:
       max_drift_pct: 10.0
 ```
 
+## PII Detection
+
+### Declare PII fields in the contract
+Tag fields as PII with optional category, masking status, and severity.
+
+```yaml
+fields:
+  - name: email
+    type: string
+    pii:
+      category: email   # email | phone | ssn | credit_card | name | address | ip_address | dob
+      masked: false     # false = unmasked data expected → emit WARN
+      severity: WARN    # WARN (default) or ERROR
+
+  - name: ssn
+    type: string
+    pii:
+      category: ssn
+      masked: true      # pre-redacted; no alert emitted
+
+  - name: full_name
+    type: string
+    pii: true           # shorthand: generic PII, WARN severity
+```
+
+### Auto-detect undeclared PII columns
+DataPact scans all undeclared columns using column-name keywords and value-pattern matching.
+
+```yaml
+pii_scan: true   # default; set to false to disable auto-detection
+```
+
+Supported categories: `email`, `phone`, `ssn`, `credit_card`, `name`, `address`, `ip_address`, `dob`.
+
+Detection methods:
+- **Column name**: keyword match (e.g. `email`, `ssn`, `mobile`, `date_of_birth`, `zip`)
+- **Value patterns**: regex match on a 500-row sample at 20% hit threshold
+
+Auto-detected findings are always `WARN`. PII findings appear in reports with `"code": "PII"`.
+
 ## SLA and Freshness
 
 ### Row count constraints

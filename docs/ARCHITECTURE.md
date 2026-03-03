@@ -82,7 +82,7 @@ Data File / DB → DataSource Loader ↓
 - **Responsibility**: Baseline rule generation for new contracts
 
 ### 4. **validators/** - Validation Pipeline
-Three specialized validators run sequentially:
+Validators run sequentially in this order:
 
 #### **schema_validator.py**
 - Validates structure: column existence, types, required fields
@@ -111,6 +111,14 @@ Three specialized validators run sequentially:
 - Compares current vs. expected distributions
 - Always produces `WARN` (never blocks validation)
 - **Input**: DataFrame + Distribution rules
+
+#### **pii_validator.py**
+- Two-pass PII detection: (1) declared PII fields from contract, (2) auto-detection on all other columns
+- **Pass 1 (declared)**: emits `WARN` or `ERROR` (field-configurable) for fields tagged with `pii:` in YAML where `masked: false`
+- **Pass 2 (auto-detect)**: scans undeclared columns using column-name keywords (26 keywords, 8 categories) then regex value-pattern matching on a 500-row sample at 20% hit threshold; always `WARN`
+- Auto-detection disabled when `pii_scan: false` on the contract
+- **Contract metadata**: `PIIConfig` dataclass (category, masked, severity) on `Field`; `pii_scan: bool` on `Contract`
+- **Output**: `ErrorRecord` with `code="PII"`
 
 ### 5. **reporting.py** - Report Generation & Lineage Tracking
 - Aggregates errors/warnings from all validators
@@ -162,7 +170,8 @@ Three specialized validators run sequentially:
 4. **SLA validation** runs after quality checks (non-blocking)
 5. **Custom rule validation** runs after SLA checks (non-blocking)
 6. **Distribution validation** is always non-blocking (WARNings only)
-7. **Exit code** is non-zero if any ERRORs exist (for CI/CD)
+7. **PII validation** runs last (non-blocking); ERRORs only when `severity: ERROR` declared on a field
+8. **Exit code** is non-zero if any ERRORs exist (for CI/CD)
 
 ## Data Flow Example
 
@@ -236,6 +245,9 @@ sequenceDiagram
 
     CLI->>+Distribution: Check distributions
     Distribution-->>-CLI: Warnings only (never blocks)
+
+    CLI->>+PII: Detect PII (declared + auto-scan)
+    PII-->>-CLI: Warnings/errors (non-blocking by default)
     end
     
     CLI->>+Reporter: Aggregate results
@@ -289,7 +301,7 @@ See [docs/VERSIONING.md](VERSIONING.md) for detailed migration guide.
 All validators return `(bool, List[ErrorRecord])`:
 - `bool`: Overall pass/fail
 - `List[ErrorRecord]`: Structured error records, each containing:
-  - `code`: Error category (SCHEMA, QUALITY, SLA, CUSTOM, DISTRIBUTION)
+  - `code`: Error category (`SCHEMA`, `QUALITY`, `SLA`, `CUSTOM`, `DISTRIBUTION`, `PII`)
   - `severity`: `ERROR` or `WARN`
   - `field`: Field name where the violation occurred
   - `message`: Human-readable description
@@ -320,3 +332,8 @@ To add new contract rules:
 1. Add field to `FieldRule` or `DistributionRule` dataclass
 2. Parse in `Contract._parse_rules()`
 3. Check in corresponding validator
+
+To extend PII detection:
+1. Add to `VALID_PII_CATEGORIES` in `contracts.py`
+2. Add regex to `_VALUE_PATTERNS` or keyword to `_NAME_KEYWORDS` in `pii_validator.py`
+3. Add test cases in `tests/test_pii_validator.py`

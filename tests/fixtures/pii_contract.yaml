@@ -1,0 +1,28 @@
+contract:
+  name: pii_test_contract
+  version: 2.0.0
+dataset:
+  name: users
+pii_scan: true
+fields:
+  - name: user_id
+    type: integer
+    required: true
+    rules:
+      unique: true
+  - name: email
+    type: string
+    pii:
+      category: email
+      masked: false
+      severity: WARN
+  - name: phone_number
+    type: string
+    pii:
+      category: phone
+      masked: false
+  - name: ssn
+    type: string
+    pii:
+      category: ssn
+      masked: true

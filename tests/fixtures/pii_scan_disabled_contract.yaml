@@ -1,0 +1,10 @@
+contract:
+  name: pii_scan_off
+  version: 2.0.0
+dataset:
+  name: users
+pii_scan: false
+fields:
+  - name: id
+    type: integer
+    required: true

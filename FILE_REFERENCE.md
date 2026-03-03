@@ -11,12 +11,14 @@ This guide maps each file to its purpose and shows how they fit together.
 
 ### `src/datapact/contracts.py`
 - **Purpose**: Parse YAML contracts, model validation rules
-- **Classes**: `Contract`, `Field`, `FieldRule`, `DistributionRule`, `Dataset`, `FlattenConfig`
-- **Key methods**: 
+- **Classes**: `Contract`, `Field`, `FieldRule`, `DistributionRule`, `PIIConfig`, `Dataset`, `FlattenConfig`
+- **Key methods**:
   - `Contract.from_yaml(path)` - Load and parse contract file
   - `Contract._parse_rules()` - Extract field validation rules
   - `Contract._parse_distribution()` - Extract distribution rules
-- **When to modify**: Adding new rule types or contract metadata
+  - `Contract._parse_pii()` - Extract PII metadata from field (`category`, `masked`, `severity`)
+- **PII contract keys**: `pii_scan` (bool, default `true`) at contract level; `pii` block per field
+- **When to modify**: Adding new rule types, PII categories, or contract metadata
 
 ### `src/datapact/providers/`
 - **Purpose**: Contract provider dispatch (DataPact, ODCS, and API Pact)
@@ -144,9 +146,19 @@ This guide maps each file to its purpose and shows how they fit together.
 #### `src/datapact/validators/distribution_validator.py`
 - **Purpose**: Monitor numeric distributions (mean, std drift)
 - **Classes**: `DistributionValidator`
-- **Runs**: Third (always non-blocking)
+- **Runs**: After custom rules (always non-blocking)
 - **Output**: WARN severity violations
 - **When to modify**: Adding new statistical checks (e.g., percentile thresholds)
+
+#### `src/datapact/validators/pii_validator.py`
+- **Purpose**: Detect PII — declared fields and auto-scan of undeclared columns
+- **Classes**: `PIIValidator`
+- **Runs**: Last in pipeline (non-blocking by default)
+- **Output**: WARN (auto-detected or declared with `severity: WARN`); ERROR when a declared field has `severity: ERROR`
+- **Contract metadata**: `PIIConfig` on `Field` (category, masked, severity); `pii_scan: bool` on `Contract`
+- **Pass 1 (declared)**: checks fields with `pii:` block; skips if `masked: true` or column absent
+- **Pass 2 (auto-detect)**: column-name keywords + regex value-pattern matching on 500-row sample; disabled by `pii_scan: false`
+- **When to modify**: Adding new PII categories, keywords, or detection patterns
 
 ## Configuration Files
 
@@ -329,6 +341,25 @@ This guide maps each file to its purpose and shows how they fit together.
 - **Purpose**: Profiling tests for inferred rules and distributions
 - **When to modify**: Adjusting profiling heuristics or defaults
 
+### `tests/test_pii_validator.py`
+- **Purpose**: PIIValidator tests — declared PII, auto-detection, edge cases, ErrorRecord integration
+- **Test classes**: `TestDeclaredPII`, `TestAutoDetectionByName`, `TestAutoDetectionByValue`, `TestPIIErrorCode`, `TestChunkedPII`
+- **Coverage**: 23 test cases
+- **When to modify**: Adding new PII categories, detection patterns, or severity behaviour
+
+### `tests/fixtures/pii_contract.yaml`
+- **Purpose**: Contract with declared PII fields across all categories (email, phone, ssn)
+- **Usage**: PIIValidator tests; template for PII-aware contracts
+- **When to modify**: Adding examples of new PII categories
+
+### `tests/fixtures/pii_data_unmasked.csv`
+- **Purpose**: Sample data with unmasked PII values (email, phone), masked SSN
+- **When to modify**: Expanding PII positive test cases
+
+### `tests/fixtures/pii_scan_disabled_contract.yaml`
+- **Purpose**: Contract with `pii_scan: false` to test auto-detection opt-out
+- **When to modify**: Testing changes to `pii_scan` behaviour
+
 ### `tests/fixtures/customer_contract.yaml`
 - **Purpose**: Example contract with all rule types (v2.0.0)
 - **Usage**: Test reference and template for new contracts
@@ -406,10 +437,13 @@ cli.py (entry point)
   ├→ contracts.py (parse YAML + version validation)
   │  └→ versioning.py (auto-migration, compatibility)
   ├→ datasource.py (load data)
-  └→ validators/ (3-step pipeline)
+  └→ validators/ (sequential pipeline)
       ├→ schema_validator.py
       ├→ quality_validator.py
-      └→ distribution_validator.py
+      ├→ sla_validator.py
+      ├→ custom_rule_validator.py
+      ├→ distribution_validator.py
+      └→ pii_validator.py
   └→ reporting.py (aggregate results + version info)
 
 Tests:
