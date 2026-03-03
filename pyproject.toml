@@ -75,6 +75,7 @@ disallow_untyped_defs = false
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["src"]
 markers = [
     "PositiveCases: valid datasets expected to pass",
     "NegativeCases: invalid datasets expected to fail",
